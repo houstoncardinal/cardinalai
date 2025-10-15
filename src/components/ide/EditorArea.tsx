@@ -1,11 +1,71 @@
-import Editor from '@monaco-editor/react';
+import Editor, { OnMount } from '@monaco-editor/react';
 import { useIdeStore } from '@/store/ideStore';
 import { X, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useState, useRef, useEffect } from 'react';
+import { defineMonacoTheme, themeRegistry } from '@/lib/monacoThemes';
+import { AiCodeActions } from './AiCodeActions';
 
 export const EditorArea = () => {
-  const { tabs, activeTabId, setActiveTab, closeTab, updateTabContent } = useIdeStore();
+  const { tabs, activeTabId, setActiveTab, closeTab, updateTabContent, theme } = useIdeStore();
   const activeTab = tabs.find((t) => t.id === activeTabId);
+  const editorRef = useRef<any>(null);
+  const [selectedText, setSelectedText] = useState('');
+  const [showActions, setShowActions] = useState(false);
+  const [actionPosition, setActionPosition] = useState({ top: 0, left: 0 });
+
+  const handleEditorMount: OnMount = (editor, monaco) => {
+    editorRef.current = editor;
+
+    // Define custom themes
+    Object.values(themeRegistry).forEach(theme => {
+      defineMonacoTheme(monaco, theme);
+    });
+
+    // Set initial theme
+    const pathwayTheme = themeRegistry[theme];
+    if (pathwayTheme) {
+      monaco.editor.setTheme(pathwayTheme.id);
+    }
+
+    // Handle text selection
+    editor.onDidChangeCursorSelection((e) => {
+      const model = editor.getModel();
+      if (!model) return;
+
+      const selection = e.selection;
+      const text = model.getValueInRange(selection);
+
+      if (text.trim().length > 0) {
+        setSelectedText(text);
+        const position = editor.getScrolledVisiblePosition(selection.getStartPosition());
+        if (position) {
+          setActionPosition({
+            top: position.top + 30,
+            left: position.left,
+          });
+          setShowActions(true);
+        }
+      } else {
+        setShowActions(false);
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (editorRef.current) {
+      const pathwayTheme = themeRegistry[theme];
+      if (pathwayTheme) {
+        editorRef.current.updateOptions({ theme: pathwayTheme.id });
+      }
+    }
+  }, [theme]);
+
+  const handleAiAction = (action: string, text: string) => {
+    console.log('AI Action:', action, 'Text:', text);
+    // This would integrate with the AI panel
+    setShowActions(false);
+  };
 
   return (
     <div className="flex-1 flex flex-col bg-[hsl(var(--editor-bg))]">
@@ -39,28 +99,39 @@ export const EditorArea = () => {
       </div>
 
       {/* Editor */}
-      <div className="flex-1">
+      <div className="flex-1 relative">
         {activeTab ? (
-          <Editor
-            height="100%"
-            language={activeTab.language}
-            value={activeTab.content}
-            onChange={(value) => updateTabContent(activeTab.id, value || '')}
-            theme="vs-dark"
-            options={{
-              minimap: { enabled: true },
-              fontSize: 14,
-              fontFamily: "'Fira Code', 'Cascadia Code', monospace",
-              lineNumbers: 'on',
-              renderWhitespace: 'selection',
-              tabSize: 2,
-              insertSpaces: true,
-              wordWrap: 'on',
-              smoothScrolling: true,
-              cursorBlinking: 'smooth',
-              cursorSmoothCaretAnimation: 'on',
-            }}
-          />
+          <>
+            <Editor
+              height="100%"
+              language={activeTab.language}
+              value={activeTab.content}
+              onChange={(value) => updateTabContent(activeTab.id, value || '')}
+              onMount={handleEditorMount}
+              theme={themeRegistry[theme]?.id || 'vs-dark'}
+              options={{
+                minimap: { enabled: true },
+                fontSize: 14,
+                fontFamily: "'Fira Code', 'Cascadia Code', monospace",
+                lineNumbers: 'on',
+                renderWhitespace: 'selection',
+                tabSize: 2,
+                insertSpaces: true,
+                wordWrap: 'on',
+                smoothScrolling: true,
+                cursorBlinking: 'smooth',
+                cursorSmoothCaretAnimation: 'on',
+              }}
+            />
+            {showActions && (
+              <div
+                className="absolute z-50"
+                style={{ top: `${actionPosition.top}px`, left: `${actionPosition.left}px` }}
+              >
+                <AiCodeActions selectedText={selectedText} onAction={handleAiAction} />
+              </div>
+            )}
+          </>
         ) : (
           <div className="flex items-center justify-center h-full text-muted-foreground">
             <div className="text-center space-y-4 animate-fade-in-up">
