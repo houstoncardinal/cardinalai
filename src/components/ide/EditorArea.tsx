@@ -1,6 +1,6 @@
 import Editor from '@monaco-editor/react';
 import { useIdeStore } from '@/store/ideStore';
-import { X } from 'lucide-react';
+import { X, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export const EditorArea = () => {
@@ -63,11 +63,31 @@ export const EditorArea = () => {
           />
         ) : (
           <div className="flex items-center justify-center h-full text-muted-foreground">
-            <div className="text-center space-y-4">
-              <div className="text-6xl mb-4">✨</div>
-              <h3 className="text-xl font-semibold">Welcome to Nebula Studio</h3>
+            <div className="text-center space-y-4 animate-fade-in-up">
+              <div className="text-6xl mb-4 animate-pulse">✨</div>
+              <h3 className="text-xl font-semibold">Welcome to PathwayAI</h3>
               <p className="text-sm">Open a file from the explorer to start editing</p>
               <p className="text-xs text-primary">Press ⌘K to open command palette</p>
+              <div className="glass-panel p-4 mx-auto max-w-md mt-6 text-left">
+                <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                  Quick Tips
+                </h4>
+                <div className="space-y-2 text-xs text-muted-foreground">
+                  <div className="flex justify-between">
+                    <span>AI Assistant</span>
+                    <kbd className="px-2 py-1 rounded bg-secondary">⌘J</kbd>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Command Palette</span>
+                    <kbd className="px-2 py-1 rounded bg-secondary">⌘K</kbd>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Toggle Terminal</span>
+                    <kbd className="px-2 py-1 rounded bg-secondary">⌘`</kbd>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}

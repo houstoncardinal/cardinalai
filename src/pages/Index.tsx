@@ -51,7 +51,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background touch-manipulation">
+    <div className="flex h-screen overflow-hidden bg-background touch-manipulation animate-fade-in-up">
       {/* Mobile Navigation */}
       <MobileNav />
       <MobileToolbar />

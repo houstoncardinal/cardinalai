@@ -216,6 +216,57 @@ All colors MUST be HSL.
     box-shadow: var(--shadow-sharp);
   }
 
+  /* Neon glow effect for AI elements */
+  @keyframes neon-pulse {
+    0%, 100% {
+      filter: drop-shadow(0 0 2px currentColor) drop-shadow(0 0 5px currentColor);
+    }
+    50% {
+      filter: drop-shadow(0 0 5px currentColor) drop-shadow(0 0 10px currentColor);
+    }
+  }
+
+  .neon-glow {
+    animation: neon-pulse 2s ease-in-out infinite;
+  }
+
+  /* Metallic gradient animation */
+  @keyframes shimmer {
+    0% {
+      background-position: -100% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsla(var(--metal-shine) / 0.3),
+      transparent
+    );
+    background-size: 200% 100%;
+    animation: shimmer 3s infinite;
+  }
+
+  /* Loading pulse animation */
+  @keyframes pulse-glow {
+    0%, 100% {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
   /* Mobile-friendly scrollbar hiding */
   .scrollbar-hide {
     -ms-overflow-style: none;
@@ -232,5 +283,21 @@ All colors MUST be HSL.
       min-height: 44px;
       min-width: 44px;
     }
+  }
+
+  /* Fade in animation for panels */
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.3s ease-out;
   }
 }

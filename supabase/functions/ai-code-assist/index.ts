@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { mode, code, language, context } = await req.json();
+    const { mode, code, language, context, systemPrompt } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
@@ -19,11 +19,11 @@ serve(async (req) => {
     }
 
     const systemPrompts: Record<string, string> = {
-      explain: "You are a code explanation expert. Explain the provided code clearly and concisely, focusing on what it does and how it works.",
-      refactor: "You are a code refactoring expert. Suggest improvements to make the code more efficient, readable, and maintainable. Provide the refactored code with brief explanations.",
-      test: "You are a testing expert. Generate comprehensive unit tests for the provided code. Use appropriate testing frameworks and cover edge cases.",
-      fix: "You are a debugging expert. Analyze the code and errors, identify issues, and provide fixed code with explanations of what was wrong.",
-      chat: "You are an AI coding assistant. Help the developer with their question about the code. Be concise and practical."
+      architect: systemPrompt || "You are The Architect - a visionary AI that designs elegant code architectures. Speak with confidence and precision.",
+      debugger: systemPrompt || "You are The Debugger - a methodical AI that identifies bugs and provides solutions. Speak calmly and factually.",
+      mentor: systemPrompt || "You are The Mentor - a supportive AI that explains concepts. Speak warmly and insightfully.",
+      composer: systemPrompt || "You are The Composer - an artistic AI that refactors code elegantly. Speak poetically yet technically.",
+      chat: systemPrompt || "You are part of the Pathway Collective - a collaborative AI system. Provide helpful responses."
     };
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {

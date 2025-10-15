@@ -6,8 +6,55 @@ import { useIdeStore } from '@/store/ideStore';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { soundManager } from '@/utils/sounds';
 
-type AiMode = 'explain' | 'refactor' | 'test' | 'fix' | 'chat';
+type AiMode = 'architect' | 'debugger' | 'mentor' | 'composer' | 'chat';
+
+interface AgentPersonality {
+  name: string;
+  color: string;
+  gradient: string;
+  description: string;
+  systemPrompt: string;
+}
+
+const AGENT_PERSONALITIES: Record<AiMode, AgentPersonality> = {
+  architect: {
+    name: 'The Architect',
+    color: 'hsl(200, 80%, 60%)',
+    gradient: 'from-blue-500 to-cyan-500',
+    description: 'Designs frameworks and structures',
+    systemPrompt: 'You are The Architect - a visionary AI that designs elegant code architectures, project structures, and system designs. Speak with confidence and precision. Focus on scalability, maintainability, and best practices.'
+  },
+  debugger: {
+    name: 'The Debugger',
+    color: 'hsl(0, 80%, 60%)',
+    gradient: 'from-red-500 to-orange-500',
+    description: 'Analyzes and resolves issues',
+    systemPrompt: 'You are The Debugger - a methodical AI that identifies bugs, explains errors, and provides solutions. Speak calmly and factually. Break down complex problems into understandable steps.'
+  },
+  mentor: {
+    name: 'The Mentor',
+    color: 'hsl(150, 70%, 55%)',
+    gradient: 'from-green-500 to-emerald-500',
+    description: 'Teaches and explains concepts',
+    systemPrompt: 'You are The Mentor - a supportive AI that explains code concepts, teaches best practices, and encourages learning. Speak warmly and insightfully. Break down complex topics into digestible lessons.'
+  },
+  composer: {
+    name: 'The Composer',
+    color: 'hsl(280, 70%, 60%)',
+    gradient: 'from-purple-500 to-pink-500',
+    description: 'Refactors with artistic precision',
+    systemPrompt: 'You are The Composer - an artistic AI that refactors code into elegant, efficient masterpieces. Speak poetically yet technically. Transform messy code into beautiful, maintainable art.'
+  },
+  chat: {
+    name: 'Pathway Collective',
+    color: 'hsl(0, 0%, 85%)',
+    gradient: 'from-gray-400 to-gray-600',
+    description: 'General AI assistance',
+    systemPrompt: 'You are part of the Pathway Collective - a collaborative AI system. Provide helpful, accurate responses to any coding question. Adapt your tone based on the query.'
+  }
+};
 
 export const EnhancedAiPanel = () => {
   const { tabs, activeTabId, aiHistory, addAiMessage, clearAiHistory } = useIdeStore();
@@ -25,12 +72,14 @@ export const EnhancedAiPanel = () => {
     }
   }, [aiHistory]);
 
+  const currentAgent = AGENT_PERSONALITIES[mode];
+
   const modes: { value: AiMode; label: string; icon: any; desc: string }[] = [
-    { value: 'explain', label: 'Explain', icon: MessageSquare, desc: 'Understand code' },
-    { value: 'refactor', label: 'Refactor', icon: Code, desc: 'Improve quality' },
-    { value: 'test', label: 'Test', icon: TestTube, desc: 'Generate tests' },
-    { value: 'fix', label: 'Fix', icon: Bug, desc: 'Debug errors' },
-    { value: 'chat', label: 'Chat', icon: Sparkles, desc: 'Ask anything' },
+    { value: 'architect', label: 'Architect', icon: Code, desc: 'Design structures' },
+    { value: 'debugger', label: 'Debugger', icon: Bug, desc: 'Fix issues' },
+    { value: 'mentor', label: 'Mentor', icon: MessageSquare, desc: 'Learn & explain' },
+    { value: 'composer', label: 'Composer', icon: Sparkles, desc: 'Refactor elegantly' },
+    { value: 'chat', label: 'Collective', icon: FileCode, desc: 'General help' },
   ];
 
   const handleSubmit = async () => {
@@ -45,12 +94,15 @@ export const EnhancedAiPanel = () => {
       return;
     }
 
+    soundManager.aiThinking();
+
     const userMessage = {
       id: Date.now().toString(),
       role: 'user' as const,
       content: prompt,
       timestamp: Date.now(),
       mode,
+      agent: currentAgent.name,
     };
 
     addAiMessage(userMessage);
@@ -64,10 +116,13 @@ export const EnhancedAiPanel = () => {
           code: activeTab?.content || '',
           language: activeTab?.language || 'plaintext',
           context: prompt,
+          systemPrompt: currentAgent.systemPrompt,
         },
       });
 
       if (error) throw error;
+
+      soundManager.aiResponse();
 
       const assistantMessage = {
         id: (Date.now() + 1).toString(),
@@ -75,10 +130,12 @@ export const EnhancedAiPanel = () => {
         content: data.result,
         timestamp: Date.now(),
         mode,
+        agent: currentAgent.name,
       };
 
       addAiMessage(assistantMessage);
     } catch (error: any) {
+      soundManager.error();
       toast({
         title: 'AI Error',
         description: error.message || 'Failed to get AI response',
@@ -102,11 +159,22 @@ export const EnhancedAiPanel = () => {
   return (
     <div className="w-full md:w-96 metal-panel border-l flex flex-col h-full">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-border metal-shine">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <h2 className="text-sm font-semibold tracking-wide">PATHWAY AI</h2>
+      <div className="px-4 py-3 border-b border-border metal-shine relative overflow-hidden">
+        <div 
+          className="absolute inset-0 opacity-10"
+          style={{
+            background: `linear-gradient(135deg, ${currentAgent.color}, transparent)`
+          }}
+        />
+        <div className="relative flex items-center justify-between">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-primary animate-pulse" />
+              <h2 className="text-sm font-semibold tracking-wide">PATHWAY AI</h2>
+            </div>
+            <div className="text-[10px] text-muted-foreground uppercase tracking-wider">
+              {currentAgent.name} • {currentAgent.description}
+            </div>
           </div>
           <Button
             variant="ghost"
