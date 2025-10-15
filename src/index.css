@@ -1,0 +1,236 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Obsidian - Professional dark metallic theme */
+    --background: 0 0% 7%;
+    --foreground: 0 0% 98%;
+    
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 98%;
+    
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
+    
+    --primary: 0 0% 95%;
+    --primary-foreground: 0 0% 10%;
+    
+    --secondary: 0 0% 14%;
+    --secondary-foreground: 0 0% 98%;
+    
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 65%;
+    
+    --accent: 0 0% 90%;
+    --accent-foreground: 0 0% 10%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 0 0% 90%;
+    
+    --radius: 0.25rem;
+    
+    /* IDE specific tokens */
+    --editor-bg: 0 0% 7%;
+    --panel-bg: 0 0% 9%;
+    --glass-bg: 0 0% 10%;
+    --glass-border: 0 0% 20%;
+    --metal-shine: 0 0% 85%;
+    --metal-dark: 0 0% 25%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(0 0% 15%), hsl(0 0% 8%));
+    --gradient-glass: linear-gradient(135deg, hsla(0 0% 10% / 0.9), hsla(0 0% 12% / 0.8));
+    --gradient-metal: linear-gradient(135deg, hsl(0 0% 30%), hsl(0 0% 20%), hsl(0 0% 30%));
+    
+    /* Shadows */
+    --shadow-metal: 0 2px 8px hsla(0 0% 0% / 0.5), inset 0 1px 0 hsla(0 0% 100% / 0.1);
+    --shadow-glass: 0 8px 32px hsla(0 0% 0% / 0.6);
+    --shadow-sharp: 0 1px 3px hsla(0 0% 0% / 0.8);
+    
+    /* Transitions */
+    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Pearl - Professional light metallic theme */
+  .theme-pearl {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 10%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    
+    --primary: 0 0% 10%;
+    --primary-foreground: 0 0% 98%;
+    
+    --secondary: 0 0% 95%;
+    --secondary-foreground: 0 0% 10%;
+    
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 45%;
+    
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 98%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --ring: 0 0% 10%;
+    
+    --editor-bg: 0 0% 98%;
+    --panel-bg: 0 0% 100%;
+    --glass-bg: 0 0% 97%;
+    --glass-border: 0 0% 85%;
+    --metal-shine: 0 0% 100%;
+    --metal-dark: 0 0% 75%;
+    
+    --gradient-primary: linear-gradient(135deg, hsl(0 0% 95%), hsl(0 0% 100%));
+    --gradient-glass: linear-gradient(135deg, hsla(0 0% 100% / 0.9), hsla(0 0% 97% / 0.8));
+    --gradient-metal: linear-gradient(135deg, hsl(0 0% 90%), hsl(0 0% 95%), hsl(0 0% 90%));
+    
+    --shadow-metal: 0 2px 8px hsla(0 0% 0% / 0.1), inset 0 1px 0 hsla(0 0% 100% / 0.8);
+    --shadow-glass: 0 8px 32px hsla(0 0% 0% / 0.08);
+    --shadow-sharp: 0 1px 3px hsla(0 0% 0% / 0.15);
+  }
+
+  /* Titanium - Professional medium metallic theme */
+  .theme-titanium {
+    --background: 210 10% 23%;
+    --foreground: 0 0% 98%;
+    
+    --card: 210 10% 28%;
+    --card-foreground: 0 0% 98%;
+    
+    --popover: 210 10% 25%;
+    --popover-foreground: 0 0% 98%;
+    
+    --primary: 0 0% 95%;
+    --primary-foreground: 210 10% 23%;
+    
+    --secondary: 210 10% 32%;
+    --secondary-foreground: 0 0% 98%;
+    
+    --muted: 210 10% 32%;
+    --muted-foreground: 0 0% 70%;
+    
+    --accent: 210 15% 85%;
+    --accent-foreground: 210 10% 23%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 210 10% 35%;
+    --input: 210 10% 35%;
+    --ring: 0 0% 90%;
+    
+    --editor-bg: 210 10% 23%;
+    --panel-bg: 210 10% 26%;
+    --glass-bg: 210 10% 28%;
+    --glass-border: 210 10% 38%;
+    --metal-shine: 210 15% 85%;
+    --metal-dark: 210 10% 40%;
+    
+    --gradient-primary: linear-gradient(135deg, hsl(210 10% 30%), hsl(210 10% 23%));
+    --gradient-glass: linear-gradient(135deg, hsla(210 10% 28% / 0.9), hsla(210 10% 30% / 0.8));
+    --gradient-metal: linear-gradient(135deg, hsl(210 12% 38%), hsl(210 10% 30%), hsl(210 12% 38%));
+    
+    --shadow-metal: 0 2px 8px hsla(0 0% 0% / 0.4), inset 0 1px 0 hsla(210 15% 100% / 0.15);
+    --shadow-glass: 0 8px 32px hsla(0 0% 0% / 0.4);
+    --shadow-sharp: 0 1px 3px hsla(0 0% 0% / 0.6);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground overflow-hidden;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Mobile tap highlight removal */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    background: linear-gradient(135deg, 
+      hsla(var(--glass-bg) / 0.7), 
+      hsla(var(--glass-bg) / 0.5));
+    backdrop-filter: blur(16px) saturate(120%);
+    border: 1px solid hsl(var(--glass-border) / 0.4);
+    box-shadow: var(--shadow-glass);
+  }
+  
+  .metal-panel {
+    background: var(--gradient-metal);
+    border: 1px solid hsl(var(--metal-dark));
+    box-shadow: var(--shadow-metal);
+  }
+  
+  .metal-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .metal-shine::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, hsla(var(--metal-shine) / 0.1), transparent);
+    transition: left 0.5s;
+  }
+  
+  .metal-shine:hover::before {
+    left: 100%;
+  }
+  
+  .smooth-transition {
+    transition: var(--transition-smooth);
+  }
+  
+  .sharp-shadow {
+    box-shadow: var(--shadow-sharp);
+  }
+
+  /* Mobile-friendly scrollbar hiding */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Touch-friendly tap targets */
+  @media (max-width: 768px) {
+    button, a {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+}
