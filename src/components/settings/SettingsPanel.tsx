@@ -1,14 +1,12 @@
 import { useState } from 'react';
-import { X, Palette, Volume2, Zap, Info, Paintbrush } from 'lucide-react';
+import { X, Palette, Volume2, Zap, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useIdeStore, ThemeName } from '@/store/ideStore';
 import { soundManager } from '@/utils/sounds';
-import { ThemeDesigner } from '@/components/ide/ThemeDesigner';
 
 interface SettingsPanelProps {
   onClose: () => void;
@@ -59,17 +57,9 @@ export const SettingsPanel = ({ onClose }: SettingsPanelProps) => {
         </div>
 
         {/* Content */}
-        <div className="p-6">
-          <Tabs defaultValue="appearance" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-6">
-              <TabsTrigger value="appearance">Appearance</TabsTrigger>
-              <TabsTrigger value="audio">Audio</TabsTrigger>
-              <TabsTrigger value="designer">Designer</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="appearance" className="space-y-6">
-              {/* Theme Section */}
-              <div className="space-y-4">
+        <div className="p-6 space-y-6">
+          {/* Theme Section */}
+          <div className="space-y-4">
             <div className="flex items-center gap-2">
               <Palette className="w-4 h-4 text-primary" />
               <h3 className="text-sm font-semibold uppercase tracking-wide">Theme</h3>
@@ -95,47 +85,6 @@ export const SettingsPanel = ({ onClose }: SettingsPanelProps) => {
 
           <Separator />
 
-          {/* Animation Section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-primary" />
-              <h3 className="text-sm font-semibold uppercase tracking-wide">Animations</h3>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="animations">Enable Animations</Label>
-                <p className="text-xs text-muted-foreground">
-                  Show smooth transitions and effects
-                </p>
-              </div>
-              <Switch
-                id="animations"
-                checked={animations}
-                onCheckedChange={setAnimations}
-              />
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Info Section */}
-          <div className="glass-panel p-4 rounded-lg space-y-2">
-            <div className="flex items-center gap-2 text-primary">
-              <Info className="w-4 h-4" />
-              <span className="text-sm font-semibold">About PathwayAI</span>
-            </div>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              PathwayAI is an intelligent development environment powered by multi-agent AI. 
-              Choose between The Architect, Debugger, Mentor, and Composer to enhance your coding workflow.
-            </p>
-            <div className="text-xs text-muted-foreground">
-              Version 1.0.0 • Built with Lovable
-            </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="audio" className="space-y-6">
           {/* Sound Section */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -182,13 +131,47 @@ export const SettingsPanel = ({ onClose }: SettingsPanelProps) => {
               )}
             </div>
           </div>
-        </TabsContent>
 
-        <TabsContent value="designer">
-          <ThemeDesigner />
-        </TabsContent>
+          <Separator />
 
-      </Tabs>
+          {/* Animation Section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Zap className="w-4 h-4 text-primary" />
+              <h3 className="text-sm font-semibold uppercase tracking-wide">Animations</h3>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label htmlFor="animations">Enable Animations</Label>
+                <p className="text-xs text-muted-foreground">
+                  Show smooth transitions and effects
+                </p>
+              </div>
+              <Switch
+                id="animations"
+                checked={animations}
+                onCheckedChange={setAnimations}
+              />
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Info Section */}
+          <div className="glass-panel p-4 rounded-lg space-y-2">
+            <div className="flex items-center gap-2 text-primary">
+              <Info className="w-4 h-4" />
+              <span className="text-sm font-semibold">About PathwayAI</span>
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              PathwayAI is an intelligent development environment powered by multi-agent AI. 
+              Choose between The Architect, Debugger, Mentor, and Composer to enhance your coding workflow.
+            </p>
+            <div className="text-xs text-muted-foreground">
+              Version 1.0.0 • Built with Lovable
+            </div>
+          </div>
         </div>
       </div>
     </div>
