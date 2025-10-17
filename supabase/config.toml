@@ -1,1 +1,10 @@
 project_id = "cjywecuakfrzpoqwndcm"
+
+[functions.ai-code-assist]
+verify_jwt = false
+
+[functions.ai-file-generator]
+verify_jwt = false
+
+[functions.code-generator]
+verify_jwt = false

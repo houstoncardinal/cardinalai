@@ -16,6 +16,7 @@ export interface EditorTab {
   content: string;
   language: string;
   modified: boolean;
+  fileId?: string;
 }
 
 export interface IdeState {
@@ -30,6 +31,8 @@ export interface IdeState {
   aiHistory: AiMessage[];
   simulatorOpen: boolean;
   codeGeneratorOpen: boolean;
+  previewUrl: string | null;
+  projectInitialized: boolean;
   
   setTheme: (theme: ThemeName) => void;
   addTab: (tab: EditorTab) => void;
@@ -45,6 +48,9 @@ export interface IdeState {
   clearAiHistory: () => void;
   toggleSimulator: () => void;
   toggleCodeGenerator: () => void;
+  setPreviewUrl: (url: string | null) => void;
+  setProjectInitialized: (initialized: boolean) => void;
+  refreshTabs: () => void;
 }
 
 export const useIdeStore = create<IdeState>((set) => ({
@@ -59,6 +65,8 @@ export const useIdeStore = create<IdeState>((set) => ({
   aiHistory: [],
   simulatorOpen: false,
   codeGeneratorOpen: false,
+  previewUrl: null,
+  projectInitialized: false,
   
   setTheme: (theme) => set({ theme }),
   addTab: (tab) => set((state) => ({ 
@@ -93,4 +101,7 @@ export const useIdeStore = create<IdeState>((set) => ({
   clearAiHistory: () => set({ aiHistory: [] }),
   toggleSimulator: () => set((state) => ({ simulatorOpen: !state.simulatorOpen })),
   toggleCodeGenerator: () => set((state) => ({ codeGeneratorOpen: !state.codeGeneratorOpen })),
+  setPreviewUrl: (url) => set({ previewUrl: url }),
+  setProjectInitialized: (initialized) => set({ projectInitialized: initialized }),
+  refreshTabs: () => set((state) => ({ tabs: [...state.tabs] })),
 }));

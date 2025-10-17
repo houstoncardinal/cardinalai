@@ -7,6 +7,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { soundManager } from '@/utils/sounds';
+import { fileSystem } from '@/lib/fileSystem';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type AiMode = 'architect' | 'debugger' | 'mentor' | 'composer' | 'chat';
 
@@ -63,6 +65,7 @@ export const EnhancedAiPanel = () => {
   const [prompt, setPrompt] = useState('');
   const [loading, setLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [createFiles, setCreateFiles] = useState(true);
   const { toast } = useToast();
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -85,7 +88,7 @@ export const EnhancedAiPanel = () => {
   const handleSubmit = async () => {
     if (!prompt.trim()) return;
     
-    if (!activeTab && mode !== 'chat') {
+    if (!activeTab && mode !== 'chat' && !createFiles) {
       toast({
         title: 'No file selected',
         description: 'Please open a file to use AI assistance',
@@ -110,30 +113,74 @@ export const EnhancedAiPanel = () => {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('ai-code-assist', {
-        body: {
+      // If "Create Files" is checked and in appropriate mode, use file generator
+      if (createFiles && (mode === 'architect' || mode === 'composer')) {
+        await fileSystem.init();
+        const rootFiles = await fileSystem.getRootFiles();
+        const projectContext = JSON.stringify(rootFiles.map(f => ({ name: f.name, type: f.type })));
+
+        const { data, error } = await supabase.functions.invoke('ai-file-generator', {
+          body: { prompt, projectContext },
+        });
+
+        if (error) throw error;
+
+        const result = JSON.parse(data);
+        if (result.files && Array.isArray(result.files)) {
+          for (const file of result.files) {
+            let parentId: string | null = null;
+            if (file.path && file.path.includes('/')) {
+              const folders = file.path.split('/').slice(0, -1);
+              for (const folderName of folders) {
+                const existing = await fileSystem.getChildren(parentId);
+                const found = existing.find(f => f.name === folderName && f.type === 'folder');
+                if (found) {
+                  parentId = found.id;
+                } else {
+                  const newFolder = await fileSystem.createFile(folderName, 'folder', parentId);
+                  parentId = newFolder.id;
+                }
+              }
+            }
+            await fileSystem.createFile(file.name, 'file', parentId, file.content || '', file.language);
+          }
+
+          soundManager.success();
+          const assistantMessage = {
+            id: (Date.now() + 1).toString(),
+            role: 'assistant' as const,
+            content: `✅ Created ${result.files.length} file(s):\n${result.files.map((f: any) => `- ${f.path || f.name}`).join('\n')}`,
+            timestamp: Date.now(),
+            mode,
+            agent: currentAgent.name,
+          };
+          addAiMessage(assistantMessage);
+          toast({ title: 'Files created', description: `Generated ${result.files.length} file(s)` });
+        }
+      } else {
+        const { data, error } = await supabase.functions.invoke('ai-code-assist', {
+          body: {
+            mode,
+            code: activeTab?.content || '',
+            language: activeTab?.language || 'plaintext',
+            context: prompt,
+            systemPrompt: currentAgent.systemPrompt,
+          },
+        });
+
+        if (error) throw error;
+
+        soundManager.aiResponse();
+        const assistantMessage = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant' as const,
+          content: data.result,
+          timestamp: Date.now(),
           mode,
-          code: activeTab?.content || '',
-          language: activeTab?.language || 'plaintext',
-          context: prompt,
-          systemPrompt: currentAgent.systemPrompt,
-        },
-      });
-
-      if (error) throw error;
-
-      soundManager.aiResponse();
-
-      const assistantMessage = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant' as const,
-        content: data.result,
-        timestamp: Date.now(),
-        mode,
-        agent: currentAgent.name,
-      };
-
-      addAiMessage(assistantMessage);
+          agent: currentAgent.name,
+        };
+        addAiMessage(assistantMessage);
+      }
     } catch (error: any) {
       soundManager.error();
       toast({
@@ -309,19 +356,30 @@ export const EnhancedAiPanel = () => {
               }
             }}
           />
-          <Button
-            onClick={handleSubmit}
-            disabled={loading || !prompt.trim()}
-            className="w-full metal-shine"
-            size="sm"
-          >
-            {loading ? (
-              <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-            ) : (
-              <Send className="w-3.5 h-3.5 mr-2" />
+          <div className="flex items-center gap-2">
+            {(mode === 'architect' || mode === 'composer') && (
+              <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
+                <Checkbox
+                  checked={createFiles}
+                  onCheckedChange={(checked) => setCreateFiles(checked as boolean)}
+                />
+                <span>Create files</span>
+              </label>
             )}
-            {loading ? 'Processing...' : 'Send (⌘↵)'}
-          </Button>
+            <Button
+              onClick={handleSubmit}
+              disabled={loading || !prompt.trim()}
+              className="metal-shine flex-shrink-0"
+              size="sm"
+            >
+              {loading ? (
+                <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
+              ) : (
+                <Send className="w-3.5 h-3.5 mr-2" />
+              )}
+              {loading ? 'Processing...' : 'Send'}
+            </Button>
+          </div>
         </div>
       </div>
     </div>

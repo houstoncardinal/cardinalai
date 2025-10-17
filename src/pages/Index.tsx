@@ -11,6 +11,7 @@ import { TerminalPanel } from '@/components/ide/TerminalPanel';
 import { CommandPalette } from '@/components/ide/CommandPalette';
 import { DeviceSimulator } from '@/components/ide/DeviceSimulator';
 import { CodeGenerator } from '@/components/ide/CodeGenerator';
+import { LivePreview } from '@/components/ide/LivePreview';
 
 const Index = () => {
   const { 
@@ -85,13 +86,22 @@ const Index = () => {
           )}
 
           {/* Editor/Generator Area */}
-          <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-            {codeGeneratorOpen ? <CodeGenerator /> : <EditorArea />}
+          <div className="flex-1 flex overflow-hidden min-w-0">
+            <div className="flex-1 flex flex-col">
+              {codeGeneratorOpen ? <CodeGenerator /> : <EditorArea />}
+              
+              {/* Terminal - Collapsible on mobile */}
+              {terminalOpen && (
+                <div className="flex-shrink-0">
+                  <TerminalPanel />
+                </div>
+              )}
+            </div>
             
-            {/* Terminal - Collapsible on mobile */}
-            {terminalOpen && (
-              <div className="flex-shrink-0">
-                <TerminalPanel />
+            {/* Live Preview */}
+            {!simulatorOpen && (
+              <div className="hidden md:block w-1/3 border-l border-border">
+                <LivePreview />
               </div>
             )}
           </div>

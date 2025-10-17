@@ -1,17 +1,48 @@
 import Editor from '@monaco-editor/react';
 import { useIdeStore } from '@/store/ideStore';
-import { X, Sparkles } from 'lucide-react';
+import { X, Sparkles, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { fileSystem } from '@/lib/fileSystem';
+import { toast } from '@/hooks/use-toast';
 
 export const EditorArea = () => {
-  const { tabs, activeTabId, setActiveTab, closeTab, updateTabContent } = useIdeStore();
+  const { tabs, activeTabId, setActiveTab, closeTab, updateTabContent, refreshTabs } = useIdeStore();
   const activeTab = tabs.find((t) => t.id === activeTabId);
+
+  const handleSave = async () => {
+    if (!activeTab || !activeTab.fileId) return;
+    
+    try {
+      await fileSystem.updateFile(activeTab.fileId, {
+        content: activeTab.content,
+      });
+      
+      // Mark as not modified
+      updateTabContent(activeTab.id, activeTab.content);
+      const updatedTabs = tabs.map(t => 
+        t.id === activeTab.id ? { ...t, modified: false } : t
+      );
+      refreshTabs();
+      
+      toast({
+        title: 'Saved',
+        description: `${activeTab.title} saved successfully`,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to save file',
+        variant: 'destructive',
+      });
+    }
+  };
 
   return (
     <div className="flex-1 flex flex-col bg-[hsl(var(--editor-bg))]">
       {/* Tab Bar */}
-      <div className="flex items-center gap-0.5 bg-[hsl(var(--panel-bg))] border-b border-border px-2">
-        {tabs.map((tab) => (
+      <div className="flex items-center justify-between gap-0.5 bg-[hsl(var(--panel-bg))] border-b border-border px-2">
+        <div className="flex items-center gap-0.5 flex-1 overflow-x-auto">
+          {tabs.map((tab) => (
           <button
             key={tab.id}
             className={`flex items-center gap-2 px-3 py-2 text-sm smooth-transition border-b-2 ${
@@ -36,6 +67,19 @@ export const EditorArea = () => {
             </Button>
           </button>
         ))}
+        </div>
+        {activeTab && activeTab.modified && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleSave}
+            className="flex items-center gap-2"
+            title="Save (Ctrl+S)"
+          >
+            <Save className="w-4 h-4" />
+            <span className="text-xs">Save</span>
+          </Button>
+        )}
       </div>
 
       {/* Editor */}
