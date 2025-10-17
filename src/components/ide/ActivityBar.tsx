@@ -1,4 +1,4 @@
-import { Files, GitBranch, Terminal, Sparkles, Palette, Command, Monitor, Code2, Settings } from 'lucide-react';
+import { Files, GitBranch, Terminal, Sparkles, Palette, Command, Monitor, Code2, Settings, Wand2 } from 'lucide-react';
 import { useState } from 'react';
 import { useIdeStore } from '@/store/ideStore';
 import { Button } from '@/components/ui/button';
@@ -14,13 +14,15 @@ export const ActivityBar = () => {
     aiPanelOpen,
     simulatorOpen,
     codeGeneratorOpen,
+    componentBuilderOpen,
     toggleFileExplorer,
     toggleGitPanel,
     toggleTerminal,
     toggleAiPanel,
     toggleCommandPalette,
     toggleSimulator,
-    toggleCodeGenerator
+    toggleCodeGenerator,
+    toggleComponentBuilder
   } = useIdeStore();
   
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -95,6 +97,22 @@ export const ActivityBar = () => {
             </Button>
           </TooltipTrigger>
           <TooltipContent side="right">Code Generator</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`w-10 h-10 smooth-transition metal-shine ${
+                componentBuilderOpen ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground'
+              }`}
+              onClick={() => handleClick(toggleComponentBuilder)}
+            >
+              <Wand2 className="w-5 h-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">Component Builder</TooltipContent>
         </Tooltip>
 
         <Tooltip>

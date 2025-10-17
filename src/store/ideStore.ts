@@ -31,6 +31,7 @@ export interface IdeState {
   aiHistory: AiMessage[];
   simulatorOpen: boolean;
   codeGeneratorOpen: boolean;
+  componentBuilderOpen: boolean;
   previewUrl: string | null;
   projectInitialized: boolean;
   
@@ -48,6 +49,7 @@ export interface IdeState {
   clearAiHistory: () => void;
   toggleSimulator: () => void;
   toggleCodeGenerator: () => void;
+  toggleComponentBuilder: () => void;
   setPreviewUrl: (url: string | null) => void;
   setProjectInitialized: (initialized: boolean) => void;
   refreshTabs: () => void;
@@ -65,6 +67,7 @@ export const useIdeStore = create<IdeState>((set) => ({
   aiHistory: [],
   simulatorOpen: false,
   codeGeneratorOpen: false,
+  componentBuilderOpen: false,
   previewUrl: null,
   projectInitialized: false,
   
@@ -101,6 +104,7 @@ export const useIdeStore = create<IdeState>((set) => ({
   clearAiHistory: () => set({ aiHistory: [] }),
   toggleSimulator: () => set((state) => ({ simulatorOpen: !state.simulatorOpen })),
   toggleCodeGenerator: () => set((state) => ({ codeGeneratorOpen: !state.codeGeneratorOpen })),
+  toggleComponentBuilder: () => set((state) => ({ componentBuilderOpen: !state.componentBuilderOpen })),
   setPreviewUrl: (url) => set({ previewUrl: url }),
   setProjectInitialized: (initialized) => set({ projectInitialized: initialized }),
   refreshTabs: () => set((state) => ({ tabs: [...state.tabs] })),

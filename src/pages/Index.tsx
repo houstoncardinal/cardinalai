@@ -11,6 +11,7 @@ import { TerminalPanel } from '@/components/ide/TerminalPanel';
 import { CommandPalette } from '@/components/ide/CommandPalette';
 import { DeviceSimulator } from '@/components/ide/DeviceSimulator';
 import { CodeGenerator } from '@/components/ide/CodeGenerator';
+import { ComponentBuilder } from '@/components/ide/ComponentBuilder';
 import { LivePreview } from '@/components/ide/LivePreview';
 
 const Index = () => {
@@ -22,8 +23,10 @@ const Index = () => {
     terminalOpen,
     simulatorOpen,
     codeGeneratorOpen,
+    componentBuilderOpen,
     toggleSimulator,
-    toggleCodeGenerator
+    toggleCodeGenerator,
+    toggleComponentBuilder
   } = useIdeStore();
 
   useEffect(() => {
@@ -85,13 +88,19 @@ const Index = () => {
             </div>
           )}
 
-          {/* Editor/Generator Area */}
+          {/* Editor/Generator/Builder Area */}
           <div className="flex-1 flex overflow-hidden min-w-0">
             <div className="flex-1 flex flex-col">
-              {codeGeneratorOpen ? <CodeGenerator /> : <EditorArea />}
+              {componentBuilderOpen ? (
+                <ComponentBuilder />
+              ) : codeGeneratorOpen ? (
+                <CodeGenerator />
+              ) : (
+                <EditorArea />
+              )}
               
               {/* Terminal - Collapsible on mobile */}
-              {terminalOpen && (
+              {terminalOpen && !componentBuilderOpen && (
                 <div className="flex-shrink-0">
                   <TerminalPanel />
                 </div>
@@ -99,7 +108,7 @@ const Index = () => {
             </div>
             
             {/* Live Preview */}
-            {!simulatorOpen && (
+            {!simulatorOpen && !componentBuilderOpen && (
               <div className="hidden md:block w-1/3 border-l border-border">
                 <LivePreview />
               </div>
