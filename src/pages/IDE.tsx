@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { ActivityBar } from "@/components/ide/ActivityBar";
-import { FileExplorer } from "@/components/ide/FileExplorer";
+import { EnhancedFileExplorer } from "@/components/ide/EnhancedFileExplorer";
 import { EditorArea } from "@/components/ide/EditorArea";
 import { EnhancedAiPanel } from "@/components/ide/EnhancedAiPanel";
 import { TerminalPanel } from "@/components/ide/TerminalPanel";
@@ -30,14 +30,14 @@ const IDE = () => {
   const renderSidePanel = () => {
     switch (activeView) {
       case 'explorer':
-        return <FileExplorer />;
+        return <EnhancedFileExplorer />;
       case 'git':
         return <GitPanel />;
       case 'settings':
         setShowSettings(true);
-        return <FileExplorer />;
+        return <EnhancedFileExplorer />;
       default:
-        return <FileExplorer />;
+        return <EnhancedFileExplorer />;
     }
   };
 
@@ -46,7 +46,7 @@ const IDE = () => {
       <div className="h-screen flex flex-col bg-background">
         <MobileToolbar />
         <div className="flex-1 overflow-hidden">
-          {activeView === 'explorer' && <FileExplorer />}
+          {activeView === 'explorer' && <EnhancedFileExplorer />}
           {activeView === 'editor' && <EditorArea />}
           {activeView === 'ai' && <EnhancedAiPanel />}
           {activeView === 'preview' && <LivePreview />}
