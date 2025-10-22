@@ -1,16 +1,13 @@
 import React from 'react';
-import { Palette, Check } from 'lucide-react';
+import { Palette, Check, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useIdeStore, ThemeName } from '@/store/ideStore';
 import { Button } from '@/components/ui/button';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuLabel,
-} from '@/components/ui/dropdown-menu';
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 
 interface ThemeInfo {
@@ -110,65 +107,101 @@ export const ThemeSwitcher: React.FC = () => {
   const currentTheme = THEMES.find((t) => t.name === theme);
 
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
-      <DropdownMenuTrigger asChild>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
         <Button
           variant="ghost"
           size="sm"
-          className="gap-2 h-9 px-3"
+          className="gap-2 h-9 px-3 relative group"
         >
           <div
-            className="w-4 h-4 rounded border border-border"
+            className="w-4 h-4 rounded border border-border shadow-lg transition-transform group-hover:scale-110"
             style={{ background: currentTheme?.gradient }}
           />
-          <span className="text-xs">{currentTheme?.label}</span>
-          <Palette className="w-3.5 h-3.5 ml-1" />
+          <span className="text-xs font-medium">{currentTheme?.label}</span>
+          <Sparkles className="w-3.5 h-3.5 ml-1 text-primary animate-pulse" />
         </Button>
-      </DropdownMenuTrigger>
+      </PopoverTrigger>
       
-      <DropdownMenuContent align="end" className="w-64 glass-panel">
-        <DropdownMenuLabel className="text-xs font-semibold uppercase tracking-wider">
-          Choose Theme
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        
-        <div className="p-1 space-y-1">
-          {THEMES.map((themeInfo) => (
-            <DropdownMenuItem
-              key={themeInfo.name}
-              onClick={() => handleThemeChange(themeInfo.name)}
-              className={cn(
-                'flex items-center gap-3 px-3 py-2.5 cursor-pointer rounded',
-                theme === themeInfo.name && 'bg-primary/10'
-              )}
-            >
-              <div
-                className="w-8 h-8 rounded border border-border flex-shrink-0 shadow-md"
-                style={{ background: themeInfo.gradient }}
-              />
-              
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">{themeInfo.label}</span>
+      <PopoverContent align="end" className="w-[420px] p-0 glass-panel border-2 border-primary/20 shadow-2xl">
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {/* Header */}
+          <div className="p-4 border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
+            <div className="flex items-center gap-2">
+              <Palette className="w-5 h-5 text-primary" />
+              <h3 className="font-semibold text-base">Choose Your Theme</h3>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Select a visual style for your IDE</p>
+          </div>
+
+          {/* Theme Grid */}
+          <div className="p-4 grid grid-cols-2 gap-3 max-h-[500px] overflow-y-auto">
+            {THEMES.map((themeInfo, index) => (
+              <motion.button
+                key={themeInfo.name}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.05 }}
+                onClick={() => handleThemeChange(themeInfo.name)}
+                className={cn(
+                  'relative group p-4 rounded-xl border-2 transition-all duration-300',
+                  'hover:scale-105 hover:shadow-xl cursor-pointer',
+                  theme === themeInfo.name
+                    ? 'border-primary shadow-lg shadow-primary/20 bg-primary/5'
+                    : 'border-border hover:border-primary/50 bg-background/50'
+                )}
+              >
+                {/* Theme Preview */}
+                <div className="relative mb-3 overflow-hidden rounded-lg border border-border">
+                  <div
+                    className="h-24 w-full transition-transform group-hover:scale-110"
+                    style={{ background: themeInfo.gradient }}
+                  />
+                  
+                  {/* Active Indicator */}
                   <AnimatePresence>
                     {theme === themeInfo.name && (
                       <motion.div
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0, opacity: 0 }}
-                        transition={{ type: 'spring', damping: 15 }}
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0 }}
+                        className="absolute top-2 right-2 bg-background rounded-full p-1.5 shadow-lg"
                       >
-                        <Check className="w-3.5 h-3.5 text-primary" />
+                        <Check className="w-4 h-4 text-primary" />
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </div>
-                <p className="text-xs text-muted-foreground">{themeInfo.description}</p>
-              </div>
-            </DropdownMenuItem>
-          ))}
-        </div>
-      </DropdownMenuContent>
-    </DropdownMenu>
+
+                {/* Theme Info */}
+                <div className="text-left">
+                  <h4 className="font-semibold text-sm mb-1 flex items-center gap-2">
+                    {themeInfo.label}
+                    {theme === themeInfo.name && (
+                      <Sparkles className="w-3 h-3 text-primary animate-pulse" />
+                    )}
+                  </h4>
+                  <p className="text-xs text-muted-foreground line-clamp-2">
+                    {themeInfo.description}
+                  </p>
+                </div>
+
+                {/* Hover Glow Effect */}
+                <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  <div 
+                    className="absolute inset-0 rounded-xl blur-xl"
+                    style={{ background: themeInfo.gradient, opacity: 0.1 }}
+                  />
+                </div>
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+      </PopoverContent>
+    </Popover>
   );
 };
