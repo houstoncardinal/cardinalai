@@ -60,27 +60,22 @@ const Landing = () => {
         <FloatingParticles />
         <DataFlow />
         
-        {/* Mouse follower glow - metallic */}
+        {/* Subtle mouse follower */}
         <motion.div
-          className="fixed w-[500px] h-[500px] rounded-full pointer-events-none z-0"
+          className="fixed w-[400px] h-[400px] rounded-full pointer-events-none z-0"
           style={{
-            background: 'radial-gradient(circle, hsl(var(--primary) / 0.25) 0%, hsl(var(--accent) / 0.15) 40%, transparent 70%)',
-            left: mousePosition.x - 250,
-            top: mousePosition.y - 250,
-            filter: 'blur(60px)',
+            background: 'radial-gradient(circle, hsl(var(--primary) / 0.08) 0%, transparent 70%)',
+            left: mousePosition.x - 200,
+            top: mousePosition.y - 200,
+            filter: 'blur(80px)',
           }}
-          animate={{ 
-            scale: [1, 1.15, 1],
-            rotate: [0, 90, 0]
-          }}
-          transition={{ duration: 4, repeat: Infinity }}
         />
-        {/* Navigation - metallic */}
+        {/* Navigation - modern */}
         <motion.nav 
-          className="fixed top-0 w-full z-50 metal-panel border-b-2 border-border"
-          initial={{ y: -100 }}
-          animate={{ y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="fixed top-0 w-full z-50 glass-panel border-b border-border/50"
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="container mx-auto px-6 py-4 flex items-center justify-between">
             <motion.div 
@@ -88,28 +83,14 @@ const Landing = () => {
               whileHover={{ scale: 1.05 }}
             >
               <motion.div 
-                className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center metal-panel border-2 border-border relative overflow-hidden"
-                animate={{ 
-                  boxShadow: [
-                    '0 0 20px hsl(var(--primary) / 0.6)',
-                    '0 0 40px hsl(var(--primary) / 0.9)',
-                    '0 0 20px hsl(var(--primary) / 0.6)'
-                  ]
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
+                className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center relative overflow-hidden"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.2 }}
               >
-                {/* Shine effect */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent"
-                  animate={{ 
-                    x: ['-100%', '100%'],
-                  }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                />
-                <Code2 className="w-7 h-7 text-white relative z-10 drop-shadow-lg" />
+                <Code2 className="w-6 h-6 text-white" strokeWidth={2} />
               </motion.div>
               <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+                <h1 className="text-xl font-semibold text-foreground">
                   PathwayAI
                 </h1>
                 <p className="text-xs text-muted-foreground">by Cardinal Consulting</p>
@@ -121,8 +102,11 @@ const Landing = () => {
                   Community
                 </Button>
               </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button onClick={() => navigate("/ide")} className="shadow-elegant">
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Button 
+                  onClick={() => navigate("/ide")} 
+                  className="bg-gradient-to-r from-primary to-accent hover:from-primary-glow hover:to-accent text-white border-0 shadow-glow transition-all duration-300"
+                >
                   Launch IDE
                 </Button>
               </motion.div>
@@ -141,10 +125,10 @@ const Landing = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
-                <GlowingText>
-                  <h2 className="text-5xl font-bold mb-6">The Pathway Collective</h2>
-                </GlowingText>
-                <p className="text-muted-foreground text-xl max-w-3xl mx-auto">
+                <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-primary via-foreground to-accent bg-clip-text text-transparent">
+                  The Pathway Collective
+                </h2>
+                <p className="text-muted-foreground text-lg max-w-3xl mx-auto leading-relaxed">
                   Four AI entities that form a neural orchestra, each with unique capabilities and consciousness
                 </p>
               </motion.div>
@@ -201,10 +185,10 @@ const Landing = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
-                <GlowingText>
-                  <h2 className="text-4xl font-bold mb-4">Built for Excellence</h2>
-                </GlowingText>
-                <p className="text-muted-foreground text-lg">Every feature crafted with precision and purpose</p>
+                <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  Built for Excellence
+                </h2>
+                <p className="text-muted-foreground text-base">Every feature crafted with precision and purpose</p>
               </motion.div>
               
               <div className="grid md:grid-cols-3 gap-8">
@@ -258,55 +242,22 @@ const Landing = () => {
           <section className="py-20 px-6 relative z-10">
             <div className="container mx-auto max-w-4xl">
               <motion.div 
-                className="metal-panel p-12 rounded-2xl text-center space-y-6 relative overflow-hidden"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                className="modern-card p-16 rounded-3xl text-center space-y-8 relative overflow-hidden"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
               >
-                {/* Animated background effect */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/20 to-primary-glow/20"
-                  animate={{
-                    backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'],
-                  }}
-                  transition={{ duration: 10, repeat: Infinity }}
-                />
+                {/* Subtle gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
                 
-                {/* Particle burst effect */}
-                {[...Array(12)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute w-2 h-2 bg-primary-glow rounded-full"
-                    style={{
-                      left: '50%',
-                      top: '50%',
-                    }}
-                    animate={{
-                      x: Math.cos((i * Math.PI * 2) / 12) * 200,
-                      y: Math.sin((i * Math.PI * 2) / 12) * 200,
-                      opacity: [1, 0],
-                      scale: [1, 0],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      delay: i * 0.1,
-                    }}
-                  />
-                ))}
-                
-                <div className="relative z-10">
-                  <GlowingText>
-                    <h2 className="text-4xl font-bold mb-4">Ready to Transform Your Development?</h2>
-                  </GlowingText>
-                  <motion.p 
-                    className="text-lg text-muted-foreground mb-8"
-                    animate={{ opacity: [0.7, 1, 0.7] }}
-                    transition={{ duration: 3, repeat: Infinity }}
-                  >
+                <div className="relative z-10 max-w-2xl mx-auto">
+                  <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-primary via-foreground to-accent bg-clip-text text-transparent">
+                    Ready to Transform Your Development?
+                  </h2>
+                  <p className="text-base text-muted-foreground mb-10 leading-relaxed">
                     Join developers worldwide who are experiencing the future of coding.
-                  </motion.p>
+                  </p>
                   <MagneticButton onClick={() => navigate("/ide")}>
                     Launch PathwayAI IDE
                   </MagneticButton>
@@ -318,11 +269,11 @@ const Landing = () => {
 
         {/* Footer */}
         <motion.footer
-        className="border-t border-border/40 py-12 px-6 relative z-10"
+        className="border-t border-border/30 py-12 px-6 relative z-10"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.6 }}
       >
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
@@ -330,7 +281,7 @@ const Landing = () => {
               className="text-center md:text-left"
               whileHover={{ scale: 1.05 }}
             >
-              <h3 className="font-bold text-lg mb-2 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+              <h3 className="font-semibold text-lg mb-2 text-foreground">
                 PathwayAI
               </h3>
               <p className="text-sm text-muted-foreground">

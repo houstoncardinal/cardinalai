@@ -8,62 +8,60 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Obsidian - Luxury metallic theme */
-    --background: 0 0% 3%;
+    /* Modern Sleek Design System */
+    --background: 0 0% 4%;
     --foreground: 0 0% 98%;
     
-    --card: 210 8% 12%;
+    --card: 0 0% 8%;
     --card-foreground: 0 0% 98%;
     
-    --popover: 210 8% 10%;
+    --popover: 0 0% 6%;
     --popover-foreground: 0 0% 98%;
     
-    --primary: 220 100% 70%;
-    --primary-foreground: 0 0% 10%;
-    --primary-glow: 220 100% 80%;
+    --primary: 210 100% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 210 100% 70%;
     
-    --secondary: 210 10% 18%;
+    --secondary: 0 0% 12%;
     --secondary-foreground: 0 0% 98%;
     
-    --muted: 210 8% 16%;
-    --muted-foreground: 0 0% 70%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 60%;
     
-    --accent: 280 80% 65%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 170 100% 50%;
+    --accent-foreground: 0 0% 10%;
     
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
     
-    --border: 210 15% 25%;
-    --input: 210 12% 20%;
-    --ring: 220 100% 70%;
+    --border: 0 0% 16%;
+    --input: 0 0% 12%;
+    --ring: 210 100% 60%;
     
-    --radius: 0.5rem;
+    --radius: 0.75rem;
     
-    /* Metallic tokens */
-    --editor-bg: 0 0% 5%;
-    --panel-bg: 210 8% 10%;
-    --metal-base: 210 10% 20%;
-    --metal-shine: 210 30% 85%;
-    --metal-dark: 210 12% 15%;
-    --metal-highlight: 220 100% 75%;
+    /* Modern tokens */
+    --editor-bg: 0 0% 4%;
+    --panel-bg: 0 0% 6%;
+    --glass-bg: 0 0% 8%;
+    --glass-border: 0 0% 18%;
     
-    /* Luxury Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(220 100% 65%), hsl(280 80% 60%));
-    --gradient-metal: linear-gradient(135deg, hsl(210 12% 25%), hsl(210 10% 18%), hsl(210 12% 22%));
-    --gradient-metal-shine: linear-gradient(180deg, hsl(210 20% 30%), hsl(210 12% 20%), hsl(210 20% 25%));
-    --gradient-luxury: linear-gradient(135deg, hsl(210 15% 22%), hsl(220 20% 18%), hsl(210 15% 20%));
+    /* Sleek Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(210 100% 60%), hsl(170 100% 50%));
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 8%), hsl(0 0% 4%));
+    --gradient-glass: linear-gradient(135deg, hsla(0 0% 10% / 0.8), hsla(0 0% 8% / 0.6));
     
-    /* Premium Shadows */
-    --shadow-metal: 0 4px 16px hsla(0 0% 0% / 0.6), inset 0 1px 0 hsla(210 30% 100% / 0.15), inset 0 -1px 0 hsla(0 0% 0% / 0.3);
-    --shadow-luxury: 0 12px 48px hsla(0 0% 0% / 0.8), 0 0 0 1px hsla(210 30% 100% / 0.1);
-    --shadow-sharp: 0 2px 8px hsla(0 0% 0% / 0.9);
-    --shadow-glow: 0 0 40px hsla(220 100% 70% / 0.4), 0 0 80px hsla(220 100% 70% / 0.2);
-    --shadow-glow-accent: 0 0 40px hsla(280 80% 65% / 0.4), 0 0 80px hsla(280 80% 65% / 0.2);
+    /* Modern Shadows */
+    --shadow-soft: 0 4px 24px hsla(0 0% 0% / 0.25);
+    --shadow-medium: 0 8px 32px hsla(0 0% 0% / 0.35);
+    --shadow-hard: 0 16px 64px hsla(0 0% 0% / 0.5);
+    --shadow-glow: 0 0 48px hsla(210 100% 60% / 0.25);
+    --shadow-glow-accent: 0 0 48px hsla(170 100% 50% / 0.25);
     
-    /* Transitions */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-luxury: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Smooth Transitions */
+    --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* Pearl - Professional light metallic theme */
@@ -376,25 +374,22 @@ All colors MUST be HSL.
 
 @layer utilities {
   .glass-panel {
-    background: var(--gradient-luxury);
-    backdrop-filter: blur(24px) saturate(150%);
+    background: var(--gradient-glass);
+    backdrop-filter: blur(32px) saturate(180%);
+    border: 1px solid hsl(var(--glass-border));
+    box-shadow: var(--shadow-medium);
+  }
+  
+  .modern-card {
+    background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
-    box-shadow: var(--shadow-luxury);
+    box-shadow: var(--shadow-soft);
+    transition: var(--transition-base);
   }
   
-  .metal-panel {
-    background: var(--gradient-metal-shine);
-    border: 1px solid hsl(var(--metal-dark));
-    box-shadow: var(--shadow-metal);
-    position: relative;
-  }
-  
-  .metal-panel::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, transparent 0%, hsla(210 30% 100% / 0.05) 50%, transparent 100%);
-    pointer-events: none;
+  .modern-card:hover {
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-2px);
   }
   
   .metal-shine {

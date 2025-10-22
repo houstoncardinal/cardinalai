@@ -14,148 +14,81 @@ export const HolographicCard = ({ icon: Icon, title, description, delay = 0 }: H
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6, delay }}
+      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative group h-full"
+      className="h-full"
     >
-      {/* Background glow */}
       <motion.div
-        className="absolute -inset-2 rounded-2xl bg-gradient-to-r from-primary via-accent to-primary blur-2xl"
-        animate={isHovered ? { 
-          opacity: 0.25,
-          scale: 1.05
-        } : { 
-          opacity: 0,
-          scale: 1
+        className="relative h-full modern-card p-8 rounded-2xl overflow-hidden group"
+        whileHover={{ 
+          y: -4,
+          transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] }
         }}
-        transition={{ duration: 0.4 }}
-      />
-
-      <motion.div
-        className="relative h-full metal-panel p-8 rounded-2xl overflow-hidden border-2 border-border"
-        whileHover={{ scale: 1.02 }}
-        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
       >
-        {/* Metallic texture */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute inset-0 bg-gradient-to-br from-metal-shine/20 via-transparent to-transparent" />
-        </div>
-
-        {/* Animated scan line */}
+        {/* Subtle gradient on hover */}
         <motion.div
-          className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"
-          animate={isHovered ? { 
-            y: ['0%', '100%']
-          } : { y: '0%' }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
-        />
-
-        {/* Chrome border animation */}
-        <motion.div
-          className="absolute -inset-[2px] rounded-2xl opacity-0"
-          style={{
-            background: 'conic-gradient(from 0deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--primary)))',
-          }}
-          animate={isHovered ? { 
-            opacity: 0.5,
-            rotate: 360
-          } : { opacity: 0 }}
-          transition={{ 
-            duration: 2,
-            repeat: isHovered ? Infinity : 0,
-            ease: 'linear'
-          }}
+          className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5"
+          animate={isHovered ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.4 }}
         />
 
         {/* Content */}
-        <div className="relative z-10 space-y-6">
+        <div className="relative z-10 space-y-5">
           {/* Icon container */}
           <motion.div
-            className="relative w-20 h-20"
+            className="relative w-14 h-14"
             animate={isHovered ? { 
-              scale: [1, 1.1, 1],
-              rotate: [0, 180, 360]
-            } : {}}
-            transition={{ duration: 1.5 }}
+              scale: 1.05,
+              transition: { duration: 0.3 }
+            } : { scale: 1 }}
           >
-            {/* Glow effect */}
+            {/* Icon glow */}
             <motion.div
-              className="absolute inset-0 bg-gradient-to-br from-primary to-accent rounded-2xl blur-xl"
+              className="absolute inset-0 bg-gradient-to-br from-primary to-accent rounded-xl blur-lg"
               animate={isHovered ? {
-                opacity: [0.4, 0.7, 0.4],
-                scale: [1, 1.3, 1]
-              } : { opacity: 0.3 }}
-              transition={{ duration: 2, repeat: Infinity }}
+                opacity: 0.3,
+                scale: 1.2
+              } : { 
+                opacity: 0.15,
+                scale: 1
+              }}
+              transition={{ duration: 0.4 }}
             />
             
             {/* Icon background */}
-            <div className="relative bg-gradient-to-br from-primary to-accent rounded-2xl p-5 flex items-center justify-center metal-panel border border-border">
-              <Icon className="w-10 h-10 text-white drop-shadow-lg relative z-10" />
-              
-              {/* Shine overlay */}
-              <motion.div
-                className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/30 via-transparent to-transparent"
-                animate={isHovered ? {
-                  opacity: [0, 1, 0]
-                } : {}}
-                transition={{ duration: 1 }}
-              />
+            <div className="relative bg-gradient-to-br from-primary to-accent rounded-xl p-3.5 flex items-center justify-center">
+              <Icon className="w-7 h-7 text-white" strokeWidth={1.5} />
             </div>
           </motion.div>
 
           {/* Title */}
-          <h3 className="text-2xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+          <h3 className="text-xl font-semibold text-foreground">
             {title}
           </h3>
           
           {/* Description */}
-          <p className="text-muted-foreground leading-relaxed">
+          <p className="text-muted-foreground leading-relaxed text-[15px]">
             {description}
           </p>
-
-          {/* Animated underline */}
-          <motion.div
-            className="h-0.5 rounded-full bg-gradient-to-r from-primary to-accent"
-            initial={{ width: '0%' }}
-            whileInView={{ width: '100%' }}
-            transition={{ duration: 1, delay: delay + 0.3 }}
-          />
-
-          {/* Floating particles on hover */}
-          {isHovered && (
-            <>
-              {[...Array(8)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-1.5 h-1.5 bg-primary rounded-full"
-                  style={{
-                    left: `${20 + Math.random() * 60}%`,
-                    top: `${20 + Math.random() * 60}%`,
-                    boxShadow: '0 0 8px currentColor'
-                  }}
-                  animate={{
-                    y: [0, -60],
-                    opacity: [0, 1, 0],
-                    scale: [0, 1.5, 0],
-                  }}
-                  transition={{
-                    duration: 1.5 + Math.random(),
-                    repeat: Infinity,
-                    delay: i * 0.15,
-                  }}
-                />
-              ))}
-            </>
-          )}
         </div>
 
-        {/* Corner accents */}
-        <div className="absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-primary/30 rounded-tr-2xl" />
-        <div className="absolute bottom-0 left-0 w-16 h-16 border-b-2 border-l-2 border-accent/30 rounded-bl-2xl" />
+        {/* Bottom hover indicator */}
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary to-transparent"
+          initial={{ opacity: 0, scaleX: 0 }}
+          animate={isHovered ? { 
+            opacity: 1,
+            scaleX: 1,
+            transition: { duration: 0.4 }
+          } : { 
+            opacity: 0,
+            scaleX: 0
+          }}
+        />
       </motion.div>
     </motion.div>
   );
