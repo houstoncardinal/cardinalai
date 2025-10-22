@@ -8,6 +8,7 @@ import { InteractiveCard } from "@/components/landing/InteractiveCard";
 import { GlowingText } from "@/components/landing/GlowingText";
 import { FloatingParticles } from "@/components/landing/FloatingParticles";
 import { DataFlow } from "@/components/landing/DataFlow";
+import ScrollExpandMedia from "@/components/ui/scroll-expansion-hero";
 import { useState, useEffect } from "react";
 
 const Landing = () => {
@@ -23,160 +24,95 @@ const Landing = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 relative overflow-hidden">
-      {/* Animated backgrounds */}
-      <MatrixRain />
-      <CircuitBackground />
-      <FloatingParticles />
-      <DataFlow />
-      
-      {/* Mouse follower glow */}
-      <motion.div
-        className="fixed w-96 h-96 rounded-full pointer-events-none z-0"
-        style={{
-          background: 'radial-gradient(circle, hsl(var(--primary) / 0.15) 0%, transparent 70%)',
-          left: mousePosition.x - 192,
-          top: mousePosition.y - 192,
-        }}
-        animate={{ scale: [1, 1.2, 1] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      />
-      {/* Navigation */}
-      <motion.nav 
-        className="fixed top-0 w-full z-50 glass-panel border-b border-border/40"
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-      >
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <motion.div 
-            className="flex items-center gap-3"
-            whileHover={{ scale: 1.05 }}
-          >
+    <ScrollExpandMedia
+      mediaType="image"
+      mediaSrc="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1280&auto=format&fit=crop"
+      bgImageSrc="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop"
+      title="PathwayAI Intelligence"
+      date="The Future of Development"
+      scrollToExpand="Scroll to Explore"
+      textBlend
+    >
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 relative overflow-hidden">
+        {/* Animated backgrounds */}
+        <MatrixRain />
+        <CircuitBackground />
+        <FloatingParticles />
+        <DataFlow />
+        
+        {/* Mouse follower glow */}
+        <motion.div
+          className="fixed w-96 h-96 rounded-full pointer-events-none z-0"
+          style={{
+            background: 'radial-gradient(circle, hsl(var(--primary) / 0.15) 0%, transparent 70%)',
+            left: mousePosition.x - 192,
+            top: mousePosition.y - 192,
+          }}
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        />
+        {/* Navigation */}
+        <motion.nav 
+          className="fixed top-0 w-full z-50 glass-panel border-b border-border/40"
+          initial={{ y: -100 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          <div className="container mx-auto px-6 py-4 flex items-center justify-between">
             <motion.div 
-              className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center"
-              animate={{ 
-                boxShadow: [
-                  '0 0 20px hsl(var(--primary) / 0.5)',
-                  '0 0 40px hsl(var(--primary) / 0.8)',
-                  '0 0 20px hsl(var(--primary) / 0.5)'
-                ]
-              }}
-              transition={{ duration: 2, repeat: Infinity }}
+              className="flex items-center gap-3"
+              whileHover={{ scale: 1.05 }}
             >
-              <Code2 className="w-6 h-6 text-white" />
+              <motion.div 
+                className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center"
+                animate={{ 
+                  boxShadow: [
+                    '0 0 20px hsl(var(--primary) / 0.5)',
+                    '0 0 40px hsl(var(--primary) / 0.8)',
+                    '0 0 20px hsl(var(--primary) / 0.5)'
+                  ]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <Code2 className="w-6 h-6 text-white" />
+              </motion.div>
+              <div>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+                  PathwayAI
+                </h1>
+                <p className="text-xs text-muted-foreground">by Cardinal Consulting</p>
+              </div>
             </motion.div>
-            <div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-                CardinalAI
-              </h1>
-              <p className="text-xs text-muted-foreground">by Cardinal Consulting</p>
+            <div className="flex items-center gap-4">
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button variant="ghost" onClick={() => navigate("/community")}>
+                  Community
+                </Button>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button onClick={() => navigate("/ide")} className="shadow-elegant">
+                  Launch IDE
+                </Button>
+              </motion.div>
             </div>
-          </motion.div>
-          <div className="flex items-center gap-4">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button variant="ghost" onClick={() => navigate("/community")}>
-                Community
-              </Button>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button onClick={() => navigate("/ide")} className="shadow-elegant">
-                Launch IDE
-              </Button>
-            </motion.div>
           </div>
-        </div>
-      </motion.nav>
+        </motion.nav>
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6 relative z-10">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center space-y-8">
+        {/* AI Agents Section */}
+        <section className="py-20 px-6 relative z-10">
+          <div className="container mx-auto max-w-6xl">
             <motion.div 
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              className="text-center mb-16"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
             >
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-              >
-                <Sparkles className="w-4 h-4 text-primary" />
-              </motion.div>
-              <span className="text-sm font-medium text-primary">World-Class AI Development Platform</span>
+              <GlowingText>
+                <h2 className="text-4xl font-bold mb-4">The Pathway Collective</h2>
+              </GlowingText>
+              <p className="text-muted-foreground text-lg">Four AI entities collaborating like a neural orchestra</p>
             </motion.div>
-            
-            <GlowingText delay={0.2}>
-              <h1 className="text-6xl md:text-7xl font-bold leading-tight">
-                Where Code Meets
-                <br />
-                <motion.span 
-                  className="bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent"
-                  animate={{ 
-                    backgroundPosition: ['0%', '100%', '0%']
-                  }}
-                  transition={{ duration: 5, repeat: Infinity }}
-                >
-                  Consciousness
-                </motion.span>
-              </h1>
-            </GlowingText>
-            
-            <motion.p 
-              className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              A development environment so aware, it feels alive — so elegant, it turns engineering into art.
-              Built by <span className="text-primary font-semibold">Hunain Qureshi</span>, CEO of Cardinal Consulting.
-            </motion.p>
-            
-            <motion.div 
-              className="flex items-center justify-center gap-4 pt-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
-              <motion.div
-                whileHover={{ scale: 1.1, boxShadow: '0 0 30px hsl(var(--primary) / 0.6)' }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Button size="lg" onClick={() => navigate("/ide")} className="text-lg px-8 shadow-glow">
-                  <Rocket className="w-5 h-5 mr-2" />
-                  Start Creating
-                </Button>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Button size="lg" variant="outline" onClick={() => navigate("/community")}>
-                  <Users className="w-5 h-5 mr-2" />
-                  Join Community
-                </Button>
-              </motion.div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* AI Agents Section */}
-      <section className="py-20 px-6 relative z-10">
-        <div className="container mx-auto max-w-6xl">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <GlowingText>
-              <h2 className="text-4xl font-bold mb-4">The Cardinal Collective</h2>
-            </GlowingText>
-            <p className="text-muted-foreground text-lg">Four AI entities collaborating like a neural orchestra</p>
-          </motion.div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
@@ -216,10 +152,10 @@ const Landing = () => {
             ))}
           </div>
         </div>
-      </section>
+        </section>
 
-      {/* Features Grid */}
-      <section className="py-20 px-6 bg-accent/5 relative z-10">
+        {/* Features Grid */}
+        <section className="py-20 px-6 bg-accent/5 relative z-10">
         <div className="container mx-auto max-w-6xl">
           <motion.div 
             className="text-center mb-16"
@@ -320,10 +256,10 @@ const Landing = () => {
             ))}
           </div>
         </div>
-      </section>
+        </section>
 
-      {/* CTA Section */}
-      <section className="py-20 px-6 relative z-10">
+        {/* CTA Section */}
+        <section className="py-20 px-6 relative z-10">
         <div className="container mx-auto max-w-4xl">
           <motion.div 
             className="metal-panel p-12 rounded-2xl text-center space-y-6 relative overflow-hidden"
@@ -357,16 +293,16 @@ const Landing = () => {
                 whileTap={{ scale: 0.95 }}
               >
                 <Button size="lg" onClick={() => navigate("/ide")} className="text-lg px-12 shadow-glow">
-                  Launch CardinalAI IDE
+                  Launch PathwayAI IDE
                 </Button>
               </motion.div>
             </div>
           </motion.div>
         </div>
-      </section>
+        </section>
 
-      {/* Footer */}
-      <motion.footer 
+        {/* Footer */}
+        <motion.footer
         className="border-t border-border/40 py-12 px-6 relative z-10"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -380,7 +316,7 @@ const Landing = () => {
               whileHover={{ scale: 1.05 }}
             >
               <h3 className="font-bold text-lg mb-2 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-                CardinalAI
+                PathwayAI
               </h3>
               <p className="text-sm text-muted-foreground">
                 Created by Hunain Qureshi, CEO of Cardinal Consulting
@@ -400,8 +336,9 @@ const Landing = () => {
             </div>
           </div>
         </div>
-      </motion.footer>
-    </div>
+        </motion.footer>
+      </div>
+    </ScrollExpandMedia>
   );
 };
 
