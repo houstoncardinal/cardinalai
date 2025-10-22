@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { fileSystem } from '@/lib/fileSystem';
 import { useIdeStore } from '@/store/ideStore';
 import { Button } from '@/components/ui/button';
-import { RefreshCw, ExternalLink, Monitor, Tablet, Smartphone, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
+import { RefreshCw, ExternalLink, Monitor, Tablet, Smartphone, ZoomIn, ZoomOut, Maximize2, X, Minimize2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 
@@ -21,7 +21,12 @@ const DEVICES: Record<DeviceType, DeviceConfig> = {
   mobile: { width: 375, height: 667, label: 'Mobile', icon: Smartphone },
 };
 
-export const LivePreview = () => {
+interface LivePreviewProps {
+  onClose?: () => void;
+  showCloseButton?: boolean;
+}
+
+export const LivePreview = ({ onClose, showCloseButton = false }: LivePreviewProps) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
@@ -157,16 +162,16 @@ export const LivePreview = () => {
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Enhanced Toolbar */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-[hsl(var(--panel-bg))] gap-2">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-[hsl(var(--panel-bg))] gap-2 flex-wrap">
         <div className="flex items-center gap-2">
           <h3 className="text-sm font-semibold text-foreground">Live Preview</h3>
-          <span className="text-xs text-muted-foreground">
+          <span className="text-xs text-muted-foreground hidden sm:inline">
             {actualWidth} × {actualHeight}
           </span>
         </div>
         
         {/* Device Selector */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           {(Object.keys(DEVICES) as DeviceType[]).map((deviceType) => {
             const DeviceIcon = DEVICES[deviceType].icon;
             return (
@@ -176,16 +181,16 @@ export const LivePreview = () => {
                 size="icon"
                 onClick={() => setDevice(deviceType)}
                 title={DEVICES[deviceType].label}
-                className="w-8 h-8"
+                className="w-7 h-7 sm:w-8 sm:h-8"
               >
-                <DeviceIcon className="w-4 h-4" />
+                <DeviceIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </Button>
             );
           })}
         </div>
 
         {/* Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           {/* Orientation Toggle */}
           {device !== 'desktop' && (
             <Button
@@ -193,7 +198,7 @@ export const LivePreview = () => {
               size="icon"
               onClick={toggleOrientation}
               title={`Switch to ${orientation === 'portrait' ? 'landscape' : 'portrait'}`}
-              className="w-8 h-8"
+              className="w-7 h-7 sm:w-8 sm:h-8 hidden sm:flex"
             >
               <div className="relative w-4 h-4">
                 <div 
@@ -206,7 +211,7 @@ export const LivePreview = () => {
           )}
 
           {/* Zoom Controls */}
-          <div className="flex items-center gap-1 px-2 py-1 glass-panel rounded">
+          <div className="hidden md:flex items-center gap-1 px-2 py-1 glass-panel rounded">
             <Button
               variant="ghost"
               size="icon"
@@ -233,12 +238,12 @@ export const LivePreview = () => {
             size="icon"
             onClick={handleFitToScreen}
             title="Fit to screen"
-            className="w-8 h-8"
+            className="w-7 h-7 sm:w-8 sm:h-8 hidden sm:flex"
           >
-            <Maximize2 className="w-4 h-4" />
+            <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </Button>
 
-          <div className="w-px h-6 bg-border" />
+          <div className="w-px h-6 bg-border hidden sm:block" />
 
           <Button
             variant="ghost"
@@ -246,19 +251,34 @@ export const LivePreview = () => {
             onClick={handleRefresh}
             disabled={loading}
             title="Refresh"
-            className="w-8 h-8"
+            className="w-7 h-7 sm:w-8 sm:h-8"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${loading ? 'animate-spin' : ''}`} />
           </Button>
           <Button
             variant="ghost"
             size="icon"
             onClick={handleOpenInNewTab}
             title="Open in new tab"
-            className="w-8 h-8"
+            className="w-7 h-7 sm:w-8 sm:h-8 hidden sm:flex"
           >
-            <ExternalLink className="w-4 h-4" />
+            <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </Button>
+
+          {showCloseButton && onClose && (
+            <>
+              <div className="w-px h-6 bg-border" />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onClose}
+                title="Close preview"
+                className="w-7 h-7 sm:w-8 sm:h-8"
+              >
+                <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              </Button>
+            </>
+          )}
         </div>
       </div>
 

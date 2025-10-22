@@ -23,6 +23,7 @@ const IDE = () => {
   const [activeView, setActiveView] = useState<ViewType>('editor');
   const [showSettings, setShowSettings] = useState(false);
   const [showSimulator, setShowSimulator] = useState(false);
+  const [showPreview, setShowPreview] = useState(true);
 
 
   const renderSidePanel = () => {
@@ -85,26 +86,22 @@ const IDE = () => {
         
         <ResizablePanel defaultSize={30} minSize={25} maxSize={40}>
           <ResizablePanelGroup direction="vertical">
-            <ResizablePanel defaultSize={60} minSize={40}>
+            <ResizablePanel defaultSize={showPreview ? 60 : 100} minSize={40}>
               <EnhancedAiPanel />
             </ResizablePanel>
             
-            <ResizableHandle className="h-1 bg-border hover:bg-primary transition-colors" />
-            
-            <ResizablePanel defaultSize={40} minSize={30}>
-              <div className="h-full border-l border-border bg-background/50 backdrop-blur-sm">
-                <div className="p-4 border-b border-border flex items-center justify-between">
-                  <h2 className="font-semibold">Preview</h2>
-                  <button 
-                    onClick={() => setShowSimulator(true)}
-                    className="text-xs text-primary hover:underline"
-                  >
-                    Device Simulator
-                  </button>
-                </div>
-                <LivePreview />
-              </div>
-            </ResizablePanel>
+            {showPreview && (
+              <>
+                <ResizableHandle className="h-1 bg-border hover:bg-primary transition-colors" />
+                
+                <ResizablePanel defaultSize={40} minSize={30}>
+                  <LivePreview 
+                    onClose={() => setShowPreview(false)}
+                    showCloseButton={true}
+                  />
+                </ResizablePanel>
+              </>
+            )}
           </ResizablePanelGroup>
         </ResizablePanel>
       </ResizablePanelGroup>
