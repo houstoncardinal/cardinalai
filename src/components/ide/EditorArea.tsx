@@ -5,10 +5,18 @@ import { Button } from '@/components/ui/button';
 import { fileSystem } from '@/lib/fileSystem';
 import { toast } from '@/hooks/use-toast';
 import * as React from 'react';
+import { AnimatedCodeEditor } from './CodeTypingAnimation';
+import { useAiOperationStore } from '@/hooks/useAiOperationEvents';
 
 export const EditorArea = () => {
   const { tabs, activeTabId, setActiveTab, closeTab, updateTabContent, refreshTabs } = useIdeStore();
   const activeTab = tabs.find((t) => t.id === activeTabId);
+  const operations = useAiOperationStore((state) => state.operations);
+  
+  // Check if AI is currently editing this file
+  const isAiEditing = operations.some(
+    (op) => op.type === 'editing' && activeTab && op.target.includes(activeTab.title)
+  );
 
   const handleSave = async () => {
     if (!activeTab || !activeTab.fileId) return;
@@ -97,7 +105,8 @@ export const EditorArea = () => {
       {/* Editor */}
       <div className="flex-1 min-h-0">
         {activeTab ? (
-          <Editor
+          <AnimatedCodeEditor isAiTyping={isAiEditing}>
+            <Editor
             height="100%"
             path={activeTab.title}
             language={activeTab.language}
@@ -139,6 +148,7 @@ export const EditorArea = () => {
               },
             }}
           />
+          </AnimatedCodeEditor>
         ) : (
           <div className="flex items-center justify-center h-full text-muted-foreground">
             <div className="text-center space-y-4 animate-fade-in-up">

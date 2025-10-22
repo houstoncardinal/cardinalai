@@ -13,6 +13,7 @@ import { SettingsPanel } from "@/components/settings/SettingsPanel";
 import { FileChangeMonitor } from "@/components/ide/FileChangeMonitor";
 import { MobileNav } from "@/components/ide/MobileNav";
 import { MobileToolbar } from "@/components/ide/MobileToolbar";
+import { AiOperationOverlay } from "@/components/ide/AiOperationOverlay";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useIdeStore } from "@/store/ideStore";
 
@@ -54,6 +55,7 @@ const IDE = () => {
         </div>
         <MobileNav />
         <FileChangeMonitor />
+        <AiOperationOverlay />
       </div>
     );
   }
@@ -106,6 +108,7 @@ const IDE = () => {
 
       <CommandPalette />
       <FileChangeMonitor />
+      <AiOperationOverlay />
       {showSettings && <SettingsPanel onClose={() => setShowSettings(false)} />}
       {showSimulator && <DeviceSimulator onClose={() => setShowSimulator(false)} />}
     </div>

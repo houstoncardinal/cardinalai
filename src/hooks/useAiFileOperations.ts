@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { fileSystem } from '@/lib/fileSystem';
 import { useIdeStore } from '@/store/ideStore';
 import { toast } from '@/hooks/use-toast';
+import { useAiOperations } from './useAiOperationEvents';
 
 export interface FileOperation {
   type: 'create' | 'update' | 'delete';
@@ -14,6 +15,7 @@ export interface FileOperation {
 export const useAiFileOperations = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { addTab, refreshTabs } = useIdeStore();
+  const { startOperation, updateOperation, completeOperation } = useAiOperations();
 
   const parseCodeBlocks = (content: string): FileOperation[] => {
     const operations: FileOperation[] = [];
@@ -61,20 +63,42 @@ export const useAiFileOperations = () => {
     setIsProcessing(true);
     try {
       for (const op of operations) {
-        switch (op.type) {
-          case 'create':
-            await createFile(op.path, op.content || '', op.language);
-            break;
-          case 'update':
-            if (op.fileId) {
-              await updateFile(op.fileId, op.content || '');
-            }
-            break;
-          case 'delete':
-            if (op.fileId) {
-              await deleteFile(op.fileId);
-            }
-            break;
+        // Start visual operation tracking
+        const opId = startOperation(
+          op.type as any,
+          op.path,
+          op.content?.substring(0, 100)
+        );
+
+        try {
+          // Simulate progressive updates
+          updateOperation(opId, { progress: 30 });
+          
+          switch (op.type) {
+            case 'create':
+              await createFile(op.path, op.content || '', op.language);
+              break;
+            case 'update':
+              if (op.fileId) {
+                await updateFile(op.fileId, op.content || '');
+              }
+              break;
+            case 'delete':
+              if (op.fileId) {
+                await deleteFile(op.fileId);
+              }
+              break;
+          }
+
+          updateOperation(opId, { progress: 70 });
+          
+          // Small delay for visual effect
+          await new Promise(resolve => setTimeout(resolve, 300));
+          
+          completeOperation(opId);
+        } catch (error) {
+          updateOperation(opId, { progress: 100 });
+          throw error;
         }
       }
       
@@ -96,8 +120,17 @@ export const useAiFileOperations = () => {
   };
 
   const createFile = async (path: string, content: string, language?: string) => {
+    const opId = startOperation('creating', path, content.substring(0, 100));
+    
     try {
+      updateOperation(opId, { progress: 20 });
+      
       const file = await fileSystem.createFileFromPath(path, content);
+      
+      updateOperation(opId, { progress: 60 });
+      
+      // Simulate typing effect with delay
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       // Open the created file in the editor
       addTab({
@@ -109,25 +142,40 @@ export const useAiFileOperations = () => {
         modified: false,
       });
       
+      updateOperation(opId, { progress: 90 });
+      
       toast({
         title: 'File Created',
         description: `Created ${path}`,
       });
+      
+      completeOperation(opId);
     } catch (error) {
+      updateOperation(opId, { progress: 100 });
       console.error('Error creating file:', error);
       throw error;
     }
   };
 
   const updateFile = async (fileId: string, content: string) => {
+    const file = await fileSystem.getFile(fileId);
+    const opId = startOperation('editing', file?.name || 'file', content.substring(0, 100));
+    
     try {
+      updateOperation(opId, { progress: 40 });
+      
       await fileSystem.updateFile(fileId, { content });
+      
+      updateOperation(opId, { progress: 80 });
       
       toast({
         title: 'File Updated',
         description: 'File content updated successfully',
       });
+      
+      completeOperation(opId);
     } catch (error) {
+      updateOperation(opId, { progress: 100 });
       console.error('Error updating file:', error);
       throw error;
     }

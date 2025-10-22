@@ -308,4 +308,98 @@ All colors MUST be HSL.
   .animate-fade-in-up {
     animation: fade-in-up 0.3s ease-out;
   }
+
+  /* AI Operation Animations */
+  @keyframes ai-pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 hsla(var(--primary) / 0.7);
+    }
+    50% {
+      box-shadow: 0 0 0 10px hsla(var(--primary) / 0);
+    }
+  }
+
+  .ai-pulse {
+    animation: ai-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes typing-cursor {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .typing-cursor {
+    animation: typing-cursor 1s step-end infinite;
+  }
+
+  @keyframes slide-in-notification {
+    from {
+      transform: translateX(100%) scale(0.9);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+    }
+  }
+
+  .animate-slide-in-notification {
+    animation: slide-in-notification 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% {
+      filter: brightness(1) drop-shadow(0 0 5px hsla(var(--primary) / 0.5));
+    }
+    50% {
+      filter: brightness(1.2) drop-shadow(0 0 15px hsla(var(--primary) / 0.8));
+    }
+  }
+
+  .glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes code-typing {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+  .code-typing {
+    overflow: hidden;
+    white-space: nowrap;
+    animation: code-typing 3s steps(40, end);
+  }
+
+  @keyframes progress-bar {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .animate-progress {
+    background: linear-gradient(
+      90deg,
+      hsla(var(--primary) / 0.5),
+      hsla(var(--primary) / 1),
+      hsla(var(--primary) / 0.5)
+    );
+    background-size: 200% 100%;
+    animation: progress-bar 2s ease-in-out infinite;
+  }
 }
+
