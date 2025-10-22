@@ -13,6 +13,7 @@ import { DeviceSimulator } from '@/components/ide/DeviceSimulator';
 import { CodeGenerator } from '@/components/ide/CodeGenerator';
 import { ComponentBuilder } from '@/components/ide/ComponentBuilder';
 import { LivePreview } from '@/components/ide/LivePreview';
+import { FileChangeMonitor } from '@/components/ide/FileChangeMonitor';
 
 const Index = () => {
   const { 
@@ -132,6 +133,7 @@ const Index = () => {
       </div>
 
       <CommandPalette />
+      <FileChangeMonitor />
     </div>
   );
 };

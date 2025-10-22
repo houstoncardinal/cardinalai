@@ -1,195 +1,171 @@
-import { useState, useRef, useEffect } from 'react';
-import { Sparkles, Send, Loader2, Trash2, Code, FileCode, TestTube, Bug, MessageSquare, Copy, Check } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { useIdeStore } from '@/store/ideStore';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { soundManager } from '@/utils/sounds';
+import { Brain, Sparkles, Bug, BookOpen, Wand2, MessageSquare, Copy, Check, Trash2, StopCircle, Plus, History } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { useIdeStore } from '@/store/ideStore';
 import { fileSystem } from '@/lib/fileSystem';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { useAiChat } from '@/hooks/useAiChat';
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
+import { supabase } from '@/integrations/supabase/client';
 
 type AiMode = 'architect' | 'debugger' | 'mentor' | 'composer' | 'chat';
 
 interface AgentPersonality {
   name: string;
-  color: string;
-  gradient: string;
+  icon: any;
   description: string;
-  systemPrompt: string;
 }
 
 const AGENT_PERSONALITIES: Record<AiMode, AgentPersonality> = {
   architect: {
     name: 'The Architect',
-    color: 'hsl(200, 80%, 60%)',
-    gradient: 'from-blue-500 to-cyan-500',
-    description: 'Designs frameworks and structures',
-    systemPrompt: 'You are The Architect - a visionary AI that designs elegant code architectures, project structures, and system designs. Speak with confidence and precision. Focus on scalability, maintainability, and best practices.'
+    icon: Brain,
+    description: 'Designs elegant, scalable code structures',
   },
   debugger: {
     name: 'The Debugger',
-    color: 'hsl(0, 80%, 60%)',
-    gradient: 'from-red-500 to-orange-500',
-    description: 'Analyzes and resolves issues',
-    systemPrompt: 'You are The Debugger - a methodical AI that identifies bugs, explains errors, and provides solutions. Speak calmly and factually. Break down complex problems into understandable steps.'
+    icon: Bug,
+    description: 'Identifies and resolves issues methodically',
   },
   mentor: {
     name: 'The Mentor',
-    color: 'hsl(150, 70%, 55%)',
-    gradient: 'from-green-500 to-emerald-500',
-    description: 'Teaches and explains concepts',
-    systemPrompt: 'You are The Mentor - a supportive AI that explains code concepts, teaches best practices, and encourages learning. Speak warmly and insightfully. Break down complex topics into digestible lessons.'
+    icon: BookOpen,
+    description: 'Teaches concepts with clarity and patience',
   },
   composer: {
     name: 'The Composer',
-    color: 'hsl(280, 70%, 60%)',
-    gradient: 'from-purple-500 to-pink-500',
-    description: 'Refactors with artistic precision',
-    systemPrompt: 'You are The Composer - an artistic AI that refactors code into elegant, efficient masterpieces. Speak poetically yet technically. Transform messy code into beautiful, maintainable art.'
+    icon: Wand2,
+    description: 'Refactors code into elegant masterpieces',
   },
   chat: {
-    name: 'Pathway Collective',
-    color: 'hsl(0, 0%, 85%)',
-    gradient: 'from-gray-400 to-gray-600',
+    name: 'PathwayAI',
+    icon: MessageSquare,
     description: 'General AI assistance',
-    systemPrompt: 'You are part of the Pathway Collective - a collaborative AI system. Provide helpful, accurate responses to any coding question. Adapt your tone based on the query.'
-  }
+  },
 };
 
-export const EnhancedAiPanel = () => {
-  const { tabs, activeTabId, aiHistory, addAiMessage, clearAiHistory } = useIdeStore();
-  const activeTab = tabs.find((t) => t.id === activeTabId);
+export const EnhancedAiPanel: React.FC = () => {
   const [mode, setMode] = useState<AiMode>('chat');
   const [prompt, setPrompt] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [createFiles, setCreateFiles] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [createFiles, setCreateFiles] = useState(true);
+  const [showSessions, setShowSessions] = useState(false);
+  const [sessions, setSessions] = useState<any[]>([]);
   const { toast } = useToast();
+  const { tabs, activeTabId } = useIdeStore();
   const scrollRef = useRef<HTMLDivElement>(null);
+  
+  const {
+    currentSession,
+    messages,
+    isStreaming,
+    streamingContent,
+    streamAiResponse,
+    cancelStream,
+    createNewSession,
+    loadSessions,
+    switchSession,
+  } = useAiChat();
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [aiHistory]);
+  }, [messages, streamingContent]);
 
-  const currentAgent = AGENT_PERSONALITIES[mode];
-
-  const modes: { value: AiMode; label: string; icon: any; desc: string }[] = [
-    { value: 'architect', label: 'Architect', icon: Code, desc: 'Design structures' },
-    { value: 'debugger', label: 'Debugger', icon: Bug, desc: 'Fix issues' },
-    { value: 'mentor', label: 'Mentor', icon: MessageSquare, desc: 'Learn & explain' },
-    { value: 'composer', label: 'Composer', icon: Sparkles, desc: 'Refactor elegantly' },
-    { value: 'chat', label: 'Collective', icon: FileCode, desc: 'General help' },
-  ];
+  // Load sessions when opening history
+  useEffect(() => {
+    if (showSessions) {
+      loadSessions().then(setSessions);
+    }
+  }, [showSessions]);
 
   const handleSubmit = async () => {
-    if (!prompt.trim()) return;
-    
-    if (!activeTab && mode !== 'chat' && !createFiles) {
-      toast({
-        title: 'No file selected',
-        description: 'Please open a file to use AI assistance',
-        variant: 'destructive',
-      });
-      return;
-    }
+    if (!prompt.trim() || isStreaming) return;
 
-    soundManager.aiThinking();
-
-    const userMessage = {
-      id: Date.now().toString(),
-      role: 'user' as const,
-      content: prompt,
-      timestamp: Date.now(),
-      mode,
-      agent: currentAgent.name,
-    };
-
-    addAiMessage(userMessage);
+    const currentPrompt = prompt;
     setPrompt('');
-    setLoading(true);
 
     try {
-      // If "Create Files" is checked and in appropriate mode, use file generator
-      if (createFiles && (mode === 'architect' || mode === 'composer')) {
-        await fileSystem.init();
-        const rootFiles = await fileSystem.getRootFiles();
-        const projectContext = JSON.stringify(rootFiles.map(f => ({ name: f.name, type: f.type })));
+      const activeTab = tabs.find(t => t.id === activeTabId);
+      const context = activeTab ? `Current file: ${activeTab.title}\nLanguage: ${activeTab.language}` : 'No file open';
 
-        const { data, error } = await supabase.functions.invoke('ai-file-generator', {
-          body: { prompt, projectContext },
+      if ((mode === 'architect' || mode === 'composer') && createFiles) {
+        // Notify file creation start
+        if ((window as any).notifyFileChange) {
+          (window as any).notifyFileChange('AI generating files...', 'create');
+        }
+
+        // File generation mode using existing logic
+        const { data: functionData, error: functionError } = await supabase.functions.invoke('ai-file-generator', {
+          body: { 
+            prompt: currentPrompt,
+            projectContext: context,
+            mode,
+          }
         });
 
-        if (error) throw error;
+        if (functionError) throw functionError;
 
-        const result = JSON.parse(data);
-        if (result.files && Array.isArray(result.files)) {
-          for (const file of result.files) {
-            let parentId: string | null = null;
-            if (file.path && file.path.includes('/')) {
-              const folders = file.path.split('/').slice(0, -1);
-              for (const folderName of folders) {
-                const existing = await fileSystem.getChildren(parentId);
-                const found = existing.find(f => f.name === folderName && f.type === 'folder');
-                if (found) {
-                  parentId = found.id;
+        if (functionData.files && Array.isArray(functionData.files)) {
+          for (const file of functionData.files) {
+            const pathParts = file.path.split('/');
+            const fileName = pathParts.pop() || 'untitled';
+            const folderPath = pathParts.join('/') || '/';
+
+            let folder = await fileSystem.getFile(folderPath === '/' ? 'root' : folderPath);
+            if (!folder) {
+              const parts = folderPath.split('/').filter(Boolean);
+              let currentPath = 'root';
+              for (const part of parts) {
+                const children = await fileSystem.getChildren(currentPath);
+                const existing = children.find(f => f.name === part && f.type === 'folder');
+                if (!existing) {
+                  const newFolder = await fileSystem.createFile(part, 'folder', currentPath);
+                  currentPath = newFolder.id;
                 } else {
-                  const newFolder = await fileSystem.createFile(folderName, 'folder', parentId);
-                  parentId = newFolder.id;
+                  currentPath = existing.id;
                 }
               }
+              folder = { id: currentPath } as any;
             }
-            await fileSystem.createFile(file.name, 'file', parentId, file.content || '', file.language);
+
+            await fileSystem.createFile(fileName, file.content, folder?.id || 'root');
+            
+            // Notify file creation
+            if ((window as any).notifyFileChange) {
+              (window as any).notifyFileChange(file.path, 'create');
+            }
           }
 
-          soundManager.success();
-          const assistantMessage = {
-            id: (Date.now() + 1).toString(),
-            role: 'assistant' as const,
-            content: `✅ Created ${result.files.length} file(s):\n${result.files.map((f: any) => `- ${f.path || f.name}`).join('\n')}`,
-            timestamp: Date.now(),
-            mode,
-            agent: currentAgent.name,
-          };
-          addAiMessage(assistantMessage);
-          toast({ title: 'Files created', description: `Generated ${result.files.length} file(s)` });
+          toast({
+            title: 'Files Generated',
+            description: `Created ${functionData.files.length} file(s)`,
+          });
         }
       } else {
-        const { data, error } = await supabase.functions.invoke('ai-code-assist', {
-          body: {
-            mode,
-            code: activeTab?.content || '',
-            language: activeTab?.language || 'plaintext',
-            context: prompt,
-            systemPrompt: currentAgent.systemPrompt,
-          },
-        });
-
-        if (error) throw error;
-
-        soundManager.aiResponse();
-        const assistantMessage = {
-          id: (Date.now() + 1).toString(),
-          role: 'assistant' as const,
-          content: data.result,
-          timestamp: Date.now(),
+        // Stream AI response for chat/assistance
+        const activeTab = tabs.find(t => t.id === activeTabId);
+        await streamAiResponse(
+          currentPrompt,
           mode,
-          agent: currentAgent.name,
-        };
-        addAiMessage(assistantMessage);
+          activeTab?.content,
+          activeTab?.language,
+          context
+        );
       }
-    } catch (error: any) {
-      soundManager.error();
+    } catch (error) {
+      console.error('Error:', error);
       toast({
-        title: 'AI Error',
-        description: error.message || 'Failed to get AI response',
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to process request',
         variant: 'destructive',
       });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -197,189 +173,250 @@ export const EnhancedAiPanel = () => {
     navigator.clipboard.writeText(content);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
-    toast({
-      title: 'Copied to clipboard',
-      description: 'Code copied successfully',
-    });
+    toast({ title: 'Copied', description: 'Content copied to clipboard' });
   };
 
   return (
-    <div className="w-full md:w-96 metal-panel border-l flex flex-col h-full">
+    <div className="h-full flex flex-col bg-gradient-to-br from-background via-background to-muted/20">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-border metal-shine relative overflow-hidden">
-        <div 
-          className="absolute inset-0 opacity-10"
-          style={{
-            background: `linear-gradient(135deg, ${currentAgent.color}, transparent)`
-          }}
-        />
-        <div className="relative flex items-center justify-between">
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-primary animate-pulse" />
-              <h2 className="text-sm font-semibold tracking-wide">PATHWAY AI</h2>
-            </div>
-            <div className="text-[10px] text-muted-foreground uppercase tracking-wider">
-              {currentAgent.name} • {currentAgent.description}
-            </div>
+      <div className="p-4 border-b border-border/50 bg-background/50 backdrop-blur-sm">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <span className="font-semibold text-foreground">
+              {AGENT_PERSONALITIES[mode].name}
+            </span>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7"
-            onClick={clearAiHistory}
-            disabled={aiHistory.length === 0}
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowSessions(!showSessions)}
+              className="text-muted-foreground"
+            >
+              <History className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={createNewSession}
+              className="text-muted-foreground"
+            >
+              <Plus className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
-      </div>
 
-      {/* Mode Selector */}
-      <div className="p-3 border-b border-border">
-        <div className="grid grid-cols-5 gap-1">
-          {modes.map((m) => {
-            const Icon = m.icon;
+        {/* Mode Selector */}
+        <div className="flex gap-2 flex-wrap">
+          {(Object.keys(AGENT_PERSONALITIES) as AiMode[]).map((m) => {
+            const Icon = AGENT_PERSONALITIES[m].icon;
             return (
               <button
-                key={m.value}
-                onClick={() => setMode(m.value)}
-                className={`px-2 py-2 rounded smooth-transition flex flex-col items-center gap-1 ${
-                  mode === m.value
-                    ? 'bg-primary text-primary-foreground sharp-shadow'
-                    : 'bg-secondary/40 text-muted-foreground hover:bg-secondary/60'
-                }`}
-                title={m.desc}
+                key={m}
+                onClick={() => setMode(m)}
+                className={cn(
+                  "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all",
+                  mode === m
+                    ? "bg-primary text-primary-foreground shadow-lg"
+                    : "bg-secondary/50 text-muted-foreground hover:bg-secondary"
+                )}
               >
-                <Icon className="w-3.5 h-3.5" />
-                <span className="text-[9px] font-medium">{m.label}</span>
+                <Icon className="w-3 h-3" />
+                {m.charAt(0).toUpperCase() + m.slice(1)}
               </button>
             );
           })}
         </div>
       </div>
 
+      {/* Sessions Sidebar */}
+      {showSessions && (
+        <div className="border-b border-border/50 bg-background/30 p-3 max-h-[200px] overflow-y-auto">
+          <div className="text-xs font-medium text-muted-foreground mb-2">Chat Sessions</div>
+          <div className="space-y-1">
+            {sessions.map(session => (
+              <button
+                key={session.id}
+                onClick={() => {
+                  switchSession(session.id);
+                  setShowSessions(false);
+                }}
+                className={cn(
+                  "w-full text-left px-2 py-1.5 rounded text-xs hover:bg-accent/50 transition-colors",
+                  currentSession?.id === session.id && "bg-accent"
+                )}
+              >
+                <div className="font-medium truncate">{session.session_name}</div>
+                <div className="text-muted-foreground text-[10px]">
+                  {new Date(session.updated_at).toLocaleString()}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Chat History */}
       <ScrollArea className="flex-1 p-4" ref={scrollRef}>
-        {activeTab && (
-          <div className="glass-panel p-2.5 rounded mb-3 text-xs">
-            <div className="text-muted-foreground mb-1 text-[10px] uppercase tracking-wide">Active File</div>
-            <div className="text-primary font-mono flex items-center gap-1.5">
-              <FileCode className="w-3 h-3" />
-              {activeTab.title}
-            </div>
-          </div>
-        )}
-
-        {aiHistory.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center py-12">
-            <Sparkles className="w-12 h-12 text-muted-foreground/30 mb-4" />
-            <p className="text-sm text-muted-foreground">Start a conversation with PathwayAI</p>
-            <p className="text-xs text-muted-foreground/70 mt-2">Ask questions, get explanations, or refactor code</p>
-          </div>
-        )}
-
-        <div className="space-y-3">
-          {aiHistory.map((msg) => (
+        <div className="space-y-4">
+          {messages.map((message) => (
             <div
-              key={msg.id}
-              className={`p-3 rounded-lg ${
-                msg.role === 'user'
-                  ? 'bg-secondary/50 ml-4'
-                  : 'glass-panel mr-4'
-              }`}
+              key={message.id}
+              className={cn(
+                "flex gap-3 items-start",
+                message.role === 'user' && "flex-row-reverse"
+              )}
             >
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  {msg.role === 'user' ? (
-                    <div className="w-5 h-5 rounded bg-primary/20 flex items-center justify-center">
-                      <span className="text-[10px] font-bold text-primary">U</span>
-                    </div>
-                  ) : (
-                    <Sparkles className="w-4 h-4 text-primary" />
-                  )}
-                  <span className="text-[10px] text-muted-foreground uppercase tracking-wide">
-                    {msg.role === 'user' ? 'You' : 'PathwayAI'}
+              <div className={cn(
+                "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1",
+                message.role === 'user' ? "bg-accent" : "bg-primary/10"
+              )}>
+                {message.role === 'user' ? (
+                  <span className="text-xs font-bold">U</span>
+                ) : (
+                  <MessageSquare className="w-4 h-4 text-primary" />
+                )}
+              </div>
+              <div className="flex-1 space-y-2">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-medium text-muted-foreground">
+                    {message.role === 'user' ? 'You' : AGENT_PERSONALITIES[mode].name}
                   </span>
+                  {message.mode && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary/50 text-muted-foreground">
+                      {message.mode}
+                    </span>
+                  )}
                 </div>
-                {msg.role === 'assistant' && (
+                <div className={cn(
+                  "rounded-lg p-3 border prose prose-sm max-w-none",
+                  message.role === 'user'
+                    ? "bg-accent/50 border-accent"
+                    : "bg-muted/50 backdrop-blur-sm border-border/30"
+                )}>
+                  <div className="whitespace-pre-wrap text-foreground text-sm">
+                    {message.content}
+                  </div>
+                </div>
+                {message.role === 'assistant' && (
                   <Button
                     variant="ghost"
-                    size="icon"
-                    className="h-6 w-6"
-                    onClick={() => copyToClipboard(msg.content, msg.id)}
+                    size="sm"
+                    onClick={() => copyToClipboard(message.content, message.id)}
+                    className="h-6 text-xs"
                   >
-                    {copiedId === msg.id ? (
-                      <Check className="w-3 h-3 text-green-500" />
+                    {copiedId === message.id ? (
+                      <>
+                        <Check className="w-3 h-3 mr-1" />
+                        Copied
+                      </>
                     ) : (
-                      <Copy className="w-3 h-3" />
+                      <>
+                        <Copy className="w-3 h-3 mr-1" />
+                        Copy
+                      </>
                     )}
                   </Button>
                 )}
               </div>
-              <div className="text-xs text-foreground whitespace-pre-wrap leading-relaxed">
-                {msg.content}
-              </div>
             </div>
           ))}
-          {loading && (
-            <div className="glass-panel p-3 rounded-lg mr-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="w-4 h-4 text-primary" />
-                <span className="text-[10px] text-muted-foreground uppercase tracking-wide">PathwayAI</span>
+
+          {/* Streaming Content */}
+          {isStreaming && streamingContent && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex gap-3 items-start"
+            >
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
+                <MessageSquare className="w-4 h-4 text-primary" />
               </div>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Loader2 className="w-3 h-3 animate-spin" />
-                <span>Thinking...</span>
+              <div className="flex-1 space-y-2">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-medium text-primary">
+                    {AGENT_PERSONALITIES[mode].name}
+                  </span>
+                  <div className="flex gap-1">
+                    <div className="w-1 h-1 rounded-full bg-primary animate-pulse" />
+                    <div className="w-1 h-1 rounded-full bg-primary animate-pulse" style={{ animationDelay: '150ms' }} />
+                    <div className="w-1 h-1 rounded-full bg-primary animate-pulse" style={{ animationDelay: '300ms' }} />
+                  </div>
+                </div>
+                <div className="bg-muted/50 backdrop-blur-sm rounded-lg p-3 border border-border/30 prose prose-sm max-w-none">
+                  <div className="whitespace-pre-wrap text-foreground">
+                    {streamingContent}
+                    <span className="inline-block w-1 h-4 bg-primary ml-1 animate-pulse" />
+                  </div>
+                </div>
               </div>
+            </motion.div>
+          )}
+
+          {isStreaming && !streamingContent && (
+            <div className="flex items-center gap-2 p-4 bg-muted/30 rounded-lg border border-border/30">
+              <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms' }} />
+              <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms' }} />
+              <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms' }} />
+              <span className="text-sm text-muted-foreground ml-2">
+                {AGENT_PERSONALITIES[mode].name} is thinking...
+              </span>
             </div>
           )}
         </div>
       </ScrollArea>
 
       {/* Input Area */}
-      <div className="p-3 border-t border-border">
-        <div className="space-y-2">
+      <div className="p-4 border-t border-border/50 bg-background/50 backdrop-blur-sm space-y-3">
+        {(mode === 'architect' || mode === 'composer') && (
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="create-files"
+              checked={createFiles}
+              onCheckedChange={(checked) => setCreateFiles(checked as boolean)}
+            />
+            <Label
+              htmlFor="create-files"
+              className="text-xs text-muted-foreground cursor-pointer"
+            >
+              Create files in project
+            </Label>
+          </div>
+        )}
+
+        <div className="flex gap-2">
           <Textarea
-            placeholder={
-              mode === 'chat'
-                ? 'Ask PathwayAI anything...'
-                : `${mode.charAt(0).toUpperCase() + mode.slice(1)} mode: Add context...`
-            }
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-            className="glass-panel border-border resize-none h-20 text-xs"
             onKeyDown={(e) => {
-              if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+              if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 handleSubmit();
               }
             }}
+            placeholder={`Ask ${AGENT_PERSONALITIES[mode].name}...`}
+            className="resize-none bg-background/50 border-border/50 focus:border-primary"
+            rows={3}
+            disabled={isStreaming}
           />
-          <div className="flex items-center gap-2">
-            {(mode === 'architect' || mode === 'composer') && (
-              <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
-                <Checkbox
-                  checked={createFiles}
-                  onCheckedChange={(checked) => setCreateFiles(checked as boolean)}
-                />
-                <span>Create files</span>
-              </label>
-            )}
-            <Button
-              onClick={handleSubmit}
-              disabled={loading || !prompt.trim()}
-              className="metal-shine flex-shrink-0"
-              size="sm"
+          {isStreaming ? (
+            <Button 
+              onClick={cancelStream} 
+              variant="destructive"
+              className="bg-destructive hover:bg-destructive/90"
             >
-              {loading ? (
-                <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-              ) : (
-                <Send className="w-3.5 h-3.5 mr-2" />
-              )}
-              {loading ? 'Processing...' : 'Send'}
+              <StopCircle className="w-4 h-4" />
             </Button>
-          </div>
+          ) : (
+            <Button 
+              onClick={handleSubmit} 
+              disabled={!prompt.trim()}
+              className="bg-primary hover:bg-primary/90"
+            >
+              <Sparkles className="w-4 h-4" />
+            </Button>
+          )}
         </div>
       </div>
     </div>

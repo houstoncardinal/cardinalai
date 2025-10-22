@@ -6,5 +6,8 @@ verify_jwt = false
 [functions.ai-file-generator]
 verify_jwt = false
 
+[functions.ai-stream-assist]
+verify_jwt = false
+
 [functions.code-generator]
 verify_jwt = false
