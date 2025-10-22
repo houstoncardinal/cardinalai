@@ -84,9 +84,9 @@ const IDE = () => {
         
         <ResizableHandle className="w-1 bg-border hover:bg-primary transition-colors" />
         
-        <ResizablePanel defaultSize={30} minSize={25} maxSize={40}>
+        <ResizablePanel defaultSize={35} minSize={30} maxSize={50}>
           <ResizablePanelGroup direction="vertical">
-            <ResizablePanel defaultSize={showPreview ? 60 : 100} minSize={40}>
+            <ResizablePanel defaultSize={showPreview ? 50 : 100} minSize={40}>
               <EnhancedAiPanel />
             </ResizablePanel>
             
@@ -94,7 +94,7 @@ const IDE = () => {
               <>
                 <ResizableHandle className="h-1 bg-border hover:bg-primary transition-colors" />
                 
-                <ResizablePanel defaultSize={40} minSize={30}>
+                <ResizablePanel defaultSize={50} minSize={40}>
                   <LivePreview 
                     onClose={() => setShowPreview(false)}
                     showCloseButton={true}

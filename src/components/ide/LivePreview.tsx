@@ -16,9 +16,9 @@ interface DeviceConfig {
 }
 
 const DEVICES: Record<DeviceType, DeviceConfig> = {
-  desktop: { width: 1920, height: 1080, label: 'Desktop', icon: Monitor },
+  desktop: { width: 1440, height: 900, label: 'Desktop', icon: Monitor },
   tablet: { width: 768, height: 1024, label: 'Tablet', icon: Tablet },
-  mobile: { width: 375, height: 667, label: 'Mobile', icon: Smartphone },
+  mobile: { width: 375, height: 812, label: 'Mobile', icon: Smartphone },
 };
 
 interface LivePreviewProps {
@@ -30,9 +30,9 @@ export const LivePreview = ({ onClose, showCloseButton = false }: LivePreviewPro
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
-  const [device, setDevice] = useState<DeviceType>('desktop');
+  const [device, setDevice] = useState<DeviceType>('mobile');
   const [zoom, setZoom] = useState(100);
-  const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('landscape');
+  const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('portrait');
   const { tabs } = useIdeStore();
   
   const currentDevice = DEVICES[device];
@@ -123,6 +123,11 @@ export const LivePreview = ({ onClose, showCloseButton = false }: LivePreviewPro
   useEffect(() => {
     buildAndPreview();
   }, [tabs]);
+
+  useEffect(() => {
+    // Auto-fit when device changes
+    setTimeout(() => handleFitToScreen(), 100);
+  }, [device, orientation]);
 
   const handleRefresh = () => {
     buildAndPreview();
