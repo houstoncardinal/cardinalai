@@ -10,7 +10,7 @@ export const FileExplorer = () => {
   const [files, setFiles] = useState<FileNode[]>([]);
   const [creating, setCreating] = useState<{ parentId: string | null; type: 'file' | 'folder' } | null>(null);
   const [newName, setNewName] = useState('');
-  const { setProjectInitialized } = useIdeStore();
+  const { setProjectInitialized, fileSystemRefreshTrigger } = useIdeStore();
 
   const loadFiles = async () => {
     try {
@@ -25,7 +25,7 @@ export const FileExplorer = () => {
 
   useEffect(() => {
     loadFiles();
-  }, []);
+  }, [fileSystemRefreshTrigger]);
 
   const handleCreateNew = async () => {
     if (!newName.trim()) return;

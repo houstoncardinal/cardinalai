@@ -5,6 +5,7 @@ import { Upload, FolderOpen, File, CheckCircle, AlertCircle } from 'lucide-react
 import { fileSystem } from '@/lib/fileSystem';
 import { useToast } from '@/hooks/use-toast';
 import { Progress } from '@/components/ui/progress';
+import { useIdeStore } from '@/store/ideStore';
 
 interface ProjectUploaderProps {
   open: boolean;
@@ -16,6 +17,7 @@ export const ProjectUploader = ({ open, onClose }: ProjectUploaderProps) => {
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<string>('');
   const { toast } = useToast();
+  const { triggerFileSystemRefresh } = useIdeStore();
 
   const handleDirectoryInput = () => {
     // Trigger the hidden file input
@@ -73,6 +75,10 @@ export const ProjectUploader = ({ open, onClose }: ProjectUploaderProps) => {
       }
 
       setStatus('Complete!');
+      
+      // Trigger file explorer refresh
+      triggerFileSystemRefresh();
+      
       toast({
         title: "Project Imported",
         description: `Successfully imported ${imported} files`,

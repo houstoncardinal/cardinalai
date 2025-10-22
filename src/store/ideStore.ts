@@ -34,8 +34,10 @@ export interface IdeState {
   componentBuilderOpen: boolean;
   previewUrl: string | null;
   projectInitialized: boolean;
+  fileSystemRefreshTrigger: number;
   
   setTheme: (theme: ThemeName) => void;
+  triggerFileSystemRefresh: () => void;
   addTab: (tab: EditorTab) => void;
   closeTab: (id: string) => void;
   setActiveTab: (id: string) => void;
@@ -71,8 +73,12 @@ export const useIdeStore = create<IdeState>((set) => ({
   componentBuilderOpen: false,
   previewUrl: null,
   projectInitialized: false,
+  fileSystemRefreshTrigger: 0,
   
   setTheme: (theme) => set({ theme }),
+  triggerFileSystemRefresh: () => set((state) => ({ 
+    fileSystemRefreshTrigger: state.fileSystemRefreshTrigger + 1 
+  })),
   addTab: (tab) => set((state) => ({ 
     tabs: [...state.tabs, tab],
     activeTabId: tab.id
