@@ -8,59 +8,62 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Obsidian - Professional dark metallic theme */
-    --background: 0 0% 7%;
+    /* Obsidian - Luxury metallic theme */
+    --background: 0 0% 3%;
     --foreground: 0 0% 98%;
     
-    --card: 0 0% 10%;
+    --card: 210 8% 12%;
     --card-foreground: 0 0% 98%;
     
-    --popover: 0 0% 8%;
+    --popover: 210 8% 10%;
     --popover-foreground: 0 0% 98%;
     
-    --primary: 0 0% 95%;
+    --primary: 220 100% 70%;
     --primary-foreground: 0 0% 10%;
-    --primary-glow: 0 0% 98%;
+    --primary-glow: 220 100% 80%;
     
-    --secondary: 0 0% 14%;
+    --secondary: 210 10% 18%;
     --secondary-foreground: 0 0% 98%;
     
-    --muted: 0 0% 14%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 210 8% 16%;
+    --muted-foreground: 0 0% 70%;
     
-    --accent: 0 0% 90%;
-    --accent-foreground: 0 0% 10%;
+    --accent: 280 80% 65%;
+    --accent-foreground: 0 0% 98%;
     
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
     
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 0 0% 90%;
+    --border: 210 15% 25%;
+    --input: 210 12% 20%;
+    --ring: 220 100% 70%;
     
-    --radius: 0.25rem;
+    --radius: 0.5rem;
     
-    /* IDE specific tokens */
-    --editor-bg: 0 0% 7%;
-    --panel-bg: 0 0% 9%;
-    --glass-bg: 0 0% 10%;
-    --glass-border: 0 0% 20%;
-    --metal-shine: 0 0% 85%;
-    --metal-dark: 0 0% 25%;
+    /* Metallic tokens */
+    --editor-bg: 0 0% 5%;
+    --panel-bg: 210 8% 10%;
+    --metal-base: 210 10% 20%;
+    --metal-shine: 210 30% 85%;
+    --metal-dark: 210 12% 15%;
+    --metal-highlight: 220 100% 75%;
     
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(0 0% 15%), hsl(0 0% 8%));
-    --gradient-glass: linear-gradient(135deg, hsla(0 0% 10% / 0.9), hsla(0 0% 12% / 0.8));
-    --gradient-metal: linear-gradient(135deg, hsl(0 0% 30%), hsl(0 0% 20%), hsl(0 0% 30%));
+    /* Luxury Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(220 100% 65%), hsl(280 80% 60%));
+    --gradient-metal: linear-gradient(135deg, hsl(210 12% 25%), hsl(210 10% 18%), hsl(210 12% 22%));
+    --gradient-metal-shine: linear-gradient(180deg, hsl(210 20% 30%), hsl(210 12% 20%), hsl(210 20% 25%));
+    --gradient-luxury: linear-gradient(135deg, hsl(210 15% 22%), hsl(220 20% 18%), hsl(210 15% 20%));
     
-    /* Shadows */
-    --shadow-metal: 0 2px 8px hsla(0 0% 0% / 0.5), inset 0 1px 0 hsla(0 0% 100% / 0.1);
-    --shadow-glass: 0 8px 32px hsla(0 0% 0% / 0.6);
-    --shadow-sharp: 0 1px 3px hsla(0 0% 0% / 0.8);
-    --shadow-glow: 0 0 20px hsla(0 0% 95% / 0.3), 0 0 40px hsla(0 0% 95% / 0.15);
+    /* Premium Shadows */
+    --shadow-metal: 0 4px 16px hsla(0 0% 0% / 0.6), inset 0 1px 0 hsla(210 30% 100% / 0.15), inset 0 -1px 0 hsla(0 0% 0% / 0.3);
+    --shadow-luxury: 0 12px 48px hsla(0 0% 0% / 0.8), 0 0 0 1px hsla(210 30% 100% / 0.1);
+    --shadow-sharp: 0 2px 8px hsla(0 0% 0% / 0.9);
+    --shadow-glow: 0 0 40px hsla(220 100% 70% / 0.4), 0 0 80px hsla(220 100% 70% / 0.2);
+    --shadow-glow-accent: 0 0 40px hsla(280 80% 65% / 0.4), 0 0 80px hsla(280 80% 65% / 0.2);
     
     /* Transitions */
-    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-luxury: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   /* Pearl - Professional light metallic theme */
@@ -373,18 +376,25 @@ All colors MUST be HSL.
 
 @layer utilities {
   .glass-panel {
-    background: linear-gradient(135deg, 
-      hsla(var(--glass-bg) / 0.7), 
-      hsla(var(--glass-bg) / 0.5));
-    backdrop-filter: blur(16px) saturate(120%);
-    border: 1px solid hsl(var(--glass-border) / 0.4);
-    box-shadow: var(--shadow-glass);
+    background: var(--gradient-luxury);
+    backdrop-filter: blur(24px) saturate(150%);
+    border: 1px solid hsl(var(--border));
+    box-shadow: var(--shadow-luxury);
   }
   
   .metal-panel {
-    background: var(--gradient-metal);
+    background: var(--gradient-metal-shine);
     border: 1px solid hsl(var(--metal-dark));
     box-shadow: var(--shadow-metal);
+    position: relative;
+  }
+  
+  .metal-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 0%, hsla(210 30% 100% / 0.05) 50%, transparent 100%);
+    pointer-events: none;
   }
   
   .metal-shine {

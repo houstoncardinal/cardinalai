@@ -60,20 +60,24 @@ const Landing = () => {
         <FloatingParticles />
         <DataFlow />
         
-        {/* Mouse follower glow */}
+        {/* Mouse follower glow - metallic */}
         <motion.div
-          className="fixed w-96 h-96 rounded-full pointer-events-none z-0"
+          className="fixed w-[500px] h-[500px] rounded-full pointer-events-none z-0"
           style={{
-            background: 'radial-gradient(circle, hsl(var(--primary) / 0.15) 0%, transparent 70%)',
-            left: mousePosition.x - 192,
-            top: mousePosition.y - 192,
+            background: 'radial-gradient(circle, hsl(var(--primary) / 0.25) 0%, hsl(var(--accent) / 0.15) 40%, transparent 70%)',
+            left: mousePosition.x - 250,
+            top: mousePosition.y - 250,
+            filter: 'blur(60px)',
           }}
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          animate={{ 
+            scale: [1, 1.15, 1],
+            rotate: [0, 90, 0]
+          }}
+          transition={{ duration: 4, repeat: Infinity }}
         />
-        {/* Navigation */}
+        {/* Navigation - metallic */}
         <motion.nav 
-          className="fixed top-0 w-full z-50 glass-panel border-b border-border/40"
+          className="fixed top-0 w-full z-50 metal-panel border-b-2 border-border"
           initial={{ y: -100 }}
           animate={{ y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
@@ -84,17 +88,25 @@ const Landing = () => {
               whileHover={{ scale: 1.05 }}
             >
               <motion.div 
-                className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center"
+                className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center metal-panel border-2 border-border relative overflow-hidden"
                 animate={{ 
                   boxShadow: [
-                    '0 0 20px hsl(var(--primary) / 0.5)',
-                    '0 0 40px hsl(var(--primary) / 0.8)',
-                    '0 0 20px hsl(var(--primary) / 0.5)'
+                    '0 0 20px hsl(var(--primary) / 0.6)',
+                    '0 0 40px hsl(var(--primary) / 0.9)',
+                    '0 0 20px hsl(var(--primary) / 0.6)'
                   ]
                 }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
-                <Code2 className="w-6 h-6 text-white" />
+                {/* Shine effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent"
+                  animate={{ 
+                    x: ['-100%', '100%'],
+                  }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                />
+                <Code2 className="w-7 h-7 text-white relative z-10 drop-shadow-lg" />
               </motion.div>
               <div>
                 <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
