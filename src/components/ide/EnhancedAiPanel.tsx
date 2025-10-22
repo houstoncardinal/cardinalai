@@ -176,24 +176,39 @@ export const EnhancedAiPanel: React.FC = () => {
     toast({ title: 'Copied', description: 'Content copied to clipboard' });
   };
 
+  // Color scheme for each mode based on reference images
+  const getModeColor = (m: AiMode) => {
+    switch (m) {
+      case 'architect': return 'from-[#5B7FFF] to-[#7B94FF]'; // Blue/Purple
+      case 'debugger': return 'from-[#FF6B6B] to-[#FF8E8E]'; // Red
+      case 'mentor': return 'from-[#90EE90] to-[#A8F5A8]'; // Light green
+      case 'composer': return 'from-[#B794F6] to-[#C7A8FF]'; // Purple
+      case 'chat': return 'from-[#FFD700] to-[#FFE44D]'; // Gold
+      default: return 'from-primary to-accent';
+    }
+  };
+
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-[hsl(var(--background))] via-[hsl(var(--background))] to-[hsl(var(--accent)/0.05)]">
-      {/* Header with Material Elevation */}
-      <div className="p-4 border-b border-[hsl(var(--border)/0.3)] bg-gradient-to-r from-[hsl(var(--background)/0.9)] to-[hsl(var(--muted)/0.1)] backdrop-blur-xl shadow-lg">
-        <div className="flex items-center justify-between mb-4">
+    <div className="h-full flex flex-col bg-[#2a2a2a]">
+      {/* Header - Compact and Fixed */}
+      <div className="flex-shrink-0 px-4 py-3 border-b border-[#3a3a3a] bg-[#2a2a2a]">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <div className="absolute inset-0 bg-primary/20 rounded-full blur-lg animate-pulse" />
-              <div className="relative w-10 h-10 rounded-full bg-gradient-to-br from-primary via-primary-glow to-accent flex items-center justify-center shadow-glow">
-                {React.createElement(AGENT_PERSONALITIES[mode].icon, { className: "w-5 h-5 text-white" })}
+              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#3a3a3a] to-[#2a2a2a] flex items-center justify-center border border-[#4a4a4a]">
+                {React.createElement(AGENT_PERSONALITIES[mode].icon, { className: "w-4 h-4 text-[#e0e0e0]" })}
               </div>
             </div>
             <div>
-              <h3 className="font-semibold text-foreground text-base">
-                {AGENT_PERSONALITIES[mode].name}
+              <h3 className="font-semibold text-[#e0e0e0] text-sm uppercase tracking-wider">
+                PATHWAY AI
               </h3>
-              <p className="text-xs text-muted-foreground">
-                {AGENT_PERSONALITIES[mode].description}
+              <p className="text-xs text-[#909090] uppercase tracking-wide">
+                {mode === 'architect' && 'THE ARCHITECT • DESIGNS FRAMEWORKS AND STRUCTURES'}
+                {mode === 'debugger' && 'THE DEBUGGER • ANALYZES AND RESOLVES ISSUES'}
+                {mode === 'mentor' && 'THE MENTOR • TEACHES AND EXPLAINS CONCEPTS'}
+                {mode === 'composer' && 'THE COMPOSER • REFACTORS WITH ARTISTIC PRECISION'}
+                {mode === 'chat' && 'PATHWAY COLLECTIVE • GENERAL AI ASSISTANCE'}
               </p>
             </div>
           </div>
@@ -202,148 +217,152 @@ export const EnhancedAiPanel: React.FC = () => {
               variant="ghost"
               size="sm"
               onClick={() => setShowSessions(!showSessions)}
-              className="hover:bg-accent/50 transition-all hover:scale-105"
+              className="h-8 w-8 p-0 hover:bg-[#3a3a3a] transition-colors"
             >
-              <History className="w-4 h-4" />
+              <History className="w-4 h-4 text-[#909090]" />
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={createNewSession}
-              className="hover:bg-accent/50 transition-all hover:scale-105"
+              className="h-8 w-8 p-0 hover:bg-[#3a3a3a] transition-colors"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4 text-[#909090]" />
             </Button>
           </div>
         </div>
 
-        {/* Mode Selector with Material Pills */}
-        <div className="flex gap-2 flex-wrap">
+        {/* Mode Selector with Color-Coded Borders */}
+        <div className="flex gap-2 flex-wrap justify-center">
           {(Object.keys(AGENT_PERSONALITIES) as AiMode[]).map((m) => {
             const Icon = AGENT_PERSONALITIES[m].icon;
             return (
-              <motion.button
+              <button
                 key={m}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
                 onClick={() => setMode(m)}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all duration-300",
+                  "flex items-center gap-2 px-4 py-2 rounded-md text-xs font-medium transition-all duration-200 bg-[#333333]",
                   mode === m
-                    ? "bg-gradient-to-r from-primary via-primary-glow to-accent text-white shadow-lg shadow-primary/30"
-                    : "bg-gradient-to-r from-[hsl(var(--secondary))] to-[hsl(var(--muted))] text-muted-foreground hover:shadow-md"
+                    ? `border-2 bg-gradient-to-br ${getModeColor(m)} text-white shadow-lg`
+                    : "border border-[#4a4a4a] text-[#b0b0b0] hover:border-[#6a6a6a]"
                 )}
               >
                 <Icon className="w-4 h-4" />
                 {m.charAt(0).toUpperCase() + m.slice(1)}
-              </motion.button>
+              </button>
             );
           })}
         </div>
       </div>
 
-      {/* Sessions Sidebar with Material Design */}
+      {/* Sessions Sidebar */}
       {showSessions && (
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
-          className="border-b border-[hsl(var(--border)/0.3)] bg-gradient-to-b from-[hsl(var(--muted)/0.3)] to-transparent p-4 max-h-[200px] overflow-y-auto backdrop-blur-sm"
+          className="flex-shrink-0 border-b border-[#3a3a3a] bg-[#2a2a2a] p-3 max-h-[150px] overflow-y-auto"
         >
-          <div className="text-xs font-semibold text-foreground mb-3 flex items-center gap-2">
-            <History className="w-4 h-4 text-primary" />
+          <div className="text-xs font-semibold text-[#e0e0e0] mb-2 flex items-center gap-2">
+            <History className="w-3 h-3 text-[#909090]" />
             Chat Sessions
           </div>
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {sessions.map(session => (
-              <motion.button
+              <button
                 key={session.id}
-                whileHover={{ scale: 1.02, x: 4 }}
-                whileTap={{ scale: 0.98 }}
                 onClick={() => {
                   switchSession(session.id);
                   setShowSessions(false);
                 }}
                 className={cn(
-                  "w-full text-left px-3 py-2 rounded-lg text-xs transition-all duration-200",
+                  "w-full text-left px-3 py-2 rounded text-xs transition-colors",
                   currentSession?.id === session.id 
-                    ? "bg-gradient-to-r from-primary/20 to-accent/20 border border-primary/30 shadow-md" 
-                    : "bg-[hsl(var(--muted)/0.5)] hover:bg-[hsl(var(--muted))] border border-transparent"
+                    ? "bg-[#3a3a3a] border border-[#5a5a5a]" 
+                    : "bg-[#333333] hover:bg-[#3a3a3a] border border-transparent"
                 )}
               >
-                <div className="font-medium truncate text-foreground">{session.session_name}</div>
-                <div className="text-muted-foreground text-[10px] mt-1">
+                <div className="font-medium truncate text-[#e0e0e0]">{session.session_name}</div>
+                <div className="text-[#808080] text-[10px] mt-0.5">
                   {new Date(session.updated_at).toLocaleString()}
                 </div>
-              </motion.button>
+              </button>
             ))}
           </div>
         </motion.div>
       )}
 
-      {/* Chat History with Enhanced Material Messages */}
-      <ScrollArea className="flex-1 p-4" ref={scrollRef}>
-        <div className="space-y-6">
+      {/* Chat History - Full Height */}
+      <ScrollArea className="flex-1 p-4 bg-[#353535]" ref={scrollRef}>
+        <div className="space-y-4">
+          {messages.length === 0 && !isStreaming && (
+            <div className="flex flex-col items-center justify-center h-full py-20 text-center">
+              <div className="w-16 h-16 rounded-full bg-[#3a3a3a] flex items-center justify-center mb-4 border border-[#4a4a4a]">
+                <MessageSquare className="w-8 h-8 text-[#707070]" />
+              </div>
+              <h3 className="text-lg font-semibold text-[#e0e0e0] mb-2">
+                Start a conversation with PathwayAI
+              </h3>
+              <p className="text-sm text-[#909090]">
+                Ask questions, get explanations, or refactor code
+              </p>
+            </div>
+          )}
           {messages.map((message, index) => (
-            <motion.div
+            <div
               key={message.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
               className={cn(
                 "flex gap-3 items-start",
                 message.role === 'user' && "flex-row-reverse"
               )}
             >
-              <motion.div 
-                whileHover={{ scale: 1.1 }}
+              <div 
                 className={cn(
-                  "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-1 shadow-lg",
+                  "w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 mt-1 border",
                   message.role === 'user' 
-                    ? "bg-gradient-to-br from-accent via-accent-foreground to-accent" 
-                    : "bg-gradient-to-br from-primary via-primary-glow to-accent"
+                    ? "bg-[#3a3a3a] border-[#5a5a5a]" 
+                    : "bg-[#3a3a3a] border-[#5a5a5a]"
                 )}
               >
                 {message.role === 'user' ? (
-                  <span className="text-sm font-bold text-white">U</span>
+                  <span className="text-xs font-bold text-[#e0e0e0]">U</span>
                 ) : (
-                  <MessageSquare className="w-5 h-5 text-white" />
+                  <MessageSquare className="w-4 h-4 text-[#e0e0e0]" />
                 )}
-              </motion.div>
+              </div>
               <div className="flex-1 space-y-2 max-w-[85%]">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-semibold text-foreground">
+                  <span className="text-xs font-medium text-[#e0e0e0]">
                     {message.role === 'user' ? 'You' : AGENT_PERSONALITIES[mode].name}
                   </span>
                   {message.mode && (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 text-primary font-medium border border-primary/20">
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#3a3a3a] text-[#b0b0b0] font-medium border border-[#4a4a4a]">
                       {message.mode}
                     </span>
                   )}
                 </div>
-                <motion.div 
-                  whileHover={{ scale: 1.01 }}
+                <div 
                   className={cn(
-                    "rounded-2xl p-4 border backdrop-blur-md shadow-lg transition-all duration-300",
+                    "rounded-lg p-3 border",
                     message.role === 'user'
-                      ? "bg-gradient-to-br from-accent/30 via-accent/20 to-accent/10 border-accent/40 text-foreground ml-auto"
-                      : "bg-gradient-to-br from-[hsl(var(--muted)/0.6)] via-[hsl(var(--muted)/0.4)] to-[hsl(var(--background)/0.8)] border-[hsl(var(--border)/0.4)]"
+                      ? "bg-[#3a3a3a] border-[#5a5a5a] text-[#e0e0e0] ml-auto"
+                      : "bg-[#2f2f2f] border-[#4a4a4a] text-[#d0d0d0]"
                   )}
                 >
-                  <div className="whitespace-pre-wrap text-foreground text-sm leading-relaxed">
+                  <div className="whitespace-pre-wrap text-sm leading-relaxed">
                     {message.content}
                   </div>
-                </motion.div>
+                </div>
                 {message.role === 'assistant' && (
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => copyToClipboard(message.content, message.id)}
-                    className="h-7 text-xs hover:bg-accent/50 transition-all"
+                    className="h-7 text-xs hover:bg-[#3a3a3a] transition-colors text-[#909090]"
                   >
                     {copiedId === message.id ? (
                       <>
-                        <Check className="w-3 h-3 mr-1.5 text-green-500" />
+                        <Check className="w-3 h-3 mr-1.5 text-green-400" />
                         Copied!
                       </>
                     ) : (
@@ -355,115 +374,113 @@ export const EnhancedAiPanel: React.FC = () => {
                   </Button>
                 )}
               </div>
-            </motion.div>
+            </div>
           ))}
 
-          {/* Streaming Content with Enhanced Animation */}
+          {/* Streaming Content */}
           {isStreaming && streamingContent && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex gap-3 items-start"
-            >
-              <motion.div 
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary via-primary-glow to-accent flex items-center justify-center flex-shrink-0 mt-1 shadow-glow"
-              >
-                <MessageSquare className="w-5 h-5 text-white" />
-              </motion.div>
+            <div className="flex gap-3 items-start">
+              <div className="w-9 h-9 rounded-lg bg-[#3a3a3a] border border-[#5a5a5a] flex items-center justify-center flex-shrink-0 mt-1">
+                <MessageSquare className="w-4 h-4 text-[#e0e0e0]" />
+              </div>
               <div className="flex-1 space-y-2 max-w-[85%]">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-semibold text-primary">
+                  <span className="text-xs font-medium text-[#e0e0e0]">
                     {AGENT_PERSONALITIES[mode].name}
                   </span>
                   <div className="flex gap-1">
                     <motion.div 
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 1, repeat: Infinity }}
-                      className="w-1.5 h-1.5 rounded-full bg-primary" 
+                      animate={{ scale: [1, 1.3, 1] }}
+                      transition={{ duration: 0.8, repeat: Infinity }}
+                      className="w-1 h-1 rounded-full bg-[#909090]" 
                     />
                     <motion.div 
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 1, repeat: Infinity, delay: 0.2 }}
-                      className="w-1.5 h-1.5 rounded-full bg-primary" 
+                      animate={{ scale: [1, 1.3, 1] }}
+                      transition={{ duration: 0.8, repeat: Infinity, delay: 0.2 }}
+                      className="w-1 h-1 rounded-full bg-[#909090]" 
                     />
                     <motion.div 
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 1, repeat: Infinity, delay: 0.4 }}
-                      className="w-1.5 h-1.5 rounded-full bg-primary" 
+                      animate={{ scale: [1, 1.3, 1] }}
+                      transition={{ duration: 0.8, repeat: Infinity, delay: 0.4 }}
+                      className="w-1 h-1 rounded-full bg-[#909090]" 
                     />
                   </div>
                 </div>
-                <div className="bg-gradient-to-br from-[hsl(var(--muted)/0.6)] via-[hsl(var(--muted)/0.4)] to-[hsl(var(--background)/0.8)] backdrop-blur-md rounded-2xl p-4 border border-[hsl(var(--border)/0.4)] shadow-lg">
-                  <div className="whitespace-pre-wrap text-foreground text-sm leading-relaxed">
+                <div className="bg-[#2f2f2f] border border-[#4a4a4a] rounded-lg p-3">
+                  <div className="whitespace-pre-wrap text-[#d0d0d0] text-sm leading-relaxed">
                     {streamingContent}
                     <motion.span 
                       animate={{ opacity: [0, 1, 0] }}
                       transition={{ duration: 0.8, repeat: Infinity }}
-                      className="inline-block w-1 h-4 bg-primary ml-1" 
+                      className="inline-block w-0.5 h-4 bg-[#909090] ml-1" 
                     />
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {isStreaming && !streamingContent && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex items-center gap-3 p-4 bg-gradient-to-r from-[hsl(var(--muted)/0.3)] to-transparent rounded-xl border border-[hsl(var(--border)/0.3)] backdrop-blur-sm"
-            >
+            <div className="flex items-center gap-3 p-3 bg-[#2f2f2f] rounded-lg border border-[#4a4a4a]">
               <div className="flex gap-1.5">
                 <motion.div 
-                  animate={{ y: [0, -8, 0] }}
+                  animate={{ y: [0, -6, 0] }}
                   transition={{ duration: 0.6, repeat: Infinity }}
-                  className="w-2 h-2 rounded-full bg-primary" 
+                  className="w-1.5 h-1.5 rounded-full bg-[#909090]" 
                 />
                 <motion.div 
-                  animate={{ y: [0, -8, 0] }}
+                  animate={{ y: [0, -6, 0] }}
                   transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
-                  className="w-2 h-2 rounded-full bg-primary" 
+                  className="w-1.5 h-1.5 rounded-full bg-[#909090]" 
                 />
                 <motion.div 
-                  animate={{ y: [0, -8, 0] }}
+                  animate={{ y: [0, -6, 0] }}
                   transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
-                  className="w-2 h-2 rounded-full bg-primary" 
+                  className="w-1.5 h-1.5 rounded-full bg-[#909090]" 
                 />
               </div>
-              <span className="text-sm text-foreground font-medium">
-                {AGENT_PERSONALITIES[mode].name} is thinking...
-              </span>
-            </motion.div>
+              <span className="text-xs text-[#b0b0b0]">Thinking...</span>
+            </div>
           )}
         </div>
       </ScrollArea>
 
-      {/* Input Area with Material Glass Effect */}
-      <div className="p-4 border-t border-[hsl(var(--border)/0.3)] bg-gradient-to-t from-[hsl(var(--background))] via-[hsl(var(--background)/0.95)] to-[hsl(var(--muted)/0.1)] backdrop-blur-xl space-y-3 shadow-lg">
-        {(mode === 'architect' || mode === 'composer') && (
-          <motion.div 
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-center space-x-2 p-2 rounded-lg bg-[hsl(var(--muted)/0.3)] border border-[hsl(var(--border)/0.3)]"
-          >
+      {/* Input Area - Fixed at Bottom */}
+      <div className="flex-shrink-0 border-t border-[#3a3a3a] p-3 bg-[#2a2a2a]">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center gap-2 flex-1">
             <Checkbox
               id="create-files"
               checked={createFiles}
               onCheckedChange={(checked) => setCreateFiles(checked as boolean)}
-              className="data-[state=checked]:bg-primary"
+              className="border-[#5a5a5a] data-[state=checked]:bg-[#5B7FFF] data-[state=checked]:border-[#5B7FFF]"
+              disabled={mode !== 'architect' && mode !== 'composer'}
             />
-            <Label
-              htmlFor="create-files"
-              className="text-xs text-foreground cursor-pointer font-medium"
+            <Label 
+              htmlFor="create-files" 
+              className={cn(
+                "text-xs cursor-pointer transition-colors",
+                createFiles ? "text-[#e0e0e0] font-medium" : "text-[#909090]",
+                (mode !== 'architect' && mode !== 'composer') && "opacity-50 cursor-not-allowed"
+              )}
             >
-              Create files in project
+              Create files
             </Label>
-          </motion.div>
-        )}
-
-        <div className="flex gap-3">
+          </div>
+          {isStreaming && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={cancelStream}
+              className="text-xs h-7 hover:bg-[#3a3a3a] text-[#ff6b6b] transition-colors"
+            >
+              <StopCircle className="w-3 h-3 mr-1.5" />
+              Stop
+            </Button>
+          )}
+        </div>
+        
+        <div className="flex gap-2">
           <Textarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
@@ -473,27 +490,18 @@ export const EnhancedAiPanel: React.FC = () => {
                 handleSubmit();
               }
             }}
-            placeholder={`Ask ${AGENT_PERSONALITIES[mode].name}...`}
-            className="resize-none bg-gradient-to-br from-[hsl(var(--background))] to-[hsl(var(--muted)/0.3)] border-[hsl(var(--border)/0.5)] focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl transition-all shadow-inner"
-            rows={3}
+            placeholder={`${mode.charAt(0).toUpperCase() + mode.slice(1)} mode: Add context...`}
+            className="flex-1 min-h-[70px] max-h-[150px] resize-none bg-[#333333] border border-[#4a4a4a] focus:border-[#6a6a6a] transition-colors text-[#e0e0e0] placeholder:text-[#707070] rounded text-sm p-2"
             disabled={isStreaming}
           />
-          {isStreaming ? (
-            <Button 
-              onClick={cancelStream} 
-              className="bg-gradient-to-br from-destructive to-destructive/80 hover:from-destructive/90 hover:to-destructive/70 text-white shadow-lg hover:shadow-xl transition-all"
-            >
-              <StopCircle className="w-5 h-5" />
-            </Button>
-          ) : (
-            <Button 
-              onClick={handleSubmit} 
-              disabled={!prompt.trim()}
-              className="bg-gradient-to-br from-primary via-primary-glow to-accent hover:shadow-glow text-white shadow-lg hover:scale-105 transition-all disabled:opacity-50 disabled:scale-100"
-            >
-              <Sparkles className="w-5 h-5" />
-            </Button>
-          )}
+          <Button
+            onClick={handleSubmit}
+            disabled={!prompt.trim() || isStreaming}
+            className="self-end bg-[#404040] hover:bg-[#505050] transition-colors disabled:opacity-30 disabled:cursor-not-allowed h-[70px] px-3 rounded"
+            size="sm"
+          >
+            <Sparkles className="w-4 h-4 text-[#e0e0e0]" />
+          </Button>
         </div>
       </div>
     </div>

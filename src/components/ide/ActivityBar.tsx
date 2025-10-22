@@ -1,4 +1,4 @@
-import { Files, GitBranch, Terminal, Sparkles, Palette, Command, Monitor, Code2, Settings, Wand2, Upload, Search as SearchIcon } from 'lucide-react';
+import { Files, GitBranch, Terminal, Sparkles, Palette, Command, Monitor, Code2, Settings, Wand2, Upload, Search as SearchIcon, Eye } from 'lucide-react';
 import { useState } from 'react';
 import { useIdeStore } from '@/store/ideStore';
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,7 @@ export const ActivityBar = () => {
     simulatorOpen,
     codeGeneratorOpen,
     componentBuilderOpen,
+    livePreviewOpen,
     toggleFileExplorer,
     toggleGitPanel,
     toggleTerminal,
@@ -24,7 +25,8 @@ export const ActivityBar = () => {
     toggleCommandPalette,
     toggleSimulator,
     toggleCodeGenerator,
-    toggleComponentBuilder
+    toggleComponentBuilder,
+    toggleLivePreview
   } = useIdeStore();
   
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -161,6 +163,22 @@ export const ActivityBar = () => {
             </Button>
           </TooltipTrigger>
           <TooltipContent side="right">Device Simulator</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`w-10 h-10 smooth-transition metal-shine ${
+                livePreviewOpen ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground'
+              }`}
+              onClick={() => handleClick(toggleLivePreview)}
+            >
+              <Eye className="w-5 h-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">Live Preview</TooltipContent>
         </Tooltip>
 
         <div className="flex-1" />

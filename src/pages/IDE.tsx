@@ -23,7 +23,7 @@ const IDE = () => {
   const [activeView, setActiveView] = useState<ViewType>('editor');
   const [showSettings, setShowSettings] = useState(false);
   const [showSimulator, setShowSimulator] = useState(false);
-  const [showPreview, setShowPreview] = useState(true);
+  const { livePreviewOpen } = useIdeStore();
 
 
   const renderSidePanel = () => {
@@ -86,19 +86,16 @@ const IDE = () => {
         
         <ResizablePanel defaultSize={35} minSize={30} maxSize={50}>
           <ResizablePanelGroup direction="vertical">
-            <ResizablePanel defaultSize={showPreview ? 50 : 100} minSize={40}>
+            <ResizablePanel defaultSize={livePreviewOpen ? 50 : 100} minSize={40}>
               <EnhancedAiPanel />
             </ResizablePanel>
             
-            {showPreview && (
+            {livePreviewOpen && (
               <>
                 <ResizableHandle className="h-1 bg-border hover:bg-primary transition-colors" />
                 
                 <ResizablePanel defaultSize={50} minSize={40}>
-                  <LivePreview 
-                    onClose={() => setShowPreview(false)}
-                    showCloseButton={true}
-                  />
+                  <LivePreview />
                 </ResizablePanel>
               </>
             )}

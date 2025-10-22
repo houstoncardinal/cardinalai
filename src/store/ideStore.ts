@@ -28,6 +28,7 @@ export interface IdeState {
   terminalOpen: boolean;
   gitPanelOpen: boolean;
   fileExplorerOpen: boolean;
+  livePreviewOpen: boolean;
   aiHistory: AiMessage[];
   simulatorOpen: boolean;
   codeGeneratorOpen: boolean;
@@ -48,6 +49,7 @@ export interface IdeState {
   toggleTerminal: () => void;
   toggleGitPanel: () => void;
   toggleFileExplorer: () => void;
+  toggleLivePreview: () => void;
   addAiMessage: (message: AiMessage) => void;
   clearAiHistory: () => void;
   toggleSimulator: () => void;
@@ -67,6 +69,7 @@ export const useIdeStore = create<IdeState>((set) => ({
   terminalOpen: false,
   gitPanelOpen: false,
   fileExplorerOpen: true,
+  livePreviewOpen: true,
   aiHistory: [],
   simulatorOpen: false,
   codeGeneratorOpen: false,
@@ -106,6 +109,7 @@ export const useIdeStore = create<IdeState>((set) => ({
   toggleFileExplorer: () => set((state) => ({ 
     fileExplorerOpen: !state.fileExplorerOpen 
   })),
+  toggleLivePreview: () => set((state) => ({ livePreviewOpen: !state.livePreviewOpen })),
   addAiMessage: (message) => set((state) => ({ 
     aiHistory: [...state.aiHistory, message] 
   })),
