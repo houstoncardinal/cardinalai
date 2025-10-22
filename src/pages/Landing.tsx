@@ -104,10 +104,10 @@ const Landing = () => {
               </motion.div>
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                 <Button 
-                  onClick={() => navigate("/ide")} 
+                  onClick={() => navigate("/auth")} 
                   className="bg-gradient-to-r from-primary to-accent hover:from-primary-glow hover:to-accent text-white border-0 shadow-glow transition-all duration-300"
                 >
-                  Launch IDE
+                  Get Started
                 </Button>
               </motion.div>
             </div>

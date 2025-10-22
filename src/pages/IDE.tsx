@@ -15,8 +15,11 @@ import { MobileNav } from "@/components/ide/MobileNav";
 import { MobileToolbar } from "@/components/ide/MobileToolbar";
 import { AiOperationOverlay } from "@/components/ide/AiOperationOverlay";
 import { ThemeSwitcher } from "@/components/ide/ThemeSwitcher";
+import { ProjectSwitcher } from "@/components/ide/ProjectSwitcher";
+import { UserMenu } from "@/components/ide/UserMenu";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useIdeStore } from "@/store/ideStore";
+import { CloudProject } from "@/lib/cloudFileSystem";
 
 type ViewType = 'explorer' | 'editor' | 'ai' | 'preview' | 'terminal' | 'git' | 'settings';
 
@@ -25,6 +28,7 @@ const IDE = () => {
   const [activeView, setActiveView] = useState<ViewType>('editor');
   const [showSettings, setShowSettings] = useState(false);
   const [showSimulator, setShowSimulator] = useState(false);
+  const [currentProject, setCurrentProject] = useState<CloudProject | null>(null);
   const { livePreviewOpen, theme } = useIdeStore();
 
   // Apply theme on mount and when it changes
@@ -85,12 +89,19 @@ const IDE = () => {
     <div className="h-screen flex bg-background overflow-hidden">
       <ActivityBar />
       
-      {/* Theme Switcher in top-right corner */}
-      <div className="absolute top-3 right-3 z-50">
-        <ThemeSwitcher />
+      {/* Top bar with Project Switcher and User Menu */}
+      <div className="absolute top-3 left-16 right-3 z-50 flex items-center justify-between px-4">
+        <ProjectSwitcher 
+          currentProject={currentProject} 
+          onProjectChange={setCurrentProject} 
+        />
+        <div className="flex items-center gap-3">
+          <ThemeSwitcher />
+          <UserMenu />
+        </div>
       </div>
       
-      <ResizablePanelGroup direction="horizontal" className="flex-1">
+      <ResizablePanelGroup direction="horizontal" className="flex-1 pt-16">
         <ResizablePanel defaultSize={20} minSize={15} maxSize={30}>
           {renderSidePanel()}
         </ResizablePanel>
