@@ -173,24 +173,66 @@ const ScrollExpandMedia = ({
           <div className='container mx-auto flex flex-col items-center justify-start relative z-10'>
             <div className='flex flex-col items-center justify-center w-full h-[100dvh] relative'>
               
-              {/* Floating orbs around the media */}
-              {[...Array(8)].map((_, i) => (
+              {/* Floating orbs with trails */}
+              {[...Array(12)].map((_, i) => (
                 <motion.div
-                  key={i}
-                  className="absolute w-4 h-4 rounded-full bg-primary/40 blur-sm"
+                  key={`orb-${i}`}
+                  className="absolute"
                   style={{
-                    left: `${20 + (i * 10)}%`,
-                    top: `${30 + (i % 3) * 20}%`,
+                    left: `${15 + (i * 7)}%`,
+                    top: `${25 + (i % 4) * 18}%`,
+                  }}
+                >
+                  <motion.div
+                    className="w-3 h-3 rounded-full bg-primary/60 blur-[2px]"
+                    animate={{
+                      y: [0, -40, 0],
+                      x: [0, Math.sin(i) * 20, 0],
+                      opacity: [0.3, 1, 0.3],
+                      scale: [1, 1.8, 1],
+                    }}
+                    transition={{
+                      duration: 4 + i * 0.4,
+                      repeat: Infinity,
+                      delay: i * 0.25,
+                      ease: "easeInOut"
+                    }}
+                  />
+                  <motion.div
+                    className="absolute inset-0 w-3 h-3 rounded-full bg-primary-glow/40 blur-sm"
+                    animate={{
+                      y: [0, -40, 0],
+                      x: [0, Math.sin(i) * 20, 0],
+                      scale: [1.5, 2.5, 1.5],
+                      opacity: [0.1, 0.4, 0.1],
+                    }}
+                    transition={{
+                      duration: 4 + i * 0.4,
+                      repeat: Infinity,
+                      delay: i * 0.25,
+                      ease: "easeInOut"
+                    }}
+                  />
+                </motion.div>
+              ))}
+              
+              {/* Energy particles */}
+              {[...Array(20)].map((_, i) => (
+                <motion.div
+                  key={`particle-${i}`}
+                  className="absolute w-1 h-1 rounded-full bg-primary-glow"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
                   }}
                   animate={{
-                    y: [0, -30, 0],
-                    opacity: [0.2, 0.8, 0.2],
-                    scale: [1, 1.5, 1],
+                    opacity: [0, 1, 0],
+                    scale: [0, 1.5, 0],
                   }}
                   transition={{
-                    duration: 3 + i * 0.5,
+                    duration: 2 + Math.random() * 2,
                     repeat: Infinity,
-                    delay: i * 0.3,
+                    delay: Math.random() * 3,
                   }}
                 />
               ))}
@@ -202,26 +244,103 @@ const ScrollExpandMedia = ({
                   height: `${mediaHeight}px`,
                   maxWidth: '95vw',
                   maxHeight: '85vh',
-                  boxShadow: `0px 0px ${50 + scrollProgress * 100}px rgba(var(--primary-rgb), ${0.3 + scrollProgress * 0.7})`,
+                  boxShadow: `0px 0px ${80 + scrollProgress * 150}px hsl(var(--primary) / ${0.4 + scrollProgress * 0.6}), 0px 0px ${40 + scrollProgress * 80}px hsl(var(--primary-glow) / ${0.5 + scrollProgress * 0.5})`,
                 }}
               >
-                {/* Glowing border rings */}
+                {/* Pulsing energy waves */}
+                {[...Array(4)].map((_, i) => (
+                  <motion.div
+                    key={`wave-${i}`}
+                    className="absolute inset-0 rounded-2xl border-2 border-primary/20"
+                    animate={{
+                      scale: [1, 1.5],
+                      opacity: [0.8, 0],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      delay: i * 0.75,
+                      ease: "easeOut"
+                    }}
+                  />
+                ))}
+                {/* Multiple glowing border rings with rotation */}
                 <motion.div
-                  className="absolute -inset-4 rounded-3xl border-2 border-primary/30"
+                  className="absolute -inset-4 rounded-3xl border-2 border-primary/40"
+                  animate={{
+                    scale: [1, 1.08, 1],
+                    opacity: [0.3, 0.8, 0.3],
+                    rotate: [0, 360]
+                  }}
+                  transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                />
+                <motion.div
+                  className="absolute -inset-6 rounded-[2rem] border-2 border-primary-glow/30"
                   animate={{
                     scale: [1, 1.05, 1],
-                    opacity: [0.3, 0.6, 0.3]
+                    opacity: [0.2, 0.6, 0.2],
+                    rotate: [360, 0]
                   }}
-                  transition={{ duration: 3, repeat: Infinity }}
+                  transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
                 />
                 <motion.div
-                  className="absolute -inset-8 rounded-[2rem] border border-primary/20"
+                  className="absolute -inset-10 rounded-[2.5rem] border border-primary/20"
                   animate={{
                     scale: [1, 1.03, 1],
-                    opacity: [0.2, 0.4, 0.2]
+                    opacity: [0.1, 0.4, 0.1],
+                    rotate: [0, 360]
                   }}
-                  transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
+                  transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
                 />
+                
+                {/* Enhanced corner accents with glow */}
+                {[0, 1, 2, 3].map((corner) => (
+                  <motion.div
+                    key={`corner-${corner}`}
+                    className="absolute"
+                    style={{
+                      top: corner < 2 ? '-1.5rem' : 'auto',
+                      bottom: corner >= 2 ? '-1.5rem' : 'auto',
+                      left: corner % 2 === 0 ? '-1.5rem' : 'auto',
+                      right: corner % 2 === 1 ? '-1.5rem' : 'auto',
+                    }}
+                  >
+                    <motion.div
+                      className="w-10 h-10 border-t-2 border-l-2 border-primary-glow relative"
+                      style={{
+                        transform: `rotate(${corner * 90}deg)`,
+                        borderRadius: '0.75rem',
+                        filter: 'drop-shadow(0 0 8px hsl(var(--primary-glow) / 0.8))'
+                      }}
+                      animate={{
+                        opacity: [0.4, 1, 0.4],
+                        scale: [1, 1.3, 1]
+                      }}
+                      transition={{
+                        duration: 2.5,
+                        repeat: Infinity,
+                        delay: corner * 0.6
+                      }}
+                    />
+                    {/* Corner particle burst */}
+                    <motion.div
+                      className="absolute w-2 h-2 bg-primary-glow rounded-full"
+                      style={{
+                        top: '0',
+                        left: '0',
+                      }}
+                      animate={{
+                        scale: [0, 2, 0],
+                        opacity: [0, 1, 0],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        delay: corner * 0.5
+                      }}
+                    />
+                  </motion.div>
+                ))}
                 {mediaType === 'video' ? (
                   mediaSrc.includes('youtube.com') ? (
                     <div className='relative w-full h-full pointer-events-none'>
@@ -254,16 +373,35 @@ const ScrollExpandMedia = ({
                         transition={{ duration: 0.2 }}
                       />
                       
-                      {/* Scanning line effect */}
+                      {/* Enhanced scanning line effects */}
                       <motion.div
                         className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none"
-                        animate={{ opacity: [0, 1, 0] }}
-                        transition={{ duration: 3, repeat: Infinity }}
                       >
+                        {/* Horizontal scan */}
                         <motion.div
-                          className="absolute w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent"
+                          className="absolute w-full h-0.5 bg-gradient-to-r from-transparent via-primary-glow to-transparent"
+                          style={{ filter: 'blur(1px) drop-shadow(0 0 4px hsl(var(--primary-glow)))' }}
                           animate={{ top: ['0%', '100%'] }}
-                          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                          transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                        />
+                        {/* Vertical scan */}
+                        <motion.div
+                          className="absolute h-full w-0.5 bg-gradient-to-b from-transparent via-primary to-transparent"
+                          style={{ filter: 'blur(1px) drop-shadow(0 0 4px hsl(var(--primary)))' }}
+                          animate={{ left: ['0%', '100%'] }}
+                          transition={{ duration: 5, repeat: Infinity, ease: "linear", delay: 1 }}
+                        />
+                        {/* Grid flash effect */}
+                        <motion.div
+                          className="absolute inset-0"
+                          style={{
+                            backgroundImage: 'linear-gradient(0deg, hsl(var(--primary) / 0.1) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary) / 0.1) 1px, transparent 1px)',
+                            backgroundSize: '20px 20px'
+                          }}
+                          animate={{
+                            opacity: [0, 0.3, 0]
+                          }}
+                          transition={{ duration: 3, repeat: Infinity }}
                         />
                       </motion.div>
                     </div>
@@ -294,16 +432,35 @@ const ScrollExpandMedia = ({
                         transition={{ duration: 0.2 }}
                       />
                       
-                      {/* Scanning line effect */}
+                      {/* Enhanced scanning line effects */}
                       <motion.div
                         className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none"
-                        animate={{ opacity: [0, 1, 0] }}
-                        transition={{ duration: 3, repeat: Infinity }}
                       >
+                        {/* Horizontal scan */}
                         <motion.div
-                          className="absolute w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent"
+                          className="absolute w-full h-0.5 bg-gradient-to-r from-transparent via-primary-glow to-transparent"
+                          style={{ filter: 'blur(1px) drop-shadow(0 0 4px hsl(var(--primary-glow)))' }}
                           animate={{ top: ['0%', '100%'] }}
-                          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                          transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                        />
+                        {/* Vertical scan */}
+                        <motion.div
+                          className="absolute h-full w-0.5 bg-gradient-to-b from-transparent via-primary to-transparent"
+                          style={{ filter: 'blur(1px) drop-shadow(0 0 4px hsl(var(--primary)))' }}
+                          animate={{ left: ['0%', '100%'] }}
+                          transition={{ duration: 5, repeat: Infinity, ease: "linear", delay: 1 }}
+                        />
+                        {/* Grid flash effect */}
+                        <motion.div
+                          className="absolute inset-0"
+                          style={{
+                            backgroundImage: 'linear-gradient(0deg, hsl(var(--primary) / 0.1) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary) / 0.1) 1px, transparent 1px)',
+                            backgroundSize: '20px 20px'
+                          }}
+                          animate={{
+                            opacity: [0, 0.3, 0]
+                          }}
+                          transition={{ duration: 3, repeat: Infinity }}
                         />
                       </motion.div>
                     </div>
@@ -323,16 +480,49 @@ const ScrollExpandMedia = ({
                       transition={{ duration: 0.2 }}
                     />
                     
-                    {/* Scanning line effect */}
+                    {/* Enhanced scanning line effects */}
                     <motion.div
                       className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none"
-                      animate={{ opacity: [0, 1, 0] }}
-                      transition={{ duration: 3, repeat: Infinity }}
                     >
+                      {/* Horizontal scan with glow */}
                       <motion.div
-                        className="absolute w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent"
+                        className="absolute w-full h-0.5 bg-gradient-to-r from-transparent via-primary-glow to-transparent"
+                        style={{ filter: 'blur(1px) drop-shadow(0 0 6px hsl(var(--primary-glow)))' }}
                         animate={{ top: ['0%', '100%'] }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                      />
+                      {/* Vertical scan */}
+                      <motion.div
+                        className="absolute h-full w-0.5 bg-gradient-to-b from-transparent via-primary to-transparent"
+                        style={{ filter: 'blur(1px) drop-shadow(0 0 6px hsl(var(--primary)))' }}
+                        animate={{ left: ['0%', '100%'] }}
+                        transition={{ duration: 5, repeat: Infinity, ease: "linear", delay: 1 }}
+                      />
+                      {/* Diagonal cross scan */}
+                      <motion.div
+                        className="absolute w-full h-0.5 bg-gradient-to-r from-transparent via-primary-glow/50 to-transparent origin-center"
+                        style={{ 
+                          filter: 'blur(2px)',
+                          top: '50%',
+                          transform: 'rotate(45deg)'
+                        }}
+                        animate={{ 
+                          scale: [0, 2],
+                          opacity: [0.8, 0]
+                        }}
+                        transition={{ duration: 2.5, repeat: Infinity }}
+                      />
+                      {/* Grid overlay */}
+                      <motion.div
+                        className="absolute inset-0"
+                        style={{
+                          backgroundImage: 'linear-gradient(0deg, hsl(var(--primary) / 0.15) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary) / 0.15) 1px, transparent 1px)',
+                          backgroundSize: '25px 25px'
+                        }}
+                        animate={{
+                          opacity: [0, 0.4, 0]
+                        }}
+                        transition={{ duration: 3, repeat: Infinity }}
                       />
                     </motion.div>
                   </div>

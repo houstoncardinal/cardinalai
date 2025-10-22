@@ -25,9 +25,8 @@ const Landing = () => {
 
   return (
     <ScrollExpandMedia
-      mediaType="video"
-      mediaSrc="https://videos.pexels.com/video-files/6774133/6774133-uhd_2560_1440_25fps.mp4"
-      posterSrc="https://images.pexels.com/photos/6774133/pexels-photo-6774133.jpeg"
+      mediaType="image"
+      mediaSrc="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=1920&auto=format&fit=crop"
       bgImageSrc="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop"
       title="PathwayAI Intelligence"
       date="Where Code Meets Consciousness"
