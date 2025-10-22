@@ -52,7 +52,7 @@ const Community = () => {
     if (error) {
       console.error('Error loading posts:', error);
     } else {
-      setPosts((data as CommunityPost[]) || []);
+      setPosts((data as unknown as CommunityPost[]) || []);
     }
   };
 
