@@ -12,6 +12,8 @@ import { useAiChat } from '@/hooks/useAiChat';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
+import { useAiFileOperations } from '@/hooks/useAiFileOperations';
+import { Loader2, Send, X } from 'lucide-react';
 
 type AiMode = 'architect' | 'debugger' | 'mentor' | 'composer' | 'chat';
 
@@ -53,11 +55,12 @@ export const EnhancedAiPanel: React.FC = () => {
   const [mode, setMode] = useState<AiMode>('chat');
   const [prompt, setPrompt] = useState('');
   const [createFiles, setCreateFiles] = useState(false);
+  const [autoApplyFiles, setAutoApplyFiles] = useState(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showSessions, setShowSessions] = useState(false);
   const [sessions, setSessions] = useState<any[]>([]);
   const { toast } = useToast();
-  const { tabs, activeTabId } = useIdeStore();
+  const { tabs, activeTabId, addTab } = useIdeStore();
   const scrollRef = useRef<HTMLDivElement>(null);
   
   const {
@@ -71,6 +74,8 @@ export const EnhancedAiPanel: React.FC = () => {
     loadSessions,
     switchSession,
   } = useAiChat();
+  
+  const { parseCodeBlocks, applyFileOperations, isProcessing } = useAiFileOperations();
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -92,73 +97,22 @@ export const EnhancedAiPanel: React.FC = () => {
     setPrompt('');
 
     try {
+      // Get current file context if available
       const activeTab = tabs.find(t => t.id === activeTabId);
-      const context = activeTab ? `Current file: ${activeTab.title}\nLanguage: ${activeTab.language}` : 'No file open';
+      const code = activeTab?.content;
+      const language = activeTab?.language;
+      const fileName = activeTab?.title;
 
-      if ((mode === 'architect' || mode === 'composer') && createFiles) {
-        // Notify file creation start
-        if ((window as any).notifyFileChange) {
-          (window as any).notifyFileChange('AI generating files...', 'create');
-        }
+      // Enhanced context with file structure
+      const rootFiles = await fileSystem.getRootFiles();
+      const fileStructure = rootFiles.map(f => `${f.type === 'folder' ? '📁' : '📄'} ${f.name}`).join('\n');
+      
+      const context = code 
+        ? `Current file: ${fileName} (${language})\nProject structure:\n${fileStructure}\n\nYou can create/edit files using the special format in your instructions.`
+        : `Project structure:\n${fileStructure}\n\nYou can create/edit files using the special format in your instructions.`;
 
-        // File generation mode using existing logic
-        const { data: functionData, error: functionError } = await supabase.functions.invoke('ai-file-generator', {
-          body: { 
-            prompt: currentPrompt,
-            projectContext: context,
-            mode,
-          }
-        });
-
-        if (functionError) throw functionError;
-
-        if (functionData.files && Array.isArray(functionData.files)) {
-          for (const file of functionData.files) {
-            const pathParts = file.path.split('/');
-            const fileName = pathParts.pop() || 'untitled';
-            const folderPath = pathParts.join('/') || '/';
-
-            let folder = await fileSystem.getFile(folderPath === '/' ? 'root' : folderPath);
-            if (!folder) {
-              const parts = folderPath.split('/').filter(Boolean);
-              let currentPath = 'root';
-              for (const part of parts) {
-                const children = await fileSystem.getChildren(currentPath);
-                const existing = children.find(f => f.name === part && f.type === 'folder');
-                if (!existing) {
-                  const newFolder = await fileSystem.createFile(part, 'folder', currentPath);
-                  currentPath = newFolder.id;
-                } else {
-                  currentPath = existing.id;
-                }
-              }
-              folder = { id: currentPath } as any;
-            }
-
-            await fileSystem.createFile(fileName, file.content, folder?.id || 'root');
-            
-            // Notify file creation
-            if ((window as any).notifyFileChange) {
-              (window as any).notifyFileChange(file.path, 'create');
-            }
-          }
-
-          toast({
-            title: 'Files Generated',
-            description: `Created ${functionData.files.length} file(s)`,
-          });
-        }
-      } else {
-        // Stream AI response for chat/assistance
-        const activeTab = tabs.find(t => t.id === activeTabId);
-        await streamAiResponse(
-          currentPrompt,
-          mode,
-          activeTab?.content,
-          activeTab?.language,
-          context
-        );
-      }
+      // Stream AI response with enhanced context
+      await streamAiResponse(currentPrompt, mode, code, language, context);
     } catch (error) {
       console.error('Error:', error);
       toast({
@@ -168,6 +122,16 @@ export const EnhancedAiPanel: React.FC = () => {
       });
     }
   };
+
+  // Auto-apply file operations from AI responses
+  useEffect(() => {
+    if (!isStreaming && streamingContent && autoApplyFiles && (mode === 'architect' || mode === 'composer')) {
+      const operations = parseCodeBlocks(streamingContent);
+      if (operations.length > 0) {
+        applyFileOperations(operations);
+      }
+    }
+  }, [isStreaming, streamingContent, autoApplyFiles, mode]);
 
   const copyToClipboard = (content: string, id: string) => {
     navigator.clipboard.writeText(content);
@@ -446,39 +410,39 @@ export const EnhancedAiPanel: React.FC = () => {
       </ScrollArea>
 
       {/* Input Area - Fixed at Bottom */}
-      <div className="flex-shrink-0 border-t border-[#3a3a3a] p-3 bg-[#2a2a2a]">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="flex items-center gap-2 flex-1">
-            <Checkbox
-              id="create-files"
-              checked={createFiles}
-              onCheckedChange={(checked) => setCreateFiles(checked as boolean)}
-              className="border-[#5a5a5a] data-[state=checked]:bg-[#5B7FFF] data-[state=checked]:border-[#5B7FFF]"
-              disabled={mode !== 'architect' && mode !== 'composer'}
-            />
-            <Label 
-              htmlFor="create-files" 
-              className={cn(
-                "text-xs cursor-pointer transition-colors",
-                createFiles ? "text-[#e0e0e0] font-medium" : "text-[#909090]",
-                (mode !== 'architect' && mode !== 'composer') && "opacity-50 cursor-not-allowed"
-              )}
-            >
-              Create files
-            </Label>
+      <div className="flex-shrink-0 border-t border-[#3a3a3a] p-4 bg-[#2a2a2a]">
+        {(mode === 'architect' || mode === 'composer') && (
+          <div className="mb-3 space-y-2">
+            <div className="flex items-center gap-2 text-xs">
+              <Checkbox
+                id="create-files"
+                checked={createFiles}
+                onCheckedChange={(checked) => setCreateFiles(checked as boolean)}
+                className="border-[#5a5a5a] data-[state=checked]:bg-[#5B7FFF]"
+              />
+              <Label htmlFor="create-files" className="text-[#b0b0b0] cursor-pointer">
+                Enable file generation mode
+              </Label>
+            </div>
+            <div className="flex items-center gap-2 text-xs">
+              <Checkbox
+                id="auto-apply"
+                checked={autoApplyFiles}
+                onCheckedChange={(checked) => setAutoApplyFiles(checked as boolean)}
+                className="border-[#5a5a5a] data-[state=checked]:bg-[#5B7FFF]"
+              />
+              <Label htmlFor="auto-apply" className="text-[#b0b0b0] cursor-pointer">
+                Auto-apply file operations from AI
+              </Label>
+            </div>
+            {isProcessing && (
+              <div className="flex items-center gap-2 text-xs text-[#5B7FFF] animate-pulse">
+                <Loader2 className="w-3 h-3 animate-spin" />
+                <span>Applying file operations...</span>
+              </div>
+            )}
           </div>
-          {isStreaming && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={cancelStream}
-              className="text-xs h-7 hover:bg-[#3a3a3a] text-[#ff6b6b] transition-colors"
-            >
-              <StopCircle className="w-3 h-3 mr-1.5" />
-              Stop
-            </Button>
-          )}
-        </div>
+        )}
         
         <div className="flex gap-2">
           <Textarea
@@ -490,18 +454,39 @@ export const EnhancedAiPanel: React.FC = () => {
                 handleSubmit();
               }
             }}
-            placeholder={`${mode.charAt(0).toUpperCase() + mode.slice(1)} mode: Add context...`}
-            className="flex-1 min-h-[70px] max-h-[150px] resize-none bg-[#333333] border border-[#4a4a4a] focus:border-[#6a6a6a] transition-colors text-[#e0e0e0] placeholder:text-[#707070] rounded text-sm p-2"
+            placeholder={`Ask ${AGENT_PERSONALITIES[mode].name} anything... (Shift+Enter for new line)`}
+            className="flex-1 min-h-[80px] max-h-[150px] resize-none bg-[#333333] border border-[#4a4a4a] focus:border-[#6a6a6a] transition-colors text-[#e0e0e0] placeholder:text-[#707070] rounded text-sm p-3"
             disabled={isStreaming}
           />
-          <Button
-            onClick={handleSubmit}
-            disabled={!prompt.trim() || isStreaming}
-            className="self-end bg-[#404040] hover:bg-[#505050] transition-colors disabled:opacity-30 disabled:cursor-not-allowed h-[70px] px-3 rounded"
-            size="sm"
-          >
-            <Sparkles className="w-4 h-4 text-[#e0e0e0]" />
-          </Button>
+          <div className="flex flex-col gap-2 justify-end">
+            <Button
+              onClick={handleSubmit}
+              disabled={!prompt.trim() || isStreaming}
+              className="h-[80px] px-4 rounded transition-all hover:shadow-lg"
+              style={{
+                background: isStreaming 
+                  ? '#404040' 
+                  : `linear-gradient(135deg, ${getModeColor(mode).split(' ')[0].replace('from-', '')} 0%, ${getModeColor(mode).split(' ')[1].replace('to-', '')} 100%)`,
+              }}
+            >
+              {isStreaming ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Send className="w-5 h-5" />
+              )}
+            </Button>
+            {isStreaming && (
+              <Button
+                onClick={cancelStream}
+                variant="destructive"
+                size="sm"
+                className="h-8"
+              >
+                <X className="w-4 h-4 mr-1" />
+                Stop
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>
