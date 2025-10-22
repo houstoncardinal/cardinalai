@@ -140,80 +140,168 @@ export const EnhancedAiPanel: React.FC = () => {
     toast({ title: 'Copied', description: 'Content copied to clipboard' });
   };
 
-  // Color scheme for each mode based on reference images
+  // Enhanced color schemes for each mode
   const getModeColor = (m: AiMode) => {
     switch (m) {
-      case 'architect': return 'from-[#5B7FFF] to-[#7B94FF]'; // Blue/Purple
-      case 'debugger': return 'from-[#FF6B6B] to-[#FF8E8E]'; // Red
-      case 'mentor': return 'from-[#90EE90] to-[#A8F5A8]'; // Light green
-      case 'composer': return 'from-[#B794F6] to-[#C7A8FF]'; // Purple
-      case 'chat': return 'from-[#FFD700] to-[#FFE44D]'; // Gold
+      case 'architect': return 'from-[#5B7FFF] to-[#7B94FF]';
+      case 'debugger': return 'from-[#FF6B6B] to-[#FF8E8E]';
+      case 'mentor': return 'from-[#90EE90] to-[#A8F5A8]';
+      case 'composer': return 'from-[#B794F6] to-[#C7A8FF]';
+      case 'chat': return 'from-[#FFD700] to-[#FFE44D]';
       default: return 'from-primary to-accent';
     }
   };
 
+  const getModeGradient = (m: AiMode) => {
+    switch (m) {
+      case 'architect': return 'linear-gradient(135deg, #5B7FFF 0%, #7B94FF 100%)';
+      case 'debugger': return 'linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%)';
+      case 'mentor': return 'linear-gradient(135deg, #90EE90 0%, #A8F5A8 100%)';
+      case 'composer': return 'linear-gradient(135deg, #B794F6 0%, #C7A8FF 100%)';
+      case 'chat': return 'linear-gradient(135deg, #FFD700 0%, #FFE44D 100%)';
+      default: return 'linear-gradient(135deg, #fff 0%, #ccc 100%)';
+    }
+  };
+
+  const getModeAccent = (m: AiMode) => {
+    switch (m) {
+      case 'architect': return '#7B94FF';
+      case 'debugger': return '#FF8E8E';
+      case 'mentor': return '#A8F5A8';
+      case 'composer': return '#C7A8FF';
+      case 'chat': return '#FFE44D';
+      default: return '#fff';
+    }
+  };
+
   return (
-    <div className="h-full flex flex-col bg-[#2a2a2a]">
-      {/* Header - Compact and Fixed */}
-      <div className="flex-shrink-0 px-4 py-3 border-b border-[#3a3a3a] bg-[#2a2a2a]">
-        <div className="flex items-center justify-between mb-3">
+    <div className="h-full flex flex-col bg-[#1a1a1a]">
+      {/* Header - Enhanced with better contrast and aesthetics */}
+      <div className="flex-shrink-0 px-4 py-4 border-b border-[#333] bg-gradient-to-br from-[#222] to-[#1a1a1a] shadow-lg">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#3a3a3a] to-[#2a2a2a] flex items-center justify-center border border-[#4a4a4a]">
-                {React.createElement(AGENT_PERSONALITIES[mode].icon, { className: "w-4 h-4 text-[#e0e0e0]" })}
+            <motion.div 
+              className="relative"
+              animate={{ 
+                boxShadow: [
+                  '0 0 10px rgba(255,255,255,0.1)',
+                  '0 0 20px rgba(255,255,255,0.2)',
+                  '0 0 10px rgba(255,255,255,0.1)'
+                ]
+              }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <div className={cn(
+                "w-10 h-10 rounded-xl bg-gradient-to-br flex items-center justify-center border-2 shadow-lg",
+                mode === 'architect' && "border-[#5B7FFF] from-[#5B7FFF]/20 to-[#7B94FF]/20",
+                mode === 'debugger' && "border-[#FF6B6B] from-[#FF6B6B]/20 to-[#FF8E8E]/20",
+                mode === 'mentor' && "border-[#90EE90] from-[#90EE90]/20 to-[#A8F5A8]/20",
+                mode === 'composer' && "border-[#B794F6] from-[#B794F6]/20 to-[#C7A8FF]/20",
+                mode === 'chat' && "border-[#FFD700] from-[#FFD700]/20 to-[#FFE44D]/20"
+              )}>
+                {React.createElement(AGENT_PERSONALITIES[mode].icon, { 
+                  className: cn(
+                    "w-5 h-5",
+                    mode === 'architect' && "text-[#7B94FF]",
+                    mode === 'debugger' && "text-[#FF8E8E]",
+                    mode === 'mentor' && "text-[#A8F5A8]",
+                    mode === 'composer' && "text-[#C7A8FF]",
+                    mode === 'chat' && "text-[#FFE44D]"
+                  )
+                })}
               </div>
-            </div>
+            </motion.div>
             <div>
-              <h3 className="font-semibold text-[#e0e0e0] text-sm uppercase tracking-wider">
+              <h3 className="font-bold text-white text-base tracking-wide flex items-center gap-2">
                 CARDINAL AI
+                <motion.span
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className={cn(
+                    "w-2 h-2 rounded-full",
+                    mode === 'architect' && "bg-[#7B94FF]",
+                    mode === 'debugger' && "bg-[#FF8E8E]",
+                    mode === 'mentor' && "bg-[#A8F5A8]",
+                    mode === 'composer' && "bg-[#C7A8FF]",
+                    mode === 'chat' && "bg-[#FFE44D]"
+                  )}
+                />
               </h3>
-              <p className="text-xs text-[#909090] uppercase tracking-wide">
-                {mode === 'architect' && 'THE ARCHITECT • DESIGNS FRAMEWORKS AND STRUCTURES'}
-                {mode === 'debugger' && 'THE DEBUGGER • ANALYZES AND RESOLVES ISSUES'}
-                {mode === 'mentor' && 'THE MENTOR • TEACHES AND EXPLAINS CONCEPTS'}
-                {mode === 'composer' && 'THE COMPOSER • REFACTORS WITH ARTISTIC PRECISION'}
-                {mode === 'chat' && 'CARDINAL COLLECTIVE • GENERAL AI ASSISTANCE'}
+              <p className={cn(
+                "text-xs font-medium uppercase tracking-wider mt-0.5",
+                mode === 'architect' && "text-[#7B94FF]",
+                mode === 'debugger' && "text-[#FF8E8E]",
+                mode === 'mentor' && "text-[#A8F5A8]",
+                mode === 'composer' && "text-[#C7A8FF]",
+                mode === 'chat' && "text-[#FFE44D]"
+              )}>
+                {mode === 'architect' && '⚡ THE ARCHITECT • DESIGNS FRAMEWORKS'}
+                {mode === 'debugger' && '🔍 THE DEBUGGER • RESOLVES ISSUES'}
+                {mode === 'mentor' && '📚 THE MENTOR • TEACHES CONCEPTS'}
+                {mode === 'composer' && '✨ THE COMPOSER • REFACTORS CODE'}
+                {mode === 'chat' && '💬 CARDINAL COLLECTIVE • AI ASSISTANCE'}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowSessions(!showSessions)}
-              className="h-8 w-8 p-0 hover:bg-[#3a3a3a] transition-colors"
-            >
-              <History className="w-4 h-4 text-[#909090]" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={createNewSession}
-              className="h-8 w-8 p-0 hover:bg-[#3a3a3a] transition-colors"
-            >
-              <Plus className="w-4 h-4 text-[#909090]" />
-            </Button>
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowSessions(!showSessions)}
+                className="h-9 w-9 p-0 hover:bg-white/10 transition-all rounded-lg border border-white/10 hover:border-white/20"
+              >
+                <History className="w-4 h-4 text-white/70 hover:text-white" />
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={createNewSession}
+                className="h-9 w-9 p-0 hover:bg-white/10 transition-all rounded-lg border border-white/10 hover:border-white/20"
+              >
+                <Plus className="w-4 h-4 text-white/70 hover:text-white" />
+              </Button>
+            </motion.div>
           </div>
         </div>
 
-        {/* Mode Selector with Color-Coded Borders */}
+        {/* Mode Selector with Enhanced Visuals */}
         <div className="flex gap-2 flex-wrap justify-center">
           {(Object.keys(AGENT_PERSONALITIES) as AiMode[]).map((m) => {
             const Icon = AGENT_PERSONALITIES[m].icon;
+            const isActive = mode === m;
             return (
-              <button
+              <motion.button
                 key={m}
                 onClick={() => setMode(m)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2 rounded-md text-xs font-medium transition-all duration-200 bg-[#333333]",
-                  mode === m
-                    ? `border-2 bg-gradient-to-br ${getModeColor(m)} text-white shadow-lg`
-                    : "border border-[#4a4a4a] text-[#b0b0b0] hover:border-[#6a6a6a]"
+                  "relative flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 overflow-hidden",
+                  isActive
+                    ? "bg-gradient-to-br shadow-2xl border-2"
+                    : "bg-[#2a2a2a] border border-[#444] text-white/60 hover:text-white/90 hover:bg-[#333] hover:border-[#555]"
                 )}
+                style={isActive ? {
+                  background: getModeGradient(m),
+                  borderColor: getModeAccent(m),
+                  boxShadow: `0 0 20px ${getModeAccent(m)}40`
+                } : {}}
               >
-                <Icon className="w-4 h-4" />
-                {m.charAt(0).toUpperCase() + m.slice(1)}
-              </button>
+                {isActive && (
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                    animate={{ x: ['-100%', '200%'] }}
+                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+                  />
+                )}
+                <Icon className={cn("w-4 h-4 relative z-10", isActive && "text-white drop-shadow-lg")} />
+                <span className={cn("relative z-10", isActive && "text-white drop-shadow-lg")}>
+                  {m.charAt(0).toUpperCase() + m.slice(1)}
+                </span>
+              </motion.button>
             );
           })}
         </div>
