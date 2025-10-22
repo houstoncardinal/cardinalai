@@ -44,7 +44,9 @@ export const CommandPalette = () => {
   };
 
   return (
-    <Dialog open={commandPaletteOpen} onOpenChange={toggleCommandPalette}>
+    <Dialog open={commandPaletteOpen} onOpenChange={(open) => {
+      if (open !== commandPaletteOpen) toggleCommandPalette();
+    }}>
       <DialogContent className="p-0 max-w-2xl glass-panel neon-glow">
         <DialogTitle className="sr-only">Command Palette</DialogTitle>
         <DialogDescription className="sr-only">
