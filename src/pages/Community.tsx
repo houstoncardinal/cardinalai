@@ -125,7 +125,7 @@ const Community = () => {
           {/* Header */}
           <div className="text-center mb-12 space-y-4 animate-fade-in-up">
             <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
-              PathwayAI Community
+              CardinalAI Community
             </h1>
             <p className="text-xl text-muted-foreground">
               Share ideas, get feedback, and connect with developers worldwide

@@ -1,4 +1,4 @@
-// Sound effects for PathwayAI IDE
+// Sound effects for CardinalAI IDE
 
 class SoundManager {
   private enabled: boolean = true;

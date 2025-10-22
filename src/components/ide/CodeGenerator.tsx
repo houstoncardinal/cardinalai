@@ -224,7 +224,7 @@ export const CodeGenerator = () => {
               Describe your code requirements above
             </p>
             <p className="text-xs text-muted-foreground/70 mt-2">
-              PathwayAI will generate production-ready code instantly
+              CardinalAI will generate production-ready code instantly
             </p>
           </div>
         </div>

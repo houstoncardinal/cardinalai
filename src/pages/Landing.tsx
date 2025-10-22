@@ -16,7 +16,7 @@ const Landing = () => {
             </div>
             <div>
               <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-                PathwayAI
+                CardinalAI
               </h1>
               <p className="text-xs text-muted-foreground">by Cardinal Consulting</p>
             </div>
@@ -72,7 +72,7 @@ const Landing = () => {
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">The Pathway Collective</h2>
+            <h2 className="text-4xl font-bold mb-4">The Cardinal Collective</h2>
             <p className="text-muted-foreground text-lg">Four AI entities collaborating like a neural orchestra</p>
           </div>
           
@@ -182,7 +182,7 @@ const Landing = () => {
               Join developers worldwide who are experiencing the future of coding.
             </p>
             <Button size="lg" onClick={() => navigate("/ide")} className="text-lg px-12 shadow-glow">
-              Launch PathwayAI IDE
+              Launch CardinalAI IDE
             </Button>
           </div>
         </div>
@@ -193,7 +193,7 @@ const Landing = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="text-center md:text-left">
-              <h3 className="font-bold text-lg mb-2">PathwayAI</h3>
+              <h3 className="font-bold text-lg mb-2">CardinalAI</h3>
               <p className="text-sm text-muted-foreground">
                 Created by Hunain Qureshi, CEO of Cardinal Consulting
               </p>

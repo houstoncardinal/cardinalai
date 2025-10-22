@@ -94,7 +94,7 @@ export const MobileNav = () => {
           <SheetHeader className="border-b border-border p-4">
             <SheetTitle className="flex items-center gap-2">
               <Code2 className="w-5 h-5 text-primary" />
-              <span className="text-sm font-semibold tracking-wide">PATHWAY AI</span>
+              <span className="text-sm font-semibold tracking-wide">CARDINAL AI</span>
             </SheetTitle>
           </SheetHeader>
 

@@ -36,7 +36,7 @@ class FileSystemManager {
   private currentProjectId: string | null = null;
 
   async init() {
-    this.db = await openDB<FileSystemDB>('PathwayFS', 1, {
+    this.db = await openDB<FileSystemDB>('CardinalFS', 1, {
       upgrade(db) {
         const fileStore = db.createObjectStore('files', { keyPath: 'id' });
         fileStore.createIndex('by-parent', 'parentId');
@@ -273,12 +273,12 @@ class FileSystemManager {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PathwayAI App</title>
+  <title>CardinalAI App</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div id="app">
-    <h1>Welcome to PathwayAI</h1>
+    <h1>Welcome to CardinalAI</h1>
     <p>Start building your application!</p>
   </div>
   <script src="script.js"></script>
@@ -323,10 +323,10 @@ h1 {
   }
 
   private getDefaultJS(): string {
-    return `// Welcome to PathwayAI!
+    return `// Welcome to CardinalAI!
 // Start building your application here
 
-console.log('PathwayAI is ready! 🚀');
+console.log('CardinalAI is ready! 🚀');
 
 // Example: Add interactivity
 document.querySelector('#app').addEventListener('click', () => {

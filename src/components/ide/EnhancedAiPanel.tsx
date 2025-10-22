@@ -45,7 +45,7 @@ const AGENT_PERSONALITIES: Record<AiMode, AgentPersonality> = {
     description: 'Refactors code into elegant masterpieces',
   },
   chat: {
-    name: 'PathwayAI',
+    name: 'CardinalAI',
     icon: MessageSquare,
     description: 'General AI assistance',
   },
@@ -165,14 +165,14 @@ export const EnhancedAiPanel: React.FC = () => {
             </div>
             <div>
               <h3 className="font-semibold text-[#e0e0e0] text-sm uppercase tracking-wider">
-                PATHWAY AI
+                CARDINAL AI
               </h3>
               <p className="text-xs text-[#909090] uppercase tracking-wide">
                 {mode === 'architect' && 'THE ARCHITECT • DESIGNS FRAMEWORKS AND STRUCTURES'}
                 {mode === 'debugger' && 'THE DEBUGGER • ANALYZES AND RESOLVES ISSUES'}
                 {mode === 'mentor' && 'THE MENTOR • TEACHES AND EXPLAINS CONCEPTS'}
                 {mode === 'composer' && 'THE COMPOSER • REFACTORS WITH ARTISTIC PRECISION'}
-                {mode === 'chat' && 'PATHWAY COLLECTIVE • GENERAL AI ASSISTANCE'}
+                {mode === 'chat' && 'CARDINAL COLLECTIVE • GENERAL AI ASSISTANCE'}
               </p>
             </div>
           </div>
@@ -265,7 +265,7 @@ export const EnhancedAiPanel: React.FC = () => {
                 <MessageSquare className="w-8 h-8 text-[#707070]" />
               </div>
               <h3 className="text-lg font-semibold text-[#e0e0e0] mb-2">
-                Start a conversation with PathwayAI
+                Start a conversation with CardinalAI
               </h3>
               <p className="text-sm text-[#909090]">
                 Ask questions, get explanations, or refactor code

@@ -24,7 +24,7 @@ export const LoadingSpinner = ({ className, size = 'md', text }: LoadingSpinnerP
   );
 };
 
-export const PathwayLoadingScreen = () => {
+export const CardinalLoadingScreen = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
       <div className="text-center space-y-6">
@@ -68,7 +68,7 @@ export const PathwayLoadingScreen = () => {
         </div>
 
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold tracking-tight">PathwayAI</h1>
+          <h1 className="text-2xl font-bold tracking-tight">CardinalAI</h1>
           <p className="text-sm text-muted-foreground">
             Initializing intelligent development environment...
           </p>

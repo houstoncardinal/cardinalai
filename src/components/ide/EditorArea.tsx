@@ -153,7 +153,7 @@ export const EditorArea = () => {
           <div className="flex items-center justify-center h-full text-muted-foreground">
             <div className="text-center space-y-4 animate-fade-in-up">
               <div className="text-6xl mb-4 animate-pulse">✨</div>
-              <h3 className="text-xl font-semibold">Welcome to PathwayAI</h3>
+              <h3 className="text-xl font-semibold">Welcome to CardinalAI</h3>
               <p className="text-sm">Open a file from the explorer to start editing</p>
               <p className="text-xs text-primary">Press ⌘K to open command palette</p>
               <div className="glass-panel p-4 mx-auto max-w-md mt-6 text-left">

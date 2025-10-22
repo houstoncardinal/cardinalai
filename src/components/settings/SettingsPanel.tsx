@@ -49,7 +49,7 @@ export const SettingsPanel = ({ onClose }: SettingsPanelProps) => {
             <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
               <Zap className="w-4 h-4 text-primary" />
             </div>
-            <h2 className="text-lg font-semibold">PathwayAI Settings</h2>
+            <h2 className="text-lg font-semibold">CardinalAI Settings</h2>
           </div>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="w-4 h-4" />
@@ -162,10 +162,10 @@ export const SettingsPanel = ({ onClose }: SettingsPanelProps) => {
           <div className="glass-panel p-4 rounded-lg space-y-2">
             <div className="flex items-center gap-2 text-primary">
               <Info className="w-4 h-4" />
-              <span className="text-sm font-semibold">About PathwayAI</span>
+              <span className="text-sm font-semibold">About CardinalAI</span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              PathwayAI is an intelligent development environment powered by multi-agent AI. 
+              CardinalAI is an intelligent development environment powered by multi-agent AI. 
               Choose between The Architect, Debugger, Mentor, and Composer to enhance your coding workflow.
             </p>
             <div className="text-xs text-muted-foreground">

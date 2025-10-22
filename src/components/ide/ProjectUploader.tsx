@@ -112,7 +112,7 @@ export const ProjectUploader = ({ open, onClose }: ProjectUploaderProps) => {
       <DialogContent className="glass-panel max-w-md">
         <DialogTitle>Import Project</DialogTitle>
         <DialogDescription>
-          Upload your project folder to start working in PathwayAI
+          Upload your project folder to start working in CardinalAI
         </DialogDescription>
 
         <div className="space-y-4 py-4">
