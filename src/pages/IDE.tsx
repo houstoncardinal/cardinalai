@@ -68,7 +68,7 @@ const IDE = () => {
         
         <ResizableHandle className="w-1 bg-border hover:bg-primary transition-colors" />
         
-        <ResizablePanel defaultSize={50} minSize={30}>
+        <ResizablePanel defaultSize={45} minSize={30}>
           <ResizablePanelGroup direction="vertical">
             <ResizablePanel defaultSize={70} minSize={40}>
               <EditorArea />

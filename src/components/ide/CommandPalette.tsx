@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useIdeStore } from '@/store/ideStore';
 import { Command } from 'cmdk';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { 
   Palette, 
   Files, 
@@ -46,6 +46,10 @@ export const CommandPalette = () => {
   return (
     <Dialog open={commandPaletteOpen} onOpenChange={toggleCommandPalette}>
       <DialogContent className="p-0 max-w-2xl glass-panel neon-glow">
+        <DialogTitle className="sr-only">Command Palette</DialogTitle>
+        <DialogDescription className="sr-only">
+          Search and execute commands
+        </DialogDescription>
         <Command className="rounded-lg border-0">
           <Command.Input
             placeholder="Type a command or search..."
