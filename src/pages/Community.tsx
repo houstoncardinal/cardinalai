@@ -8,20 +8,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, MessageSquare, Heart, User, Send } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
-interface Post {
-  id: string;
-  title: string;
-  content: string;
-  author: string;
-  created_at: string;
-  likes: number;
-}
+import type { CommunityPost } from "@/integrations/supabase/types/community";
 
 const Community = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [author, setAuthor] = useState("");
@@ -53,14 +45,14 @@ const Community = () => {
 
   const loadPosts = async () => {
     const { data, error } = await supabase
-      .from('community_posts')
+      .from('community_posts' as any)
       .select('*')
       .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error loading posts:', error);
     } else {
-      setPosts(data || []);
+      setPosts((data as CommunityPost[]) || []);
     }
   };
 
@@ -77,7 +69,7 @@ const Community = () => {
 
     setLoading(true);
     const { error } = await supabase
-      .from('community_posts')
+      .from('community_posts' as any)
       .insert([{ title, content, author, likes: 0 }]);
 
     if (error) {
@@ -100,7 +92,7 @@ const Community = () => {
 
   const handleLike = async (postId: string, currentLikes: number) => {
     const { error } = await supabase
-      .from('community_posts')
+      .from('community_posts' as any)
       .update({ likes: currentLikes + 1 })
       .eq('id', postId);
 

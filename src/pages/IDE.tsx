@@ -16,22 +16,14 @@ import { MobileToolbar } from "@/components/ide/MobileToolbar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useIdeStore } from "@/store/ideStore";
 
+type ViewType = 'explorer' | 'editor' | 'ai' | 'preview' | 'terminal' | 'git' | 'settings';
+
 const IDE = () => {
   const isMobile = useIsMobile();
-  const { activeView } = useIdeStore();
-  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+  const [activeView, setActiveView] = useState<ViewType>('editor');
+  const [showSettings, setShowSettings] = useState(false);
+  const [showSimulator, setShowSimulator] = useState(false);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setCommandPaletteOpen(true);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
 
   const renderSidePanel = () => {
     switch (activeView) {
@@ -40,7 +32,8 @@ const IDE = () => {
       case 'git':
         return <GitPanel />;
       case 'settings':
-        return <SettingsPanel />;
+        setShowSettings(true);
+        return <FileExplorer />;
       default:
         return <FileExplorer />;
     }
@@ -102,7 +95,12 @@ const IDE = () => {
               <div className="h-full border-l border-border bg-background/50 backdrop-blur-sm">
                 <div className="p-4 border-b border-border flex items-center justify-between">
                   <h2 className="font-semibold">Preview</h2>
-                  <DeviceSimulator />
+                  <button 
+                    onClick={() => setShowSimulator(true)}
+                    className="text-xs text-primary hover:underline"
+                  >
+                    Device Simulator
+                  </button>
                 </div>
                 <LivePreview />
               </div>
@@ -111,8 +109,10 @@ const IDE = () => {
         </ResizablePanel>
       </ResizablePanelGroup>
 
-      <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
+      <CommandPalette />
       <FileChangeMonitor />
+      {showSettings && <SettingsPanel onClose={() => setShowSettings(false)} />}
+      {showSimulator && <DeviceSimulator onClose={() => setShowSimulator(false)} />}
     </div>
   );
 };
