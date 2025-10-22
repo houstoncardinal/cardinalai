@@ -22,6 +22,7 @@ export const useAiChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingContent, setStreamingContent] = useState('');
+  const [selectedProvider, setSelectedProvider] = useState<string>('lovable');
   const abortControllerRef = useRef<AbortController | null>(null);
   const { toast } = useToast();
 
@@ -157,8 +158,10 @@ export const useAiChat = () => {
     mode: string,
     code?: string,
     language?: string,
-    context?: string
+    context?: string,
+    provider?: string
   ) => {
+    const useProvider = provider || selectedProvider;
     if (!currentSession) {
       toast({
         title: 'Error',
@@ -182,7 +185,7 @@ export const useAiChat = () => {
     abortControllerRef.current = new AbortController();
 
     try {
-      const STREAM_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-stream-assist`;
+      const STREAM_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-multi-provider`;
       
       const response = await fetch(STREAM_URL, {
         method: 'POST',
@@ -195,6 +198,7 @@ export const useAiChat = () => {
             role: m.role,
             content: m.content,
           })).concat([{ role: 'user', content: prompt }]),
+          provider: useProvider,
           mode,
           code,
           language,
@@ -358,6 +362,8 @@ export const useAiChat = () => {
     messages,
     isStreaming,
     streamingContent,
+    selectedProvider,
+    setSelectedProvider,
     streamAiResponse,
     cancelStream,
     createNewSession,

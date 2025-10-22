@@ -60,6 +60,7 @@ export const EnhancedAiPanel: React.FC = () => {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showSessions, setShowSessions] = useState(false);
   const [sessions, setSessions] = useState<any[]>([]);
+  const [availableProviders, setAvailableProviders] = useState<string[]>(['lovable']);
   const { toast } = useToast();
   const { tabs, activeTabId, addTab } = useIdeStore();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -69,6 +70,8 @@ export const EnhancedAiPanel: React.FC = () => {
     messages,
     isStreaming,
     streamingContent,
+    selectedProvider,
+    setSelectedProvider,
     streamAiResponse,
     cancelStream,
     createNewSession,
@@ -83,6 +86,33 @@ export const EnhancedAiPanel: React.FC = () => {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, streamingContent]);
+
+  // Load available providers
+  useEffect(() => {
+    loadAvailableProviders();
+  }, []);
+
+  const loadAvailableProviders = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setAvailableProviders(['lovable']);
+        return;
+      }
+
+      const { data } = await supabase
+        .from('user_api_keys')
+        .select('provider')
+        .eq('user_id', user.id)
+        .eq('is_active', true);
+
+      const providers = ['lovable', ...(data?.map(k => k.provider) || [])];
+      setAvailableProviders([...new Set(providers)]);
+    } catch (error) {
+      console.error('Error loading providers:', error);
+      setAvailableProviders(['lovable']);
+    }
+  };
 
   // Load sessions when opening history
   useEffect(() => {
@@ -341,6 +371,19 @@ export const EnhancedAiPanel: React.FC = () => {
 
             {/* Action Buttons */}
             <div className="flex items-center gap-2">
+              {/* Provider Selector */}
+              <select
+                value={selectedProvider}
+                onChange={(e) => setSelectedProvider(e.target.value)}
+                className="h-10 px-3 rounded-xl border-2 border-white/20 bg-black/40 text-white text-sm backdrop-blur-md hover:bg-black/60 transition-all"
+              >
+                {availableProviders.map((provider) => (
+                  <option key={provider} value={provider}>
+                    {provider.charAt(0).toUpperCase() + provider.slice(1)}
+                  </option>
+                ))}
+              </select>
+              
               <motion.div whileHover={{ scale: 1.1, y: -2 }} whileTap={{ scale: 0.9 }}>
                 <Button
                   variant="ghost"

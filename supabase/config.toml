@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.code-generator]
 verify_jwt = false
+
+[functions.ai-multi-provider]
+verify_jwt = true
