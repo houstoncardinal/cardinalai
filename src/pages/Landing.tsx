@@ -4,7 +4,7 @@ import { Code2, Sparkles, Users, Zap, Brain, Workflow, Shield, Rocket } from "lu
 import { motion } from "framer-motion";
 import { MatrixRain } from "@/components/landing/MatrixRain";
 import { CircuitBackground } from "@/components/landing/CircuitBackground";
-import { InteractiveCard } from "@/components/landing/InteractiveCard";
+import { PathwayAgentCard } from "@/components/landing/PathwayAgentCard";
 import { GlowingText } from "@/components/landing/GlowingText";
 import { FloatingParticles } from "@/components/landing/FloatingParticles";
 import { DataFlow } from "@/components/landing/DataFlow";
@@ -25,12 +25,13 @@ const Landing = () => {
 
   return (
     <ScrollExpandMedia
-      mediaType="image"
-      mediaSrc="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1280&auto=format&fit=crop"
+      mediaType="video"
+      mediaSrc="https://videos.pexels.com/video-files/6774133/6774133-uhd_2560_1440_25fps.mp4"
+      posterSrc="https://images.pexels.com/photos/6774133/pexels-photo-6774133.jpeg"
       bgImageSrc="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop"
       title="PathwayAI Intelligence"
-      date="The Future of Development"
-      scrollToExpand="Scroll to Explore"
+      date="Where Code Meets Consciousness"
+      scrollToExpand="Scroll to Explore the Pathway"
       textBlend
     >
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 relative overflow-hidden">
@@ -108,46 +109,48 @@ const Landing = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <GlowingText>
-                <h2 className="text-4xl font-bold mb-4">The Pathway Collective</h2>
-              </GlowingText>
-              <p className="text-muted-foreground text-lg">Four AI entities collaborating like a neural orchestra</p>
-            </motion.div>
+            <GlowingText>
+              <h2 className="text-5xl font-bold mb-6">The Pathway Collective</h2>
+            </GlowingText>
+            <p className="text-muted-foreground text-xl max-w-3xl mx-auto">
+              Four AI entities that form a neural orchestra, each with unique capabilities and consciousness
+            </p>
+          </motion.div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 gap-8">
             {[
               {
                 icon: Workflow,
                 title: "The Architect",
-                description: "Designs your codebase, folder structure, and logic flow with visionary precision.",
-                color: "from-blue-500 to-cyan-500"
+                description: "Visionary structural designer that crafts your codebase with surgical precision. Builds frameworks and logical flows that scale effortlessly from prototype to production.",
+                color: "from-cyan-500 via-blue-500 to-indigo-600"
               },
               {
                 icon: Shield,
                 title: "The Debugger",
-                description: "Watches for inefficiency, bugs, and inconsistencies with analytical calm.",
-                color: "from-red-500 to-orange-500"
+                description: "Analytical guardian that watches over every line of code. Identifies inefficiencies, hunts bugs methodically, and maintains system integrity with unwavering focus.",
+                color: "from-red-500 via-orange-500 to-amber-600"
               },
               {
                 icon: Brain,
                 title: "The Mentor",
-                description: "Teaches and explains complex concepts with encouraging insight.",
-                color: "from-green-500 to-emerald-500"
+                description: "Supportive intelligence that transforms complex concepts into crystal-clear insights. Teaches, guides, and empowers you to master any technology with confidence.",
+                color: "from-emerald-500 via-green-500 to-teal-600"
               },
               {
                 icon: Sparkles,
                 title: "The Composer",
-                description: "Rewrites and refactors with poetic precision and artistic elegance.",
-                color: "from-purple-500 to-pink-500"
+                description: "Artistic technician that refactors code into elegant poetry. Transforms tangled logic into beautiful, maintainable masterpieces with creative precision.",
+                color: "from-purple-500 via-pink-500 to-rose-600"
               }
             ].map((agent, index) => (
-              <InteractiveCard
+              <PathwayAgentCard
                 key={index}
                 icon={agent.icon}
                 title={agent.title}
                 description={agent.description}
                 gradient={agent.color}
-                delay={index * 0.1}
+                delay={index * 0.15}
               />
             ))}
           </div>

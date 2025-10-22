@@ -172,6 +172,29 @@ const ScrollExpandMedia = ({
 
           <div className='container mx-auto flex flex-col items-center justify-start relative z-10'>
             <div className='flex flex-col items-center justify-center w-full h-[100dvh] relative'>
+              
+              {/* Floating orbs around the media */}
+              {[...Array(8)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-4 h-4 rounded-full bg-primary/40 blur-sm"
+                  style={{
+                    left: `${20 + (i * 10)}%`,
+                    top: `${30 + (i % 3) * 20}%`,
+                  }}
+                  animate={{
+                    y: [0, -30, 0],
+                    opacity: [0.2, 0.8, 0.2],
+                    scale: [1, 1.5, 1],
+                  }}
+                  transition={{
+                    duration: 3 + i * 0.5,
+                    repeat: Infinity,
+                    delay: i * 0.3,
+                  }}
+                />
+              ))}
+              
               <div
                 className='absolute z-0 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-none rounded-2xl'
                 style={{
@@ -179,9 +202,26 @@ const ScrollExpandMedia = ({
                   height: `${mediaHeight}px`,
                   maxWidth: '95vw',
                   maxHeight: '85vh',
-                  boxShadow: '0px 0px 50px rgba(0, 0, 0, 0.3)',
+                  boxShadow: `0px 0px ${50 + scrollProgress * 100}px rgba(var(--primary-rgb), ${0.3 + scrollProgress * 0.7})`,
                 }}
               >
+                {/* Glowing border rings */}
+                <motion.div
+                  className="absolute -inset-4 rounded-3xl border-2 border-primary/30"
+                  animate={{
+                    scale: [1, 1.05, 1],
+                    opacity: [0.3, 0.6, 0.3]
+                  }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                />
+                <motion.div
+                  className="absolute -inset-8 rounded-[2rem] border border-primary/20"
+                  animate={{
+                    scale: [1, 1.03, 1],
+                    opacity: [0.2, 0.4, 0.2]
+                  }}
+                  transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
+                />
                 {mediaType === 'video' ? (
                   mediaSrc.includes('youtube.com') ? (
                     <div className='relative w-full h-full pointer-events-none'>
@@ -207,12 +247,25 @@ const ScrollExpandMedia = ({
                         style={{ pointerEvents: 'none' }}
                       ></div>
 
-                      <motion.div
+                       <motion.div
                         className='absolute inset-0 bg-black/30 rounded-xl'
                         initial={{ opacity: 0.7 }}
                         animate={{ opacity: 0.5 - scrollProgress * 0.3 }}
                         transition={{ duration: 0.2 }}
                       />
+                      
+                      {/* Scanning line effect */}
+                      <motion.div
+                        className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none"
+                        animate={{ opacity: [0, 1, 0] }}
+                        transition={{ duration: 3, repeat: Infinity }}
+                      >
+                        <motion.div
+                          className="absolute w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent"
+                          animate={{ top: ['0%', '100%'] }}
+                          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                        />
+                      </motion.div>
                     </div>
                   ) : (
                     <div className='relative w-full h-full pointer-events-none'>
@@ -240,6 +293,19 @@ const ScrollExpandMedia = ({
                         animate={{ opacity: 0.5 - scrollProgress * 0.3 }}
                         transition={{ duration: 0.2 }}
                       />
+                      
+                      {/* Scanning line effect */}
+                      <motion.div
+                        className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none"
+                        animate={{ opacity: [0, 1, 0] }}
+                        transition={{ duration: 3, repeat: Infinity }}
+                      >
+                        <motion.div
+                          className="absolute w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent"
+                          animate={{ top: ['0%', '100%'] }}
+                          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                        />
+                      </motion.div>
                     </div>
                   )
                 ) : (
@@ -256,25 +322,51 @@ const ScrollExpandMedia = ({
                       animate={{ opacity: 0.7 - scrollProgress * 0.3 }}
                       transition={{ duration: 0.2 }}
                     />
+                    
+                    {/* Scanning line effect */}
+                    <motion.div
+                      className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none"
+                      animate={{ opacity: [0, 1, 0] }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                    >
+                      <motion.div
+                        className="absolute w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent"
+                        animate={{ top: ['0%', '100%'] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                      />
+                    </motion.div>
                   </div>
                 )}
 
                 <div className='flex flex-col items-center text-center relative z-10 mt-4 transition-none'>
                   {date && (
-                    <p
-                      className='text-2xl text-primary-glow'
+                    <motion.p
+                      className='text-2xl text-primary-glow font-bold tracking-wider'
                       style={{ transform: `translateX(-${textTranslateX}vw)` }}
+                      animate={{
+                        textShadow: [
+                          '0 0 10px hsl(var(--primary) / 0.5)',
+                          '0 0 30px hsl(var(--primary) / 0.8)',
+                          '0 0 10px hsl(var(--primary) / 0.5)',
+                        ]
+                      }}
+                      transition={{ duration: 2, repeat: Infinity }}
                     >
                       {date}
-                    </p>
+                    </motion.p>
                   )}
                   {scrollToExpand && (
-                    <p
-                      className='text-primary-glow font-medium text-center'
+                    <motion.p
+                      className='text-primary-glow font-medium text-center mt-2'
                       style={{ transform: `translateX(${textTranslateX}vw)` }}
+                      animate={{
+                        opacity: [0.5, 1, 0.5],
+                        y: [0, -5, 0]
+                      }}
+                      transition={{ duration: 2, repeat: Infinity }}
                     >
                       {scrollToExpand}
-                    </p>
+                    </motion.p>
                   )}
                 </div>
               </div>
@@ -285,14 +377,30 @@ const ScrollExpandMedia = ({
                 }`}
               >
                 <motion.h2
-                  className='text-4xl md:text-5xl lg:text-6xl font-bold text-primary-glow transition-none'
+                  className='text-4xl md:text-5xl lg:text-6xl font-bold text-primary-glow transition-none drop-shadow-2xl'
                   style={{ transform: `translateX(-${textTranslateX}vw)` }}
+                  animate={{
+                    textShadow: [
+                      '0 0 20px hsl(var(--primary) / 0.8)',
+                      '0 0 40px hsl(var(--primary) / 1)',
+                      '0 0 20px hsl(var(--primary) / 0.8)',
+                    ]
+                  }}
+                  transition={{ duration: 3, repeat: Infinity }}
                 >
                   {firstWord}
                 </motion.h2>
                 <motion.h2
-                  className='text-4xl md:text-5xl lg:text-6xl font-bold text-center text-primary-glow transition-none'
+                  className='text-4xl md:text-5xl lg:text-6xl font-bold text-center text-primary-glow transition-none drop-shadow-2xl'
                   style={{ transform: `translateX(${textTranslateX}vw)` }}
+                  animate={{
+                    textShadow: [
+                      '0 0 20px hsl(var(--primary-glow) / 0.8)',
+                      '0 0 40px hsl(var(--primary-glow) / 1)',
+                      '0 0 20px hsl(var(--primary-glow) / 0.8)',
+                    ]
+                  }}
+                  transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
                 >
                   {restOfTitle}
                 </motion.h2>
