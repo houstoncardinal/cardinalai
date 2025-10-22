@@ -41,6 +41,7 @@ export interface IdeState {
   setActiveTab: (id: string) => void;
   updateTabContent: (id: string, content: string) => void;
   toggleCommandPalette: () => void;
+  setCommandPaletteOpen: (open: boolean) => void;
   toggleAiPanel: () => void;
   toggleTerminal: () => void;
   toggleGitPanel: () => void;
@@ -92,6 +93,7 @@ export const useIdeStore = create<IdeState>((set) => ({
   toggleCommandPalette: () => set((state) => ({ 
     commandPaletteOpen: !state.commandPaletteOpen 
   })),
+  setCommandPaletteOpen: (open) => set({ commandPaletteOpen: open }),
   toggleAiPanel: () => set((state) => ({ aiPanelOpen: !state.aiPanelOpen })),
   toggleTerminal: () => set((state) => ({ terminalOpen: !state.terminalOpen })),
   toggleGitPanel: () => set((state) => ({ gitPanelOpen: !state.gitPanelOpen })),

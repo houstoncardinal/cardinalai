@@ -17,6 +17,7 @@ export const CommandPalette = () => {
   const { 
     commandPaletteOpen, 
     toggleCommandPalette,
+    setCommandPaletteOpen,
     setTheme,
     toggleFileExplorer,
     toggleGitPanel,
@@ -39,14 +40,12 @@ export const CommandPalette = () => {
 
   const handleSelect = (callback: () => void) => {
     callback();
-    toggleCommandPalette();
+    setCommandPaletteOpen(false);
     setSearch('');
   };
 
   return (
-    <Dialog open={commandPaletteOpen} onOpenChange={(open) => {
-      if (open !== commandPaletteOpen) toggleCommandPalette();
-    }}>
+    <Dialog open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen}>
       <DialogContent className="p-0 max-w-2xl glass-panel neon-glow">
         <DialogTitle className="sr-only">Command Palette</DialogTitle>
         <DialogDescription className="sr-only">
