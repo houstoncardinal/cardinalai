@@ -103,19 +103,26 @@ export const EditorArea = () => {
       </div>
 
       {/* Editor */}
-      <div className="flex-1 min-h-0">
+      <div className="flex-1 min-h-0 relative">
         {activeTab ? (
-          <AnimatedCodeEditor isAiTyping={isAiEditing}>
-            <Editor
-            height="100%"
-            path={activeTab.title}
-            language={activeTab.language}
-            value={activeTab.content}
-            onChange={(value) => {
-              updateTabContent(activeTab.id, value || '');
-            }}
-            theme="vs-dark"
-            options={{
+          <div className="absolute inset-0">
+            <AnimatedCodeEditor isAiTyping={isAiEditing}>
+              <Editor
+                height="100%"
+                width="100%"
+                path={activeTab.title}
+                language={activeTab.language}
+                value={activeTab.content}
+                onChange={(value) => {
+                  updateTabContent(activeTab.id, value || '');
+                }}
+                theme="vs-dark"
+                loading={
+                  <div className="flex items-center justify-center h-full">
+                    <div className="text-muted-foreground">Loading editor...</div>
+                  </div>
+                }
+                options={{
               minimap: { enabled: true },
               fontSize: 14,
               fontFamily: "'Fira Code', 'Cascadia Code', 'Consolas', monospace",
@@ -146,9 +153,10 @@ export const EditorArea = () => {
                 autoFindInSelection: 'multiline',
                 seedSearchStringFromSelection: 'selection',
               },
-            }}
-          />
-          </AnimatedCodeEditor>
+              }}
+            />
+            </AnimatedCodeEditor>
+          </div>
         ) : (
           <div className="flex items-center justify-center h-full text-muted-foreground">
             <div className="text-center space-y-4 animate-fade-in-up">

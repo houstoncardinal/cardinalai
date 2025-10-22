@@ -69,7 +69,7 @@ export const AnimatedCodeEditor: React.FC<{
   children: React.ReactNode;
 }> = ({ isAiTyping, children }) => {
   return (
-    <div className="relative">
+    <div className="relative w-full h-full">
       <AnimatePresence>
         {isAiTyping && (
           <motion.div
