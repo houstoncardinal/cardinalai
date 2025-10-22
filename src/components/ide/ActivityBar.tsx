@@ -1,9 +1,10 @@
-import { Files, GitBranch, Terminal, Sparkles, Palette, Command, Monitor, Code2, Settings, Wand2 } from 'lucide-react';
+import { Files, GitBranch, Terminal, Sparkles, Palette, Command, Monitor, Code2, Settings, Wand2, Upload } from 'lucide-react';
 import { useState } from 'react';
 import { useIdeStore } from '@/store/ideStore';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { SettingsPanel } from '@/components/settings/SettingsPanel';
+import { ProjectUploader } from '@/components/ide/ProjectUploader';
 import { soundManager } from '@/utils/sounds';
 
 export const ActivityBar = () => {
@@ -26,6 +27,7 @@ export const ActivityBar = () => {
   } = useIdeStore();
   
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [uploaderOpen, setUploaderOpen] = useState(false);
 
   const handleClick = (action: () => void) => {
     soundManager.click();
@@ -35,6 +37,20 @@ export const ActivityBar = () => {
   return (
     <>
       <div className="hidden md:flex w-12 metal-panel border-r flex-col items-center py-4 gap-2">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-10 h-10 text-muted-foreground hover:text-foreground smooth-transition metal-shine"
+              onClick={() => handleClick(() => setUploaderOpen(true))}
+            >
+              <Upload className="w-5 h-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">Import Project</TooltipContent>
+        </Tooltip>
+
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
@@ -181,6 +197,7 @@ export const ActivityBar = () => {
       </div>
       
       {settingsOpen && <SettingsPanel onClose={() => setSettingsOpen(false)} />}
+      <ProjectUploader open={uploaderOpen} onClose={() => setUploaderOpen(false)} />
     </>
   );
 };

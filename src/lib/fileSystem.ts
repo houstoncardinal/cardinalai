@@ -1,4 +1,5 @@
 import { openDB, DBSchema, IDBPDatabase } from 'idb';
+import { soundManager } from '@/utils/sounds';
 
 export interface FileNode {
   id: string;
@@ -209,6 +210,32 @@ class FileSystemManager {
     for (const file of files) {
       await this.db!.add('files', file);
     }
+  }
+
+  async createFileFromPath(path: string, content: string = ''): Promise<FileNode> {
+    if (!this.db) await this.init();
+    
+    const parts = path.split('/').filter(p => p);
+    let currentParentId: string | null = null;
+    
+    // Create folders along the path
+    for (let i = 0; i < parts.length - 1; i++) {
+      const folderName = parts[i];
+      const folderPath = parts.slice(0, i + 1).join('/');
+      
+      // Check if folder exists
+      const existing = await this.db!.getAllFromIndex('files', 'by-path', folderPath);
+      if (existing.length > 0) {
+        currentParentId = existing[0].id;
+      } else {
+        const folder = await this.createFile(folderName, 'folder', currentParentId);
+        currentParentId = folder.id;
+      }
+    }
+    
+    // Create the file
+    const fileName = parts[parts.length - 1];
+    return await this.createFile(fileName, 'file', currentParentId, content);
   }
 
   private getLanguageFromExtension(filename: string): string {
