@@ -156,6 +156,201 @@ All colors MUST be HSL.
     --shadow-glass: 0 8px 32px hsla(0 0% 0% / 0.4);
     --shadow-sharp: 0 1px 3px hsla(0 0% 0% / 0.6);
   }
+
+  /* Neon - Electric purple and cyan theme */
+  .theme-neon {
+    --background: 280 40% 8%;
+    --foreground: 280 20% 98%;
+    
+    --card: 280 35% 12%;
+    --card-foreground: 280 20% 98%;
+    
+    --popover: 280 40% 10%;
+    --popover-foreground: 280 20% 98%;
+    
+    --primary: 280 80% 65%;
+    --primary-foreground: 280 40% 10%;
+    --primary-glow: 280 90% 75%;
+    
+    --secondary: 280 30% 18%;
+    --secondary-foreground: 280 20% 98%;
+    
+    --muted: 280 30% 18%;
+    --muted-foreground: 280 15% 70%;
+    
+    --accent: 180 80% 60%;
+    --accent-foreground: 280 40% 10%;
+    
+    --destructive: 350 80% 60%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 280 30% 25%;
+    --input: 280 30% 25%;
+    --ring: 280 80% 65%;
+    
+    --editor-bg: 280 40% 8%;
+    --panel-bg: 280 35% 11%;
+    --glass-bg: 280 35% 13%;
+    --glass-border: 280 50% 35%;
+    --metal-shine: 280 80% 80%;
+    --metal-dark: 280 30% 30%;
+  }
+
+  /* Cyberpunk - Yellow and pink neon theme */
+  .theme-cyberpunk {
+    --background: 320 50% 10%;
+    --foreground: 60 100% 95%;
+    
+    --card: 320 45% 15%;
+    --card-foreground: 60 100% 95%;
+    
+    --popover: 320 50% 12%;
+    --popover-foreground: 60 100% 95%;
+    
+    --primary: 60 100% 60%;
+    --primary-foreground: 320 50% 10%;
+    --primary-glow: 60 100% 70%;
+    
+    --secondary: 320 40% 22%;
+    --secondary-foreground: 60 100% 95%;
+    
+    --muted: 320 40% 22%;
+    --muted-foreground: 60 50% 75%;
+    
+    --accent: 330 100% 60%;
+    --accent-foreground: 320 50% 10%;
+    
+    --destructive: 0 90% 60%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 320 40% 28%;
+    --input: 320 40% 28%;
+    --ring: 60 100% 60%;
+    
+    --editor-bg: 320 50% 10%;
+    --panel-bg: 320 45% 13%;
+    --glass-bg: 320 45% 16%;
+    --glass-border: 320 60% 40%;
+    --metal-shine: 60 100% 75%;
+    --metal-dark: 320 40% 35%;
+  }
+
+  /* Forest - Deep green nature theme */
+  .theme-forest {
+    --background: 140 30% 12%;
+    --foreground: 140 15% 95%;
+    
+    --card: 140 25% 17%;
+    --card-foreground: 140 15% 95%;
+    
+    --popover: 140 30% 14%;
+    --popover-foreground: 140 15% 95%;
+    
+    --primary: 140 60% 55%;
+    --primary-foreground: 140 30% 12%;
+    --primary-glow: 140 70% 65%;
+    
+    --secondary: 140 25% 22%;
+    --secondary-foreground: 140 15% 95%;
+    
+    --muted: 140 25% 22%;
+    --muted-foreground: 140 15% 72%;
+    
+    --accent: 90 60% 55%;
+    --accent-foreground: 140 30% 12%;
+    
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 140 25% 28%;
+    --input: 140 25% 28%;
+    --ring: 140 60% 55%;
+    
+    --editor-bg: 140 30% 12%;
+    --panel-bg: 140 28% 15%;
+    --glass-bg: 140 25% 18%;
+    --glass-border: 140 30% 35%;
+    --metal-shine: 140 50% 75%;
+    --metal-dark: 140 25% 35%;
+  }
+
+  /* Ocean - Deep blue aquatic theme */
+  .theme-ocean {
+    --background: 200 50% 12%;
+    --foreground: 200 20% 95%;
+    
+    --card: 200 45% 17%;
+    --card-foreground: 200 20% 95%;
+    
+    --popover: 200 50% 14%;
+    --popover-foreground: 200 20% 95%;
+    
+    --primary: 190 70% 55%;
+    --primary-foreground: 200 50% 12%;
+    --primary-glow: 190 80% 65%;
+    
+    --secondary: 200 40% 22%;
+    --secondary-foreground: 200 20% 95%;
+    
+    --muted: 200 40% 22%;
+    --muted-foreground: 200 20% 72%;
+    
+    --accent: 170 65% 50%;
+    --accent-foreground: 200 50% 12%;
+    
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 200 40% 28%;
+    --input: 200 40% 28%;
+    --ring: 190 70% 55%;
+    
+    --editor-bg: 200 50% 12%;
+    --panel-bg: 200 45% 15%;
+    --glass-bg: 200 42% 18%;
+    --glass-border: 200 50% 35%;
+    --metal-shine: 190 60% 75%;
+    --metal-dark: 200 40% 35%;
+  }
+
+  /* Sunset - Warm orange and purple theme */
+  .theme-sunset {
+    --background: 30 40% 12%;
+    --foreground: 30 15% 95%;
+    
+    --card: 30 35% 17%;
+    --card-foreground: 30 15% 95%;
+    
+    --popover: 30 40% 14%;
+    --popover-foreground: 30 15% 95%;
+    
+    --primary: 20 85% 60%;
+    --primary-foreground: 30 40% 12%;
+    --primary-glow: 20 90% 70%;
+    
+    --secondary: 30 30% 22%;
+    --secondary-foreground: 30 15% 95%;
+    
+    --muted: 30 30% 22%;
+    --muted-foreground: 30 15% 72%;
+    
+    --accent: 280 70% 65%;
+    --accent-foreground: 30 40% 12%;
+    
+    --destructive: 0 80% 60%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 30 30% 28%;
+    --input: 30 30% 28%;
+    --ring: 20 85% 60%;
+    
+    --editor-bg: 30 40% 12%;
+    --panel-bg: 30 35% 15%;
+    --glass-bg: 30 32% 18%;
+    --glass-border: 30 45% 35%;
+    --metal-shine: 20 80% 75%;
+    --metal-dark: 30 30% 35%;
+  }
 }
 
 @layer base {

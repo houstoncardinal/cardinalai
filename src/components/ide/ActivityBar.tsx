@@ -1,6 +1,7 @@
 import { Files, GitBranch, Terminal, Sparkles, Palette, Command, Monitor, Code2, Settings, Wand2, Upload, Search as SearchIcon, Eye } from 'lucide-react';
 import { useState } from 'react';
-import { useIdeStore } from '@/store/ideStore';
+import * as React from 'react';
+import { useIdeStore, ThemeName } from '@/store/ideStore';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { SettingsPanel } from '@/components/settings/SettingsPanel';
@@ -239,6 +240,22 @@ export const ActivityBar = () => {
 
 const ThemeSelector = () => {
   const { theme, setTheme } = useIdeStore();
+  const allThemes: ThemeName[] = ['obsidian', 'pearl', 'titanium', 'neon', 'cyberpunk', 'forest', 'ocean', 'sunset'];
+
+  // Apply theme to document when changed
+  React.useEffect(() => {
+    document.documentElement.classList.remove(
+      'theme-obsidian',
+      'theme-pearl',
+      'theme-titanium',
+      'theme-neon',
+      'theme-cyberpunk',
+      'theme-forest',
+      'theme-ocean',
+      'theme-sunset'
+    );
+    document.documentElement.classList.add(`theme-${theme}`);
+  }, [theme]);
 
   return (
     <Tooltip>
@@ -248,9 +265,8 @@ const ThemeSelector = () => {
           size="icon"
           className="w-10 h-10 text-muted-foreground hover:text-foreground smooth-transition"
           onClick={() => {
-            const themes: ('obsidian' | 'pearl' | 'titanium')[] = ['obsidian', 'pearl', 'titanium'];
-            const currentIndex = themes.indexOf(theme);
-            const nextTheme = themes[(currentIndex + 1) % themes.length];
+            const currentIndex = allThemes.indexOf(theme);
+            const nextTheme = allThemes[(currentIndex + 1) % allThemes.length];
             setTheme(nextTheme);
           }}
         >

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type ThemeName = 'obsidian' | 'pearl' | 'titanium';
+export type ThemeName = 'obsidian' | 'pearl' | 'titanium' | 'neon' | 'cyberpunk' | 'forest' | 'ocean' | 'sunset';
 
 export interface AiMessage {
   id: string;

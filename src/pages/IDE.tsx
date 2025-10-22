@@ -14,6 +14,7 @@ import { FileChangeMonitor } from "@/components/ide/FileChangeMonitor";
 import { MobileNav } from "@/components/ide/MobileNav";
 import { MobileToolbar } from "@/components/ide/MobileToolbar";
 import { AiOperationOverlay } from "@/components/ide/AiOperationOverlay";
+import { ThemeSwitcher } from "@/components/ide/ThemeSwitcher";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useIdeStore } from "@/store/ideStore";
 
@@ -24,7 +25,22 @@ const IDE = () => {
   const [activeView, setActiveView] = useState<ViewType>('editor');
   const [showSettings, setShowSettings] = useState(false);
   const [showSimulator, setShowSimulator] = useState(false);
-  const { livePreviewOpen } = useIdeStore();
+  const { livePreviewOpen, theme } = useIdeStore();
+
+  // Apply theme on mount and when it changes
+  useEffect(() => {
+    document.documentElement.classList.remove(
+      'theme-obsidian',
+      'theme-pearl',
+      'theme-titanium',
+      'theme-neon',
+      'theme-cyberpunk',
+      'theme-forest',
+      'theme-ocean',
+      'theme-sunset'
+    );
+    document.documentElement.classList.add(`theme-${theme}`);
+  }, [theme]);
 
 
   const renderSidePanel = () => {
@@ -44,6 +60,11 @@ const IDE = () => {
   if (isMobile) {
     return (
       <div className="h-screen flex flex-col bg-background">
+        {/* Mobile Theme Switcher */}
+        <div className="absolute top-2 right-2 z-50">
+          <ThemeSwitcher />
+        </div>
+        
         <MobileToolbar />
         <div className="flex-1 overflow-hidden">
           {activeView === 'explorer' && <EnhancedFileExplorer />}
@@ -63,6 +84,11 @@ const IDE = () => {
   return (
     <div className="h-screen flex bg-background overflow-hidden">
       <ActivityBar />
+      
+      {/* Theme Switcher in top-right corner */}
+      <div className="absolute top-3 right-3 z-50">
+        <ThemeSwitcher />
+      </div>
       
       <ResizablePanelGroup direction="horizontal" className="flex-1">
         <ResizablePanel defaultSize={20} minSize={15} maxSize={30}>
