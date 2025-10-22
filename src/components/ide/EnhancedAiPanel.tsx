@@ -224,30 +224,49 @@ export const EnhancedAiPanel: React.FC = () => {
             {/* Agent Identity */}
             <div className="flex items-center gap-4">
               <motion.div 
-                className="relative"
+                className="relative w-14 h-14"
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 animate={{ 
+                  rotate: 360,
                   boxShadow: [
-                    `0 0 20px ${getModeAccent(mode)}40`,
-                    `0 0 40px ${getModeAccent(mode)}60`,
-                    `0 0 20px ${getModeAccent(mode)}40`
+                    `0 0 30px ${getModeAccent(mode)}60`,
+                    `0 0 50px ${getModeAccent(mode)}80`,
+                    `0 0 30px ${getModeAccent(mode)}60`
                   ]
                 }}
-                transition={{ duration: 2, repeat: Infinity }}
+                transition={{ 
+                  rotate: { duration: 4, repeat: Infinity, ease: "linear" },
+                  boxShadow: { duration: 2, repeat: Infinity }
+                }}
               >
                 <div className={cn(
-                  "w-14 h-14 rounded-2xl bg-gradient-to-br flex items-center justify-center border-3 shadow-2xl relative overflow-hidden",
-                  mode === 'architect' && "border-[#5B7FFF] from-[#5B7FFF]/30 to-[#7B94FF]/10",
-                  mode === 'debugger' && "border-[#FF6B6B] from-[#FF6B6B]/30 to-[#FF8E8E]/10",
-                  mode === 'mentor' && "border-[#90EE90] from-[#90EE90]/30 to-[#A8F5A8]/10",
-                  mode === 'composer' && "border-[#B794F6] from-[#B794F6]/30 to-[#C7A8FF]/10",
-                  mode === 'chat' && "border-[#FFD700] from-[#FFD700]/30 to-[#FFE44D]/10"
-                )}>
-                  {/* Rotating glow effect */}
+                  "w-full h-full rounded-full bg-gradient-to-br flex items-center justify-center shadow-2xl relative overflow-hidden backdrop-blur-xl",
+                  mode === 'architect' && "from-[#5B7FFF]/40 to-[#7B94FF]/20",
+                  mode === 'debugger' && "from-[#FF6B6B]/40 to-[#FF8E8E]/20",
+                  mode === 'mentor' && "from-[#90EE90]/40 to-[#A8F5A8]/20",
+                  mode === 'composer' && "from-[#B794F6]/40 to-[#C7A8FF]/20",
+                  mode === 'chat' && "from-[#FFD700]/40 to-[#FFE44D]/20"
+                )}
+                style={{
+                  border: `2px solid ${getModeAccent(mode)}`,
+                  boxShadow: `0 0 40px ${getModeAccent(mode)}60, inset 0 0 20px ${getModeAccent(mode)}40`
+                }}>
+                  {/* Rotating glow rings */}
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                    animate={{ rotate: 360 }}
+                    className="absolute inset-0 rounded-full"
+                    style={{ 
+                      background: `conic-gradient(from 0deg, transparent 0%, ${getModeAccent(mode)}60 50%, transparent 100%)`
+                    }}
+                    animate={{ rotate: -360 }}
                     transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                  />
+                  <motion.div
+                    className="absolute inset-2 rounded-full"
+                    style={{ 
+                      background: `conic-gradient(from 180deg, transparent 0%, ${getModeAccent(mode)}40 50%, transparent 100%)`
+                    }}
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                   />
                   {React.createElement(AGENT_PERSONALITIES[mode].icon, { 
                     className: cn(
@@ -465,155 +484,269 @@ export const EnhancedAiPanel: React.FC = () => {
         </motion.div>
       )}
 
-      {/* Chat History - Full Height */}
-      <ScrollArea className="flex-1 p-4 bg-[#353535]" ref={scrollRef}>
-        <div className="space-y-4">
+      {/* Chat History - Full Height with Enhanced Visuals */}
+      <ScrollArea className="flex-1 p-5 bg-gradient-to-b from-[#1a1a1a] to-[#0f0f0f]" ref={scrollRef}>
+        <div className="space-y-6">
           {messages.length === 0 && !isStreaming && (
-            <div className="flex flex-col items-center justify-center h-full py-20 text-center">
-              <div className="w-16 h-16 rounded-full bg-[#3a3a3a] flex items-center justify-center mb-4 border border-[#4a4a4a]">
-                <MessageSquare className="w-8 h-8 text-[#707070]" />
-              </div>
-              <h3 className="text-lg font-semibold text-[#e0e0e0] mb-2">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center justify-center h-full py-24 text-center"
+            >
+              <motion.div 
+                animate={{ 
+                  rotate: 360,
+                  boxShadow: [
+                    `0 0 30px ${getModeAccent(mode)}40`,
+                    `0 0 50px ${getModeAccent(mode)}60`,
+                    `0 0 30px ${getModeAccent(mode)}40`
+                  ]
+                }}
+                transition={{ 
+                  rotate: { duration: 4, repeat: Infinity, ease: "linear" },
+                  boxShadow: { duration: 2, repeat: Infinity }
+                }}
+                className="w-20 h-20 rounded-full bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] flex items-center justify-center mb-6 border-2"
+                style={{
+                  borderColor: getModeAccent(mode),
+                  boxShadow: `0 0 40px ${getModeAccent(mode)}50`
+                }}
+              >
+                <MessageSquare className="w-10 h-10" style={{ color: getModeAccent(mode) }} />
+              </motion.div>
+              <h3 className="text-xl font-bold text-white mb-3 tracking-tight">
                 Start a conversation with CardinalAI
               </h3>
-              <p className="text-sm text-[#909090]">
-                Ask questions, get explanations, or refactor code
+              <p className="text-sm text-[#a0a0a0] max-w-md leading-relaxed">
+                Ask questions, get code assistance, debug issues, or learn new concepts with AI-powered intelligence
               </p>
-            </div>
+            </motion.div>
           )}
           {messages.map((message, index) => (
-            <div
+            <motion.div
               key={message.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
               className={cn(
-                "flex gap-3 items-start",
+                "flex gap-4 items-start",
                 message.role === 'user' && "flex-row-reverse"
               )}
             >
-              <div 
+              <motion.div 
+                whileHover={{ scale: 1.05 }}
                 className={cn(
-                  "w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 mt-1 border",
+                  "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-1 border-2 backdrop-blur-xl relative overflow-hidden",
                   message.role === 'user' 
-                    ? "bg-[#3a3a3a] border-[#5a5a5a]" 
-                    : "bg-[#3a3a3a] border-[#5a5a5a]"
+                    ? "bg-gradient-to-br from-[#4a4a4a]/50 to-[#2a2a2a]/30 border-[#6a6a6a]" 
+                    : "bg-gradient-to-br border-2"
                 )}
+                style={message.role === 'assistant' ? {
+                  borderColor: getModeAccent(mode),
+                  background: `linear-gradient(135deg, ${getModeAccent(mode)}30, ${getModeAccent(mode)}10)`,
+                  boxShadow: `0 4px 20px ${getModeAccent(mode)}40`
+                } : {}}
               >
                 {message.role === 'user' ? (
-                  <span className="text-xs font-bold text-[#e0e0e0]">U</span>
+                  <span className="text-sm font-bold text-white">U</span>
                 ) : (
-                  <MessageSquare className="w-4 h-4 text-[#e0e0e0]" />
+                  <MessageSquare className="w-5 h-5" style={{ color: getModeAccent(mode) }} />
                 )}
-              </div>
+                {/* Subtle glow effect */}
+                <div 
+                  className="absolute inset-0 rounded-xl opacity-30"
+                  style={{
+                    background: `radial-gradient(circle at center, ${message.role === 'assistant' ? getModeAccent(mode) : '#6a6a6a'}40, transparent 70%)`
+                  }}
+                />
+              </motion.div>
               <div className="flex-1 space-y-2 max-w-[85%]">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-medium text-[#e0e0e0]">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xs font-bold text-white tracking-wide uppercase">
                     {message.role === 'user' ? 'You' : AGENT_PERSONALITIES[mode].name}
                   </span>
                   {message.mode && (
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-[#3a3a3a] text-[#b0b0b0] font-medium border border-[#4a4a4a]">
+                    <span 
+                      className="text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider border backdrop-blur-sm"
+                      style={{
+                        borderColor: getModeAccent(mode),
+                        background: `${getModeAccent(mode)}20`,
+                        color: getModeAccent(mode)
+                      }}
+                    >
                       {message.mode}
                     </span>
                   )}
                 </div>
-                <div 
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.1 }}
                   className={cn(
-                    "rounded-lg p-3 border",
+                    "rounded-xl p-4 border backdrop-blur-xl relative overflow-hidden",
                     message.role === 'user'
-                      ? "bg-[#3a3a3a] border-[#5a5a5a] text-[#e0e0e0] ml-auto"
-                      : "bg-[#2f2f2f] border-[#4a4a4a] text-[#d0d0d0]"
+                      ? "bg-gradient-to-br from-[#3a3a3a]/80 to-[#2a2a2a]/60 border-[#5a5a5a] text-white ml-auto shadow-lg"
+                      : "bg-gradient-to-br from-[#2a2a2a]/80 to-[#1a1a1a]/60 text-[#e0e0e0] shadow-xl"
                   )}
+                  style={message.role === 'assistant' ? {
+                    borderColor: `${getModeAccent(mode)}40`,
+                    boxShadow: `0 4px 24px ${getModeAccent(mode)}20, inset 0 1px 0 rgba(255,255,255,0.05)`
+                  } : {}}
                 >
-                  <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                  {/* Subtle gradient overlay */}
+                  <div 
+                    className="absolute inset-0 opacity-5 pointer-events-none"
+                    style={{
+                      background: message.role === 'assistant' 
+                        ? `linear-gradient(135deg, ${getModeAccent(mode)}50, transparent)`
+                        : 'linear-gradient(135deg, rgba(255,255,255,0.1), transparent)'
+                    }}
+                  />
+                  <div className="whitespace-pre-wrap text-sm leading-relaxed relative z-10">
                     {message.content}
                   </div>
-                </div>
+                </motion.div>
                 {message.role === 'assistant' && (
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => copyToClipboard(message.content, message.id)}
-                    className="h-7 text-xs hover:bg-[#3a3a3a] transition-colors text-[#909090]"
+                    className="h-8 text-xs hover:bg-white/5 transition-all text-[#a0a0a0] hover:text-white rounded-lg"
                   >
                     {copiedId === message.id ? (
                       <>
-                        <Check className="w-3 h-3 mr-1.5 text-green-400" />
-                        Copied!
+                        <Check className="w-3.5 h-3.5 mr-2 text-green-400" />
+                        <span className="font-medium">Copied!</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="w-3 h-3 mr-1.5" />
-                        Copy
+                        <Copy className="w-3.5 h-3.5 mr-2" />
+                        <span className="font-medium">Copy</span>
                       </>
                     )}
                   </Button>
                 )}
               </div>
-            </div>
+            </motion.div>
           ))}
 
-          {/* Streaming Content */}
+          {/* Streaming Content with Enhanced Styling */}
           {isStreaming && streamingContent && (
-            <div className="flex gap-3 items-start">
-              <div className="w-9 h-9 rounded-lg bg-[#3a3a3a] border border-[#5a5a5a] flex items-center justify-center flex-shrink-0 mt-1">
-                <MessageSquare className="w-4 h-4 text-[#e0e0e0]" />
-              </div>
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex gap-4 items-start"
+            >
+              <motion.div 
+                animate={{ 
+                  boxShadow: [
+                    `0 0 20px ${getModeAccent(mode)}40`,
+                    `0 0 30px ${getModeAccent(mode)}60`,
+                    `0 0 20px ${getModeAccent(mode)}40`
+                  ]
+                }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-1 border-2 backdrop-blur-xl relative overflow-hidden"
+                style={{
+                  borderColor: getModeAccent(mode),
+                  background: `linear-gradient(135deg, ${getModeAccent(mode)}30, ${getModeAccent(mode)}10)`,
+                }}
+              >
+                <MessageSquare className="w-5 h-5" style={{ color: getModeAccent(mode) }} />
+                <div 
+                  className="absolute inset-0 rounded-xl opacity-30"
+                  style={{
+                    background: `radial-gradient(circle at center, ${getModeAccent(mode)}40, transparent 70%)`
+                  }}
+                />
+              </motion.div>
               <div className="flex-1 space-y-2 max-w-[85%]">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-medium text-[#e0e0e0]">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xs font-bold text-white tracking-wide uppercase">
                     {AGENT_PERSONALITIES[mode].name}
                   </span>
-                  <div className="flex gap-1">
+                  <div className="flex gap-1.5">
                     <motion.div 
-                      animate={{ scale: [1, 1.3, 1] }}
-                      transition={{ duration: 0.8, repeat: Infinity }}
-                      className="w-1 h-1 rounded-full bg-[#909090]" 
+                      animate={{ scale: [1, 1.4, 1], opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 1, repeat: Infinity }}
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ backgroundColor: getModeAccent(mode) }}
                     />
                     <motion.div 
-                      animate={{ scale: [1, 1.3, 1] }}
-                      transition={{ duration: 0.8, repeat: Infinity, delay: 0.2 }}
-                      className="w-1 h-1 rounded-full bg-[#909090]" 
+                      animate={{ scale: [1, 1.4, 1], opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 1, repeat: Infinity, delay: 0.2 }}
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ backgroundColor: getModeAccent(mode) }}
                     />
                     <motion.div 
-                      animate={{ scale: [1, 1.3, 1] }}
-                      transition={{ duration: 0.8, repeat: Infinity, delay: 0.4 }}
-                      className="w-1 h-1 rounded-full bg-[#909090]" 
+                      animate={{ scale: [1, 1.4, 1], opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 1, repeat: Infinity, delay: 0.4 }}
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ backgroundColor: getModeAccent(mode) }}
                     />
                   </div>
                 </div>
-                <div className="bg-[#2f2f2f] border border-[#4a4a4a] rounded-lg p-3">
-                  <div className="whitespace-pre-wrap text-[#d0d0d0] text-sm leading-relaxed">
+                <div 
+                  className="rounded-xl p-4 border backdrop-blur-xl relative overflow-hidden"
+                  style={{
+                    borderColor: `${getModeAccent(mode)}40`,
+                    background: `linear-gradient(135deg, rgba(42,42,42,0.8), rgba(26,26,26,0.6))`,
+                    boxShadow: `0 4px 24px ${getModeAccent(mode)}20, inset 0 1px 0 rgba(255,255,255,0.05)`
+                  }}
+                >
+                  <div 
+                    className="absolute inset-0 opacity-5 pointer-events-none"
+                    style={{
+                      background: `linear-gradient(135deg, ${getModeAccent(mode)}50, transparent)`
+                    }}
+                  />
+                  <div className="whitespace-pre-wrap text-[#e0e0e0] text-sm leading-relaxed relative z-10">
                     {streamingContent}
                     <motion.span 
                       animate={{ opacity: [0, 1, 0] }}
-                      transition={{ duration: 0.8, repeat: Infinity }}
-                      className="inline-block w-0.5 h-4 bg-[#909090] ml-1" 
+                      transition={{ duration: 1, repeat: Infinity }}
+                      className="inline-block w-0.5 h-4 ml-1"
+                      style={{ backgroundColor: getModeAccent(mode) }}
                     />
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {isStreaming && !streamingContent && (
-            <div className="flex items-center gap-3 p-3 bg-[#2f2f2f] rounded-lg border border-[#4a4a4a]">
-              <div className="flex gap-1.5">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex items-center gap-4 p-4 rounded-xl border backdrop-blur-xl"
+              style={{
+                borderColor: `${getModeAccent(mode)}40`,
+                background: `linear-gradient(135deg, rgba(42,42,42,0.8), rgba(26,26,26,0.6))`,
+                boxShadow: `0 4px 20px ${getModeAccent(mode)}20`
+              }}
+            >
+              <div className="flex gap-2">
                 <motion.div 
-                  animate={{ y: [0, -6, 0] }}
-                  transition={{ duration: 0.6, repeat: Infinity }}
-                  className="w-1.5 h-1.5 rounded-full bg-[#909090]" 
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 0.8, repeat: Infinity }}
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: getModeAccent(mode) }}
                 />
                 <motion.div 
-                  animate={{ y: [0, -6, 0] }}
-                  transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
-                  className="w-1.5 h-1.5 rounded-full bg-[#909090]" 
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 0.8, repeat: Infinity, delay: 0.2 }}
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: getModeAccent(mode) }}
                 />
                 <motion.div 
-                  animate={{ y: [0, -6, 0] }}
-                  transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
-                  className="w-1.5 h-1.5 rounded-full bg-[#909090]" 
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 0.8, repeat: Infinity, delay: 0.4 }}
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: getModeAccent(mode) }}
                 />
               </div>
-              <span className="text-xs text-[#b0b0b0]">Thinking...</span>
-            </div>
+              <span className="text-sm font-medium text-white">Thinking...</span>
+            </motion.div>
           )}
         </div>
       </ScrollArea>

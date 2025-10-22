@@ -1,4 +1,4 @@
-import { Files, GitBranch, Terminal, Sparkles, Palette, Command, Monitor, Code2, Settings, Wand2, Upload, Search as SearchIcon, Eye } from 'lucide-react';
+import { Files, GitBranch, Terminal, Bot, Palette, Command, Monitor, Code2, Settings, Wand2, Upload, Search as SearchIcon, Eye } from 'lucide-react';
 import { useState } from 'react';
 import * as React from 'react';
 import { useIdeStore, ThemeName } from '@/store/ideStore';
@@ -112,10 +112,10 @@ export const ActivityBar = () => {
               }`}
               onClick={() => handleClick(toggleAiPanel)}
             >
-              <Sparkles className="w-5 h-5" />
+              <Bot className="w-5 h-5" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent side="right">AI Copilot</TooltipContent>
+          <TooltipContent side="right">AI Assistant</TooltipContent>
         </Tooltip>
 
         <Tooltip>
