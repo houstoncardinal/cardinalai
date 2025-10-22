@@ -50,6 +50,7 @@ const IDE = () => {
           {activeView === 'ai' && <EnhancedAiPanel />}
           {activeView === 'preview' && <LivePreview />}
           {activeView === 'terminal' && <TerminalPanel />}
+          {activeView === 'git' && <GitPanel />}
         </div>
         <MobileNav />
         <FileChangeMonitor />
