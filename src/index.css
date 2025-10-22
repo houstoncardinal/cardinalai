@@ -20,6 +20,7 @@ All colors MUST be HSL.
     
     --primary: 0 0% 95%;
     --primary-foreground: 0 0% 10%;
+    --primary-glow: 0 0% 98%;
     
     --secondary: 0 0% 14%;
     --secondary-foreground: 0 0% 98%;
@@ -56,6 +57,7 @@ All colors MUST be HSL.
     --shadow-metal: 0 2px 8px hsla(0 0% 0% / 0.5), inset 0 1px 0 hsla(0 0% 100% / 0.1);
     --shadow-glass: 0 8px 32px hsla(0 0% 0% / 0.6);
     --shadow-sharp: 0 1px 3px hsla(0 0% 0% / 0.8);
+    --shadow-glow: 0 0 20px hsla(0 0% 95% / 0.3), 0 0 40px hsla(0 0% 95% / 0.15);
     
     /* Transitions */
     --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -74,6 +76,7 @@ All colors MUST be HSL.
     
     --primary: 0 0% 10%;
     --primary-foreground: 0 0% 98%;
+    --primary-glow: 0 0% 20%;
     
     --secondary: 0 0% 95%;
     --secondary-foreground: 0 0% 10%;
@@ -120,6 +123,7 @@ All colors MUST be HSL.
     
     --primary: 0 0% 95%;
     --primary-foreground: 210 10% 23%;
+    --primary-glow: 210 15% 90%;
     
     --secondary: 210 10% 32%;
     --secondary-foreground: 0 0% 98%;
@@ -214,6 +218,10 @@ All colors MUST be HSL.
   
   .sharp-shadow {
     box-shadow: var(--shadow-sharp);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
   }
 
   /* Neon glow effect for AI elements */

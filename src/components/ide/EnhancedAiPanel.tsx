@@ -177,22 +177,32 @@ export const EnhancedAiPanel: React.FC = () => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-background via-background to-muted/20">
-      {/* Header */}
-      <div className="p-4 border-b border-border/50 bg-background/50 backdrop-blur-sm">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span className="font-semibold text-foreground">
-              {AGENT_PERSONALITIES[mode].name}
-            </span>
+    <div className="h-full flex flex-col bg-gradient-to-br from-[hsl(var(--background))] via-[hsl(var(--background))] to-[hsl(var(--accent)/0.05)]">
+      {/* Header with Material Elevation */}
+      <div className="p-4 border-b border-[hsl(var(--border)/0.3)] bg-gradient-to-r from-[hsl(var(--background)/0.9)] to-[hsl(var(--muted)/0.1)] backdrop-blur-xl shadow-lg">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary/20 rounded-full blur-lg animate-pulse" />
+              <div className="relative w-10 h-10 rounded-full bg-gradient-to-br from-primary via-primary-glow to-accent flex items-center justify-center shadow-glow">
+                {React.createElement(AGENT_PERSONALITIES[mode].icon, { className: "w-5 h-5 text-white" })}
+              </div>
+            </div>
+            <div>
+              <h3 className="font-semibold text-foreground text-base">
+                {AGENT_PERSONALITIES[mode].name}
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                {AGENT_PERSONALITIES[mode].description}
+              </p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowSessions(!showSessions)}
-              className="text-muted-foreground"
+              className="hover:bg-accent/50 transition-all hover:scale-105"
             >
               <History className="w-4 h-4" />
             </Button>
@@ -200,154 +210,199 @@ export const EnhancedAiPanel: React.FC = () => {
               variant="ghost"
               size="sm"
               onClick={createNewSession}
-              className="text-muted-foreground"
+              className="hover:bg-accent/50 transition-all hover:scale-105"
             >
               <Plus className="w-4 h-4" />
             </Button>
           </div>
         </div>
 
-        {/* Mode Selector */}
+        {/* Mode Selector with Material Pills */}
         <div className="flex gap-2 flex-wrap">
           {(Object.keys(AGENT_PERSONALITIES) as AiMode[]).map((m) => {
             const Icon = AGENT_PERSONALITIES[m].icon;
             return (
-              <button
+              <motion.button
                 key={m}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setMode(m)}
                 className={cn(
-                  "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all",
+                  "flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all duration-300",
                   mode === m
-                    ? "bg-primary text-primary-foreground shadow-lg"
-                    : "bg-secondary/50 text-muted-foreground hover:bg-secondary"
+                    ? "bg-gradient-to-r from-primary via-primary-glow to-accent text-white shadow-lg shadow-primary/30"
+                    : "bg-gradient-to-r from-[hsl(var(--secondary))] to-[hsl(var(--muted))] text-muted-foreground hover:shadow-md"
                 )}
               >
-                <Icon className="w-3 h-3" />
+                <Icon className="w-4 h-4" />
                 {m.charAt(0).toUpperCase() + m.slice(1)}
-              </button>
+              </motion.button>
             );
           })}
         </div>
       </div>
 
-      {/* Sessions Sidebar */}
+      {/* Sessions Sidebar with Material Design */}
       {showSessions && (
-        <div className="border-b border-border/50 bg-background/30 p-3 max-h-[200px] overflow-y-auto">
-          <div className="text-xs font-medium text-muted-foreground mb-2">Chat Sessions</div>
-          <div className="space-y-1">
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="border-b border-[hsl(var(--border)/0.3)] bg-gradient-to-b from-[hsl(var(--muted)/0.3)] to-transparent p-4 max-h-[200px] overflow-y-auto backdrop-blur-sm"
+        >
+          <div className="text-xs font-semibold text-foreground mb-3 flex items-center gap-2">
+            <History className="w-4 h-4 text-primary" />
+            Chat Sessions
+          </div>
+          <div className="space-y-2">
             {sessions.map(session => (
-              <button
+              <motion.button
                 key={session.id}
+                whileHover={{ scale: 1.02, x: 4 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => {
                   switchSession(session.id);
                   setShowSessions(false);
                 }}
                 className={cn(
-                  "w-full text-left px-2 py-1.5 rounded text-xs hover:bg-accent/50 transition-colors",
-                  currentSession?.id === session.id && "bg-accent"
+                  "w-full text-left px-3 py-2 rounded-lg text-xs transition-all duration-200",
+                  currentSession?.id === session.id 
+                    ? "bg-gradient-to-r from-primary/20 to-accent/20 border border-primary/30 shadow-md" 
+                    : "bg-[hsl(var(--muted)/0.5)] hover:bg-[hsl(var(--muted))] border border-transparent"
                 )}
               >
-                <div className="font-medium truncate">{session.session_name}</div>
-                <div className="text-muted-foreground text-[10px]">
+                <div className="font-medium truncate text-foreground">{session.session_name}</div>
+                <div className="text-muted-foreground text-[10px] mt-1">
                   {new Date(session.updated_at).toLocaleString()}
                 </div>
-              </button>
+              </motion.button>
             ))}
           </div>
-        </div>
+        </motion.div>
       )}
 
-      {/* Chat History */}
+      {/* Chat History with Enhanced Material Messages */}
       <ScrollArea className="flex-1 p-4" ref={scrollRef}>
-        <div className="space-y-4">
-          {messages.map((message) => (
-            <div
+        <div className="space-y-6">
+          {messages.map((message, index) => (
+            <motion.div
               key={message.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
               className={cn(
                 "flex gap-3 items-start",
                 message.role === 'user' && "flex-row-reverse"
               )}
             >
-              <div className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1",
-                message.role === 'user' ? "bg-accent" : "bg-primary/10"
-              )}>
-                {message.role === 'user' ? (
-                  <span className="text-xs font-bold">U</span>
-                ) : (
-                  <MessageSquare className="w-4 h-4 text-primary" />
+              <motion.div 
+                whileHover={{ scale: 1.1 }}
+                className={cn(
+                  "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-1 shadow-lg",
+                  message.role === 'user' 
+                    ? "bg-gradient-to-br from-accent via-accent-foreground to-accent" 
+                    : "bg-gradient-to-br from-primary via-primary-glow to-accent"
                 )}
-              </div>
-              <div className="flex-1 space-y-2">
+              >
+                {message.role === 'user' ? (
+                  <span className="text-sm font-bold text-white">U</span>
+                ) : (
+                  <MessageSquare className="w-5 h-5 text-white" />
+                )}
+              </motion.div>
+              <div className="flex-1 space-y-2 max-w-[85%]">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-medium text-muted-foreground">
+                  <span className="text-xs font-semibold text-foreground">
                     {message.role === 'user' ? 'You' : AGENT_PERSONALITIES[mode].name}
                   </span>
                   {message.mode && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary/50 text-muted-foreground">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 text-primary font-medium border border-primary/20">
                       {message.mode}
                     </span>
                   )}
                 </div>
-                <div className={cn(
-                  "rounded-lg p-3 border prose prose-sm max-w-none",
-                  message.role === 'user'
-                    ? "bg-accent/50 border-accent"
-                    : "bg-muted/50 backdrop-blur-sm border-border/30"
-                )}>
-                  <div className="whitespace-pre-wrap text-foreground text-sm">
+                <motion.div 
+                  whileHover={{ scale: 1.01 }}
+                  className={cn(
+                    "rounded-2xl p-4 border backdrop-blur-md shadow-lg transition-all duration-300",
+                    message.role === 'user'
+                      ? "bg-gradient-to-br from-accent/30 via-accent/20 to-accent/10 border-accent/40 text-foreground ml-auto"
+                      : "bg-gradient-to-br from-[hsl(var(--muted)/0.6)] via-[hsl(var(--muted)/0.4)] to-[hsl(var(--background)/0.8)] border-[hsl(var(--border)/0.4)]"
+                  )}
+                >
+                  <div className="whitespace-pre-wrap text-foreground text-sm leading-relaxed">
                     {message.content}
                   </div>
-                </div>
+                </motion.div>
                 {message.role === 'assistant' && (
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => copyToClipboard(message.content, message.id)}
-                    className="h-6 text-xs"
+                    className="h-7 text-xs hover:bg-accent/50 transition-all"
                   >
                     {copiedId === message.id ? (
                       <>
-                        <Check className="w-3 h-3 mr-1" />
-                        Copied
+                        <Check className="w-3 h-3 mr-1.5 text-green-500" />
+                        Copied!
                       </>
                     ) : (
                       <>
-                        <Copy className="w-3 h-3 mr-1" />
+                        <Copy className="w-3 h-3 mr-1.5" />
                         Copy
                       </>
                     )}
                   </Button>
                 )}
               </div>
-            </div>
+            </motion.div>
           ))}
 
-          {/* Streaming Content */}
+          {/* Streaming Content with Enhanced Animation */}
           {isStreaming && streamingContent && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="flex gap-3 items-start"
             >
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
-                <MessageSquare className="w-4 h-4 text-primary" />
-              </div>
-              <div className="flex-1 space-y-2">
+              <motion.div 
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary via-primary-glow to-accent flex items-center justify-center flex-shrink-0 mt-1 shadow-glow"
+              >
+                <MessageSquare className="w-5 h-5 text-white" />
+              </motion.div>
+              <div className="flex-1 space-y-2 max-w-[85%]">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-medium text-primary">
+                  <span className="text-xs font-semibold text-primary">
                     {AGENT_PERSONALITIES[mode].name}
                   </span>
                   <div className="flex gap-1">
-                    <div className="w-1 h-1 rounded-full bg-primary animate-pulse" />
-                    <div className="w-1 h-1 rounded-full bg-primary animate-pulse" style={{ animationDelay: '150ms' }} />
-                    <div className="w-1 h-1 rounded-full bg-primary animate-pulse" style={{ animationDelay: '300ms' }} />
+                    <motion.div 
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 1, repeat: Infinity }}
+                      className="w-1.5 h-1.5 rounded-full bg-primary" 
+                    />
+                    <motion.div 
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 1, repeat: Infinity, delay: 0.2 }}
+                      className="w-1.5 h-1.5 rounded-full bg-primary" 
+                    />
+                    <motion.div 
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 1, repeat: Infinity, delay: 0.4 }}
+                      className="w-1.5 h-1.5 rounded-full bg-primary" 
+                    />
                   </div>
                 </div>
-                <div className="bg-muted/50 backdrop-blur-sm rounded-lg p-3 border border-border/30 prose prose-sm max-w-none">
-                  <div className="whitespace-pre-wrap text-foreground">
+                <div className="bg-gradient-to-br from-[hsl(var(--muted)/0.6)] via-[hsl(var(--muted)/0.4)] to-[hsl(var(--background)/0.8)] backdrop-blur-md rounded-2xl p-4 border border-[hsl(var(--border)/0.4)] shadow-lg">
+                  <div className="whitespace-pre-wrap text-foreground text-sm leading-relaxed">
                     {streamingContent}
-                    <span className="inline-block w-1 h-4 bg-primary ml-1 animate-pulse" />
+                    <motion.span 
+                      animate={{ opacity: [0, 1, 0] }}
+                      transition={{ duration: 0.8, repeat: Infinity }}
+                      className="inline-block w-1 h-4 bg-primary ml-1" 
+                    />
                   </div>
                 </div>
               </div>
@@ -355,37 +410,60 @@ export const EnhancedAiPanel: React.FC = () => {
           )}
 
           {isStreaming && !streamingContent && (
-            <div className="flex items-center gap-2 p-4 bg-muted/30 rounded-lg border border-border/30">
-              <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms' }} />
-              <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms' }} />
-              <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms' }} />
-              <span className="text-sm text-muted-foreground ml-2">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex items-center gap-3 p-4 bg-gradient-to-r from-[hsl(var(--muted)/0.3)] to-transparent rounded-xl border border-[hsl(var(--border)/0.3)] backdrop-blur-sm"
+            >
+              <div className="flex gap-1.5">
+                <motion.div 
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 0.6, repeat: Infinity }}
+                  className="w-2 h-2 rounded-full bg-primary" 
+                />
+                <motion.div 
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
+                  className="w-2 h-2 rounded-full bg-primary" 
+                />
+                <motion.div 
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
+                  className="w-2 h-2 rounded-full bg-primary" 
+                />
+              </div>
+              <span className="text-sm text-foreground font-medium">
                 {AGENT_PERSONALITIES[mode].name} is thinking...
               </span>
-            </div>
+            </motion.div>
           )}
         </div>
       </ScrollArea>
 
-      {/* Input Area */}
-      <div className="p-4 border-t border-border/50 bg-background/50 backdrop-blur-sm space-y-3">
+      {/* Input Area with Material Glass Effect */}
+      <div className="p-4 border-t border-[hsl(var(--border)/0.3)] bg-gradient-to-t from-[hsl(var(--background))] via-[hsl(var(--background)/0.95)] to-[hsl(var(--muted)/0.1)] backdrop-blur-xl space-y-3 shadow-lg">
         {(mode === 'architect' || mode === 'composer') && (
-          <div className="flex items-center space-x-2">
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center space-x-2 p-2 rounded-lg bg-[hsl(var(--muted)/0.3)] border border-[hsl(var(--border)/0.3)]"
+          >
             <Checkbox
               id="create-files"
               checked={createFiles}
               onCheckedChange={(checked) => setCreateFiles(checked as boolean)}
+              className="data-[state=checked]:bg-primary"
             />
             <Label
               htmlFor="create-files"
-              className="text-xs text-muted-foreground cursor-pointer"
+              className="text-xs text-foreground cursor-pointer font-medium"
             >
               Create files in project
             </Label>
-          </div>
+          </motion.div>
         )}
 
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <Textarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
@@ -396,25 +474,24 @@ export const EnhancedAiPanel: React.FC = () => {
               }
             }}
             placeholder={`Ask ${AGENT_PERSONALITIES[mode].name}...`}
-            className="resize-none bg-background/50 border-border/50 focus:border-primary"
+            className="resize-none bg-gradient-to-br from-[hsl(var(--background))] to-[hsl(var(--muted)/0.3)] border-[hsl(var(--border)/0.5)] focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl transition-all shadow-inner"
             rows={3}
             disabled={isStreaming}
           />
           {isStreaming ? (
             <Button 
               onClick={cancelStream} 
-              variant="destructive"
-              className="bg-destructive hover:bg-destructive/90"
+              className="bg-gradient-to-br from-destructive to-destructive/80 hover:from-destructive/90 hover:to-destructive/70 text-white shadow-lg hover:shadow-xl transition-all"
             >
-              <StopCircle className="w-4 h-4" />
+              <StopCircle className="w-5 h-5" />
             </Button>
           ) : (
             <Button 
               onClick={handleSubmit} 
               disabled={!prompt.trim()}
-              className="bg-primary hover:bg-primary/90"
+              className="bg-gradient-to-br from-primary via-primary-glow to-accent hover:shadow-glow text-white shadow-lg hover:scale-105 transition-all disabled:opacity-50 disabled:scale-100"
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-5 h-5" />
             </Button>
           )}
         </div>
