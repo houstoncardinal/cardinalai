@@ -224,49 +224,64 @@ export const EnhancedAiPanel: React.FC = () => {
             {/* Agent Identity */}
             <div className="flex items-center gap-4">
               <motion.div 
-                className="relative w-14 h-14"
-                whileHover={{ scale: 1.1, rotate: 5 }}
+                className="relative w-14 h-14 rounded-full"
+                whileHover={{ 
+                  scale: 1.15,
+                  boxShadow: `0 0 60px ${getModeAccent(mode)}90, 0 0 40px ${getModeAccent(mode)}60`,
+                }}
+                whileTap={{ scale: 0.95 }}
                 animate={{ 
-                  rotate: 360,
                   boxShadow: [
-                    `0 0 30px ${getModeAccent(mode)}60`,
-                    `0 0 50px ${getModeAccent(mode)}80`,
-                    `0 0 30px ${getModeAccent(mode)}60`
+                    `0 0 25px ${getModeAccent(mode)}50`,
+                    `0 0 40px ${getModeAccent(mode)}70`,
+                    `0 0 25px ${getModeAccent(mode)}50`
                   ]
                 }}
                 transition={{ 
-                  rotate: { duration: 4, repeat: Infinity, ease: "linear" },
-                  boxShadow: { duration: 2, repeat: Infinity }
+                  boxShadow: { duration: 2, repeat: Infinity, ease: "easeInOut" },
+                  scale: { duration: 0.2 }
+                }}
+                onHoverStart={() => {
+                  // Play click sound on hover
+                  const audio = new Audio('data:audio/wav;base64,UklGRhwAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+                  audio.volume = 0.3;
+                  audio.play().catch(() => {});
                 }}
               >
-                <div className={cn(
-                  "w-full h-full rounded-full bg-gradient-to-br flex items-center justify-center shadow-2xl relative overflow-hidden backdrop-blur-xl",
-                  mode === 'architect' && "from-[#5B7FFF]/40 to-[#7B94FF]/20",
-                  mode === 'debugger' && "from-[#FF6B6B]/40 to-[#FF8E8E]/20",
-                  mode === 'mentor' && "from-[#90EE90]/40 to-[#A8F5A8]/20",
-                  mode === 'composer' && "from-[#B794F6]/40 to-[#C7A8FF]/20",
-                  mode === 'chat' && "from-[#FFD700]/40 to-[#FFE44D]/20"
-                )}
-                style={{
-                  border: `2px solid ${getModeAccent(mode)}`,
-                  boxShadow: `0 0 40px ${getModeAccent(mode)}60, inset 0 0 20px ${getModeAccent(mode)}40`
-                }}>
-                  {/* Rotating glow rings */}
+                <div 
+                  className={cn(
+                    "w-full h-full rounded-full bg-gradient-to-br flex items-center justify-center shadow-2xl relative overflow-hidden backdrop-blur-xl",
+                    mode === 'architect' && "from-[#5B7FFF]/40 to-[#7B94FF]/20",
+                    mode === 'debugger' && "from-[#FF6B6B]/40 to-[#FF8E8E]/20",
+                    mode === 'mentor' && "from-[#90EE90]/40 to-[#A8F5A8]/20",
+                    mode === 'composer' && "from-[#B794F6]/40 to-[#C7A8FF]/20",
+                    mode === 'chat' && "from-[#FFD700]/40 to-[#FFE44D]/20"
+                  )}
+                  style={{
+                    border: `3px solid ${getModeAccent(mode)}`,
+                    boxShadow: `0 0 40px ${getModeAccent(mode)}60, inset 0 0 20px ${getModeAccent(mode)}40`
+                  }}
+                >
+                  {/* Pulsing inner glow */}
                   <motion.div
-                    className="absolute inset-0 rounded-full"
-                    style={{ 
-                      background: `conic-gradient(from 0deg, transparent 0%, ${getModeAccent(mode)}60 50%, transparent 100%)`
+                    className="absolute inset-0 rounded-full opacity-40"
+                    animate={{ 
+                      scale: [1, 1.2, 1],
+                      opacity: [0.4, 0.7, 0.4]
                     }}
-                    animate={{ rotate: -360 }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    style={{ 
+                      background: `radial-gradient(circle, ${getModeAccent(mode)}80 0%, transparent 70%)`
+                    }}
                   />
+                  {/* Subtle rotating shimmer */}
                   <motion.div
-                    className="absolute inset-2 rounded-full"
-                    style={{ 
-                      background: `conic-gradient(from 180deg, transparent 0%, ${getModeAccent(mode)}40 50%, transparent 100%)`
-                    }}
+                    className="absolute inset-0 rounded-full opacity-20"
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                    transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                    style={{ 
+                      background: `linear-gradient(45deg, transparent 30%, ${getModeAccent(mode)}60 50%, transparent 70%)`
+                    }}
                   />
                   {React.createElement(AGENT_PERSONALITIES[mode].icon, { 
                     className: cn(
