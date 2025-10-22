@@ -73,6 +73,36 @@ export type Database = {
         }
         Relationships: []
       }
+      community_posts: {
+        Row: {
+          author: string
+          content: string
+          created_at: string
+          id: string
+          likes: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author: string
+          content: string
+          created_at?: string
+          id?: string
+          likes?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          content?: string
+          created_at?: string
+          id?: string
+          likes?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
