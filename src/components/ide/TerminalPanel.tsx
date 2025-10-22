@@ -146,7 +146,7 @@ export const TerminalPanel = () => {
   };
 
   return (
-    <div className="h-64 glass-panel border-t flex flex-col bg-gradient-to-br from-[#0a0a14] via-[#0f0f1e] to-[#1a1a2e]">
+    <div className="h-full glass-panel border-t flex flex-col bg-gradient-to-br from-[#0a0a14] via-[#0f0f1e] to-[#1a1a2e]">
       <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-black/20 backdrop-blur-sm">
         <div className="flex items-center gap-2">
           <TerminalIcon className="w-4 h-4 text-primary animate-pulse" />
