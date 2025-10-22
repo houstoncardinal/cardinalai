@@ -5,6 +5,7 @@ import { fileSystem, FileNode } from '@/lib/fileSystem';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
+import { FileContextMenu } from '@/components/ide/FileContextMenu';
 
 export const FileExplorer = () => {
   const [files, setFiles] = useState<FileNode[]>([]);
@@ -319,93 +320,101 @@ const FileTreeNode = ({
 
   return (
     <div>
-      <div
-        className="w-full flex items-center gap-1.5 px-2 py-1 hover:bg-secondary/50 rounded text-sm smooth-transition group"
-        style={{ paddingLeft: `${depth * 12 + 8}px` }}
+      <FileContextMenu
+        node={node}
+        onRefresh={onRefresh}
+        onRename={() => setEditing(true)}
+        onDelete={handleDelete}
+        setCreating={setCreating}
       >
-        {editing ? (
-          <Input
-            autoFocus
-            value={editName}
-            onChange={(e) => setEditName(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') handleRename();
-              if (e.key === 'Escape') setEditing(false);
-            }}
-            onBlur={handleRename}
-            className="h-6 text-xs flex-1"
-            onClick={(e) => e.stopPropagation()}
-          />
-        ) : (
-          <>
-            <button
-              className="flex items-center gap-1.5 flex-1 text-left"
-              onClick={handleFileClick}
-            >
-              {node.type === 'folder' && (
-                expanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />
-              )}
-              {node.type === 'folder' ? (
-                <Folder className="w-4 h-4 text-primary" />
-              ) : (
-                <File className="w-4 h-4 text-muted-foreground" />
-              )}
-              <span className="text-foreground">{node.name}</span>
-            </button>
-            <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-              {node.type === 'folder' && (
-                <>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="w-5 h-5"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setCreating({ parentId: node.id, type: 'file' });
-                    }}
-                    title="New File"
-                  >
-                    <Plus className="w-3 h-3" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="w-5 h-5"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setCreating({ parentId: node.id, type: 'folder' });
-                    }}
-                    title="New Folder"
-                  >
-                    <FolderPlus className="w-3 h-3" />
-                  </Button>
-                </>
-              )}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="w-5 h-5"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setEditing(true);
-                }}
-                title="Rename"
+        <div
+          className="w-full flex items-center gap-1.5 px-2 py-1 hover:bg-secondary/50 rounded text-sm smooth-transition group"
+          style={{ paddingLeft: `${depth * 12 + 8}px` }}
+        >
+          {editing ? (
+            <Input
+              autoFocus
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleRename();
+                if (e.key === 'Escape') setEditing(false);
+              }}
+              onBlur={handleRename}
+              className="h-6 text-xs flex-1"
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <>
+              <button
+                className="flex items-center gap-1.5 flex-1 text-left"
+                onClick={handleFileClick}
               >
-                <Edit2 className="w-3 h-3" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="w-5 h-5 hover:bg-destructive/20"
-                onClick={handleDelete}
-                title="Delete"
-              >
-                <Trash2 className="w-3 h-3" />
-              </Button>
-            </div>
-          </>
-        )}
-      </div>
+                {node.type === 'folder' && (
+                  expanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />
+                )}
+                {node.type === 'folder' ? (
+                  <Folder className="w-4 h-4 text-primary" />
+                ) : (
+                  <File className="w-4 h-4 text-muted-foreground" />
+                )}
+                <span className="text-foreground">{node.name}</span>
+              </button>
+              <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                {node.type === 'folder' && (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="w-5 h-5"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCreating({ parentId: node.id, type: 'file' });
+                      }}
+                      title="New File"
+                    >
+                      <Plus className="w-3 h-3" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="w-5 h-5"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCreating({ parentId: node.id, type: 'folder' });
+                      }}
+                      title="New Folder"
+                    >
+                      <FolderPlus className="w-3 h-3" />
+                    </Button>
+                  </>
+                )}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="w-5 h-5"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setEditing(true);
+                  }}
+                  title="Rename"
+                >
+                  <Edit2 className="w-3 h-3" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="w-5 h-5 hover:bg-destructive/20"
+                  onClick={handleDelete}
+                  title="Delete"
+                >
+                  <Trash2 className="w-3 h-3" />
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+      </FileContextMenu>
       
       {node.type === 'folder' && expanded && (
         <div>

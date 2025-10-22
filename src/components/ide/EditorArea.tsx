@@ -1,9 +1,10 @@
 import Editor from '@monaco-editor/react';
 import { useIdeStore } from '@/store/ideStore';
-import { X, Sparkles, Save } from 'lucide-react';
+import { X, Sparkles, Save, Search, Replace } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { fileSystem } from '@/lib/fileSystem';
 import { toast } from '@/hooks/use-toast';
+import * as React from 'react';
 
 export const EditorArea = () => {
   const { tabs, activeTabId, setActiveTab, closeTab, updateTabContent, refreshTabs } = useIdeStore();
@@ -18,11 +19,9 @@ export const EditorArea = () => {
       });
       
       // Mark as not modified
-      updateTabContent(activeTab.id, activeTab.content);
       const updatedTabs = tabs.map(t => 
         t.id === activeTab.id ? { ...t, modified: false } : t
       );
-      refreshTabs();
       
       toast({
         title: 'Saved',
@@ -36,6 +35,19 @@ export const EditorArea = () => {
       });
     }
   };
+
+  // Keyboard shortcuts
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      handleSave();
+    }
+  };
+
+  React.useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeTab]);
 
   return (
     <div className="flex-1 flex flex-col bg-[hsl(var(--editor-bg))]">
@@ -89,12 +101,15 @@ export const EditorArea = () => {
             height="100%"
             language={activeTab.language}
             value={activeTab.content}
-            onChange={(value) => updateTabContent(activeTab.id, value || '')}
+            onChange={(value) => {
+              updateTabContent(activeTab.id, value || '');
+            }}
             theme="vs-dark"
             options={{
               minimap: { enabled: true },
               fontSize: 14,
-              fontFamily: "'Fira Code', 'Cascadia Code', monospace",
+              fontFamily: "'Fira Code', 'Cascadia Code', 'Consolas', monospace",
+              fontLigatures: true,
               lineNumbers: 'on',
               renderWhitespace: 'selection',
               tabSize: 2,
@@ -103,6 +118,24 @@ export const EditorArea = () => {
               smoothScrolling: true,
               cursorBlinking: 'smooth',
               cursorSmoothCaretAnimation: 'on',
+              automaticLayout: true,
+              formatOnPaste: true,
+              formatOnType: true,
+              suggestOnTriggerCharacters: true,
+              quickSuggestions: true,
+              snippetSuggestions: 'inline',
+              folding: true,
+              foldingStrategy: 'indentation',
+              showFoldingControls: 'always',
+              matchBrackets: 'always',
+              autoClosingBrackets: 'always',
+              autoClosingQuotes: 'always',
+              autoIndent: 'full',
+              find: {
+                addExtraSpaceOnTop: true,
+                autoFindInSelection: 'multiline',
+                seedSearchStringFromSelection: 'selection',
+              },
             }}
           />
         ) : (

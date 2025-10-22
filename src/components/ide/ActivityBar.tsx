@@ -1,10 +1,11 @@
-import { Files, GitBranch, Terminal, Sparkles, Palette, Command, Monitor, Code2, Settings, Wand2, Upload } from 'lucide-react';
+import { Files, GitBranch, Terminal, Sparkles, Palette, Command, Monitor, Code2, Settings, Wand2, Upload, Search as SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useIdeStore } from '@/store/ideStore';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { SettingsPanel } from '@/components/settings/SettingsPanel';
 import { ProjectUploader } from '@/components/ide/ProjectUploader';
+import { SearchPanel } from '@/components/ide/SearchPanel';
 import { soundManager } from '@/utils/sounds';
 
 export const ActivityBar = () => {
@@ -28,6 +29,7 @@ export const ActivityBar = () => {
   
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [uploaderOpen, setUploaderOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const handleClick = (action: () => void) => {
     soundManager.click();
@@ -49,6 +51,20 @@ export const ActivityBar = () => {
             </Button>
           </TooltipTrigger>
           <TooltipContent side="right">Import Project</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-10 h-10 text-muted-foreground hover:text-foreground smooth-transition"
+              onClick={() => handleClick(() => setSearchOpen(true))}
+            >
+              <SearchIcon className="w-5 h-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">Search in Files (⌘⇧F)</TooltipContent>
         </Tooltip>
 
         <Tooltip>
@@ -198,6 +214,7 @@ export const ActivityBar = () => {
       
       {settingsOpen && <SettingsPanel onClose={() => setSettingsOpen(false)} />}
       <ProjectUploader open={uploaderOpen} onClose={() => setUploaderOpen(false)} />
+      {searchOpen && <SearchPanel onClose={() => setSearchOpen(false)} />}
     </>
   );
 };
