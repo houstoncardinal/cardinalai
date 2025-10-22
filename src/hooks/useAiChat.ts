@@ -204,6 +204,22 @@ export const useAiChat = () => {
       });
 
       if (!response.ok || !response.body) {
+        if (response.status === 429) {
+          toast({
+            title: 'Rate Limit Exceeded',
+            description: 'Too many requests. Please wait a moment and try again.',
+            variant: 'destructive',
+          });
+          throw new Error('Rate limit exceeded');
+        }
+        if (response.status === 402) {
+          toast({
+            title: 'Credits Required',
+            description: 'Please add credits to your CardinalAI workspace to continue.',
+            variant: 'destructive',
+          });
+          throw new Error('Payment required');
+        }
         throw new Error('Failed to start stream');
       }
 

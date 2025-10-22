@@ -14,6 +14,7 @@ import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { useAiFileOperations } from '@/hooks/useAiFileOperations';
 import { Loader2, Send, X } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 type AiMode = 'architect' | 'debugger' | 'mentor' | 'composer' | 'chat';
 
@@ -27,27 +28,27 @@ const AGENT_PERSONALITIES: Record<AiMode, AgentPersonality> = {
   architect: {
     name: 'The Architect',
     icon: Brain,
-    description: 'Designs elegant, scalable code structures',
+    description: '⚡ Designs complete system architectures • Generates multiple files • Plans data models & API routes',
   },
   debugger: {
     name: 'The Debugger',
     icon: Bug,
-    description: 'Identifies and resolves issues methodically',
+    description: '🔍 Identifies root causes • Analyzes errors & stack traces • Finds performance bottlenecks',
   },
   mentor: {
     name: 'The Mentor',
     icon: BookOpen,
-    description: 'Teaches concepts with clarity and patience',
+    description: '📚 Teaches concepts clearly • Provides examples & exercises • Explains best practices',
   },
   composer: {
     name: 'The Composer',
     icon: Wand2,
-    description: 'Refactors code into elegant masterpieces',
+    description: '✨ Refactors code beautifully • Optimizes performance • Applies clean code principles',
   },
   chat: {
     name: 'CardinalAI',
     icon: MessageSquare,
-    description: 'General AI assistance',
+    description: '💬 General-purpose AI assistant • Answers questions • Provides code solutions',
   },
 };
 
@@ -175,137 +176,257 @@ export const EnhancedAiPanel: React.FC = () => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-[#1a1a1a]">
-      {/* Header - Enhanced with better contrast and aesthetics */}
-      <div className="flex-shrink-0 px-4 py-4 border-b border-[#333] bg-gradient-to-br from-[#222] to-[#1a1a1a] shadow-lg">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <motion.div 
-              className="relative"
-              animate={{ 
-                boxShadow: [
-                  '0 0 10px rgba(255,255,255,0.1)',
-                  '0 0 20px rgba(255,255,255,0.2)',
-                  '0 0 10px rgba(255,255,255,0.1)'
-                ]
-              }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              <div className={cn(
-                "w-10 h-10 rounded-xl bg-gradient-to-br flex items-center justify-center border-2 shadow-lg",
-                mode === 'architect' && "border-[#5B7FFF] from-[#5B7FFF]/20 to-[#7B94FF]/20",
-                mode === 'debugger' && "border-[#FF6B6B] from-[#FF6B6B]/20 to-[#FF8E8E]/20",
-                mode === 'mentor' && "border-[#90EE90] from-[#90EE90]/20 to-[#A8F5A8]/20",
-                mode === 'composer' && "border-[#B794F6] from-[#B794F6]/20 to-[#C7A8FF]/20",
-                mode === 'chat' && "border-[#FFD700] from-[#FFD700]/20 to-[#FFE44D]/20"
-              )}>
-                {React.createElement(AGENT_PERSONALITIES[mode].icon, { 
-                  className: cn(
-                    "w-5 h-5",
-                    mode === 'architect' && "text-[#7B94FF]",
-                    mode === 'debugger' && "text-[#FF8E8E]",
-                    mode === 'mentor' && "text-[#A8F5A8]",
-                    mode === 'composer' && "text-[#C7A8FF]",
-                    mode === 'chat' && "text-[#FFE44D]"
-                  )
-                })}
-              </div>
-            </motion.div>
-            <div>
-              <h3 className="font-bold text-white text-base tracking-wide flex items-center gap-2">
-                CARDINAL AI
-                <motion.span
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className={cn(
-                    "w-2 h-2 rounded-full",
-                    mode === 'architect' && "bg-[#7B94FF]",
-                    mode === 'debugger' && "bg-[#FF8E8E]",
-                    mode === 'mentor' && "bg-[#A8F5A8]",
-                    mode === 'composer' && "bg-[#C7A8FF]",
-                    mode === 'chat' && "bg-[#FFE44D]"
-                  )}
+    <div className="h-full flex flex-col bg-[#0a0a0a] overflow-hidden">
+      {/* Dynamic Header Background with Mode-Specific Gradients */}
+      <motion.div 
+        className="flex-shrink-0 relative overflow-hidden"
+        animate={{
+          background: mode === 'architect' 
+            ? 'linear-gradient(135deg, #1a1f3a 0%, #2d3a5f 50%, #1a1f3a 100%)'
+            : mode === 'debugger'
+            ? 'linear-gradient(135deg, #3a1a1a 0%, #5f2d2d 50%, #3a1a1a 100%)'
+            : mode === 'mentor'
+            ? 'linear-gradient(135deg, #1a3a1a 0%, #2d5f2d 50%, #1a3a1a 100%)'
+            : mode === 'composer'
+            ? 'linear-gradient(135deg, #2d1a3a 0%, #4a2d5f 50%, #2d1a3a 100%)'
+            : 'linear-gradient(135deg, #3a3a1a 0%, #5f5f2d 50%, #3a3a1a 100%)'
+        }}
+        transition={{ duration: 0.8, ease: "easeInOut" }}
+      >
+        {/* Animated circuit pattern overlay */}
+        <div className="absolute inset-0 opacity-10">
+          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="circuit" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                <motion.path
+                  d="M 0 50 L 25 50 L 25 25 L 50 25 M 50 25 L 75 25 L 75 50 L 100 50"
+                  stroke="currentColor"
+                  strokeWidth="1"
+                  fill="none"
+                  animate={{ pathLength: [0, 1, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                 />
-              </h3>
-              <p className={cn(
-                "text-xs font-medium uppercase tracking-wider mt-0.5",
-                mode === 'architect' && "text-[#7B94FF]",
-                mode === 'debugger' && "text-[#FF8E8E]",
-                mode === 'mentor' && "text-[#A8F5A8]",
-                mode === 'composer' && "text-[#C7A8FF]",
-                mode === 'chat' && "text-[#FFE44D]"
-              )}>
-                {mode === 'architect' && '⚡ THE ARCHITECT • DESIGNS FRAMEWORKS'}
-                {mode === 'debugger' && '🔍 THE DEBUGGER • RESOLVES ISSUES'}
-                {mode === 'mentor' && '📚 THE MENTOR • TEACHES CONCEPTS'}
-                {mode === 'composer' && '✨ THE COMPOSER • REFACTORS CODE'}
-                {mode === 'chat' && '💬 CARDINAL COLLECTIVE • AI ASSISTANCE'}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowSessions(!showSessions)}
-                className="h-9 w-9 p-0 hover:bg-white/10 transition-all rounded-lg border border-white/10 hover:border-white/20"
-              >
-                <History className="w-4 h-4 text-white/70 hover:text-white" />
-              </Button>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={createNewSession}
-                className="h-9 w-9 p-0 hover:bg-white/10 transition-all rounded-lg border border-white/10 hover:border-white/20"
-              >
-                <Plus className="w-4 h-4 text-white/70 hover:text-white" />
-              </Button>
-            </motion.div>
-          </div>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#circuit)" className={cn(
+              mode === 'architect' && "text-[#7B94FF]",
+              mode === 'debugger' && "text-[#FF8E8E]",
+              mode === 'mentor' && "text-[#A8F5A8]",
+              mode === 'composer' && "text-[#C7A8FF]",
+              mode === 'chat' && "text-[#FFE44D]"
+            )} />
+          </svg>
         </div>
 
-        {/* Mode Selector with Enhanced Visuals */}
-        <div className="flex gap-2 flex-wrap justify-center">
-          {(Object.keys(AGENT_PERSONALITIES) as AiMode[]).map((m) => {
-            const Icon = AGENT_PERSONALITIES[m].icon;
-            const isActive = mode === m;
-            return (
-              <motion.button
-                key={m}
-                onClick={() => setMode(m)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={cn(
-                  "relative flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 overflow-hidden",
-                  isActive
-                    ? "bg-gradient-to-br shadow-2xl border-2"
-                    : "bg-[#2a2a2a] border border-[#444] text-white/60 hover:text-white/90 hover:bg-[#333] hover:border-[#555]"
-                )}
-                style={isActive ? {
-                  background: getModeGradient(m),
-                  borderColor: getModeAccent(m),
-                  boxShadow: `0 0 20px ${getModeAccent(m)}40`
-                } : {}}
+        {/* Header Content */}
+        <div className="relative z-10 px-6 py-5 backdrop-blur-sm">
+          <div className="flex items-center justify-between mb-5">
+            {/* Agent Identity */}
+            <div className="flex items-center gap-4">
+              <motion.div 
+                className="relative"
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                animate={{ 
+                  boxShadow: [
+                    `0 0 20px ${getModeAccent(mode)}40`,
+                    `0 0 40px ${getModeAccent(mode)}60`,
+                    `0 0 20px ${getModeAccent(mode)}40`
+                  ]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
               >
-                {isActive && (
+                <div className={cn(
+                  "w-14 h-14 rounded-2xl bg-gradient-to-br flex items-center justify-center border-3 shadow-2xl relative overflow-hidden",
+                  mode === 'architect' && "border-[#5B7FFF] from-[#5B7FFF]/30 to-[#7B94FF]/10",
+                  mode === 'debugger' && "border-[#FF6B6B] from-[#FF6B6B]/30 to-[#FF8E8E]/10",
+                  mode === 'mentor' && "border-[#90EE90] from-[#90EE90]/30 to-[#A8F5A8]/10",
+                  mode === 'composer' && "border-[#B794F6] from-[#B794F6]/30 to-[#C7A8FF]/10",
+                  mode === 'chat' && "border-[#FFD700] from-[#FFD700]/30 to-[#FFE44D]/10"
+                )}>
+                  {/* Rotating glow effect */}
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                    animate={{ x: ['-100%', '200%'] }}
-                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                   />
-                )}
-                <Icon className={cn("w-4 h-4 relative z-10", isActive && "text-white drop-shadow-lg")} />
-                <span className={cn("relative z-10", isActive && "text-white drop-shadow-lg")}>
-                  {m.charAt(0).toUpperCase() + m.slice(1)}
-                </span>
-              </motion.button>
-            );
-          })}
+                  {React.createElement(AGENT_PERSONALITIES[mode].icon, { 
+                    className: cn(
+                      "w-7 h-7 relative z-10 drop-shadow-2xl",
+                      mode === 'architect' && "text-[#7B94FF]",
+                      mode === 'debugger' && "text-[#FF8E8E]",
+                      mode === 'mentor' && "text-[#A8F5A8]",
+                      mode === 'composer' && "text-[#C7A8FF]",
+                      mode === 'chat' && "text-[#FFE44D]"
+                    )
+                  })}
+                </div>
+              </motion.div>
+              
+              <div>
+                <motion.div
+                  className="flex items-center gap-3"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <h3 className="font-black text-white text-xl tracking-tight">
+                    CARDINAL AI
+                  </h3>
+                  <motion.div
+                    animate={{ 
+                      scale: [1, 1.2, 1],
+                      opacity: [0.7, 1, 0.7]
+                    }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className={cn(
+                      "w-2.5 h-2.5 rounded-full shadow-lg",
+                      mode === 'architect' && "bg-[#7B94FF] shadow-[#7B94FF]",
+                      mode === 'debugger' && "bg-[#FF8E8E] shadow-[#FF8E8E]",
+                      mode === 'mentor' && "bg-[#A8F5A8] shadow-[#A8F5A8]",
+                      mode === 'composer' && "bg-[#C7A8FF] shadow-[#C7A8FF]",
+                      mode === 'chat' && "bg-[#FFE44D] shadow-[#FFE44D]"
+                    )}
+                  />
+                </motion.div>
+                <p className={cn(
+                  "text-sm font-bold uppercase tracking-widest mt-1 drop-shadow-lg",
+                  mode === 'architect' && "text-[#9BB4FF]",
+                  mode === 'debugger' && "text-[#FFB0B0]",
+                  mode === 'mentor' && "text-[#C0FFC0]",
+                  mode === 'composer' && "text-[#D7B8FF]",
+                  mode === 'chat' && "text-[#FFF680]"
+                )}>
+                  {mode === 'architect' && '⚡ SYSTEM ARCHITECT'}
+                  {mode === 'debugger' && '🔍 DEBUG SPECIALIST'}
+                  {mode === 'mentor' && '📚 LEARNING GUIDE'}
+                  {mode === 'composer' && '✨ CODE ARTIST'}
+                  {mode === 'chat' && '💬 AI ASSISTANT'}
+                </p>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-2">
+              <motion.div whileHover={{ scale: 1.1, y: -2 }} whileTap={{ scale: 0.9 }}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowSessions(!showSessions)}
+                  className={cn(
+                    "h-10 w-10 p-0 rounded-xl border-2 backdrop-blur-md transition-all shadow-lg",
+                    "hover:scale-110",
+                    mode === 'architect' && "border-[#5B7FFF]/40 bg-[#5B7FFF]/10 hover:bg-[#5B7FFF]/20 hover:border-[#7B94FF]",
+                    mode === 'debugger' && "border-[#FF6B6B]/40 bg-[#FF6B6B]/10 hover:bg-[#FF6B6B]/20 hover:border-[#FF8E8E]",
+                    mode === 'mentor' && "border-[#90EE90]/40 bg-[#90EE90]/10 hover:bg-[#90EE90]/20 hover:border-[#A8F5A8]",
+                    mode === 'composer' && "border-[#B794F6]/40 bg-[#B794F6]/10 hover:bg-[#B794F6]/20 hover:border-[#C7A8FF]",
+                    mode === 'chat' && "border-[#FFD700]/40 bg-[#FFD700]/10 hover:bg-[#FFD700]/20 hover:border-[#FFE44D]"
+                  )}
+                >
+                  <History className="w-5 h-5 text-white drop-shadow-lg" />
+                </Button>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.1, y: -2 }} whileTap={{ scale: 0.9 }}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={createNewSession}
+                  className={cn(
+                    "h-10 w-10 p-0 rounded-xl border-2 backdrop-blur-md transition-all shadow-lg",
+                    "hover:scale-110",
+                    mode === 'architect' && "border-[#5B7FFF]/40 bg-[#5B7FFF]/10 hover:bg-[#5B7FFF]/20 hover:border-[#7B94FF]",
+                    mode === 'debugger' && "border-[#FF6B6B]/40 bg-[#FF6B6B]/10 hover:bg-[#FF6B6B]/20 hover:border-[#FF8E8E]",
+                    mode === 'mentor' && "border-[#90EE90]/40 bg-[#90EE90]/10 hover:bg-[#90EE90]/20 hover:border-[#A8F5A8]",
+                    mode === 'composer' && "border-[#B794F6]/40 bg-[#B794F6]/10 hover:bg-[#B794F6]/20 hover:border-[#C7A8FF]",
+                    mode === 'chat' && "border-[#FFD700]/40 bg-[#FFD700]/10 hover:bg-[#FFD700]/20 hover:border-[#FFE44D]"
+                  )}
+                >
+                  <Plus className="w-5 h-5 text-white drop-shadow-lg" />
+                </Button>
+              </motion.div>
+            </div>
+          </div>
+
+          {/* Mode Selector - Organized by Category */}
+          <div className="space-y-3">
+            <p className="text-xs uppercase tracking-widest text-white/60 font-bold">Select AI Mode</p>
+            <TooltipProvider delayDuration={200}>
+              <div className="grid grid-cols-5 gap-2">
+                {(Object.keys(AGENT_PERSONALITIES) as AiMode[]).map((m) => {
+                  const Icon = AGENT_PERSONALITIES[m].icon;
+                  const isActive = mode === m;
+                  return (
+                    <Tooltip key={m}>
+                      <TooltipTrigger asChild>
+                        <motion.button
+                          onClick={() => setMode(m)}
+                          whileHover={{ scale: 1.05, y: -2 }}
+                          whileTap={{ scale: 0.95 }}
+                          className={cn(
+                            "relative flex flex-col items-center gap-2 p-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 overflow-hidden group",
+                            isActive
+                              ? "shadow-2xl border-2"
+                              : "bg-black/40 border border-white/10 text-white/50 hover:text-white/90 hover:bg-white/5 hover:border-white/20 backdrop-blur-sm"
+                          )}
+                          style={isActive ? {
+                            background: getModeGradient(m),
+                            borderColor: getModeAccent(m),
+                            boxShadow: `0 8px 32px ${getModeAccent(m)}50, inset 0 1px 0 rgba(255,255,255,0.1)`
+                          } : {}}
+                        >
+                          {/* Animated shimmer for active mode */}
+                          {isActive && (
+                            <>
+                              <motion.div
+                                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                                animate={{ x: ['-100%', '200%'] }}
+                                transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+                              />
+                              <motion.div
+                                className="absolute inset-0"
+                                animate={{ 
+                                  background: [
+                                    'radial-gradient(circle at 0% 0%, rgba(255,255,255,0.1) 0%, transparent 50%)',
+                                    'radial-gradient(circle at 100% 100%, rgba(255,255,255,0.1) 0%, transparent 50%)',
+                                    'radial-gradient(circle at 0% 0%, rgba(255,255,255,0.1) 0%, transparent 50%)'
+                                  ]
+                                }}
+                                transition={{ duration: 3, repeat: Infinity }}
+                              />
+                            </>
+                          )}
+                          
+                          <Icon className={cn(
+                            "w-6 h-6 relative z-10 transition-transform group-hover:scale-110",
+                            isActive && "text-white drop-shadow-2xl"
+                          )} />
+                          <span className={cn(
+                            "relative z-10 text-[10px] leading-tight text-center",
+                            isActive && "text-white drop-shadow-lg font-extrabold"
+                          )}>
+                            {m.charAt(0).toUpperCase() + m.slice(1)}
+                          </span>
+                        </motion.button>
+                      </TooltipTrigger>
+                      <TooltipContent 
+                        side="bottom" 
+                        className="max-w-xs bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] border-2 p-3"
+                        style={{ borderColor: getModeAccent(m) }}
+                      >
+                        <p className="text-sm font-semibold text-white mb-1">
+                          {AGENT_PERSONALITIES[m].name}
+                        </p>
+                        <p className="text-xs text-white/80 leading-relaxed">
+                          {AGENT_PERSONALITIES[m].description}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  );
+                })}
+              </div>
+            </TooltipProvider>
+          </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Sessions Sidebar */}
       {showSessions && (
