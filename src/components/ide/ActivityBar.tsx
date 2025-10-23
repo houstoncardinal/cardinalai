@@ -1,4 +1,4 @@
-import { Files, GitBranch, Terminal, Bot, Palette, Command, Monitor, Code2, Settings, Wand2, Upload, Search as SearchIcon, Eye } from 'lucide-react';
+import { Files, GitBranch, Terminal, Bot, Palette, Command, Monitor, Code2, Settings, Wand2, Upload, Search as SearchIcon, Eye, Activity, BarChart3 } from 'lucide-react';
 import { useState } from 'react';
 import * as React from 'react';
 import { useIdeStore, ThemeName } from '@/store/ideStore';
@@ -33,6 +33,8 @@ export const ActivityBar = () => {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [uploaderOpen, setUploaderOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [activityPanelOpen, setActivityPanelOpen] = useState(false);
+  const [analyticsPanelOpen, setAnalyticsPanelOpen] = useState(false);
 
   const handleClick = (action: () => void) => {
     soundManager.click();
@@ -171,7 +173,7 @@ export const ActivityBar = () => {
             <Button
               variant="ghost"
               size="icon"
-              className={`w-10 h-10 smooth-transition metal-shine ${
+              className={`w-10 h-10 smooth-transition ${
                 livePreviewOpen ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground'
               }`}
               onClick={() => handleClick(toggleLivePreview)}
@@ -180,6 +182,38 @@ export const ActivityBar = () => {
             </Button>
           </TooltipTrigger>
           <TooltipContent side="right">Live Preview</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`w-10 h-10 smooth-transition ${
+                activityPanelOpen ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground'
+              }`}
+              onClick={() => handleClick(() => setActivityPanelOpen(!activityPanelOpen))}
+            >
+              <Activity className="w-5 h-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">Activity Feed</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`w-10 h-10 smooth-transition ${
+                analyticsPanelOpen ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground'
+              }`}
+              onClick={() => handleClick(() => setAnalyticsPanelOpen(!analyticsPanelOpen))}
+            >
+              <BarChart3 className="w-5 h-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">Analytics</TooltipContent>
         </Tooltip>
 
         <div className="flex-1" />

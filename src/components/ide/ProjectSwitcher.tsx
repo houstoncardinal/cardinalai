@@ -12,9 +12,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ChevronDown, Plus, FolderOpen, Loader2 } from "lucide-react";
+import { ChevronDown, Plus, FolderOpen, Loader2, Users } from "lucide-react";
 import { cloudFileSystem, CloudProject } from "@/lib/cloudFileSystem";
 import { useToast } from "@/hooks/use-toast";
+import { ProjectSharingDialog } from "./ProjectSharingDialog";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface ProjectSwitcherProps {
   currentProject: CloudProject | null;
@@ -25,9 +27,11 @@ export function ProjectSwitcher({ currentProject, onProjectChange }: ProjectSwit
   const [projects, setProjects] = useState<CloudProject[]>([]);
   const [loading, setLoading] = useState(false);
   const [showNewProject, setShowNewProject] = useState(false);
+  const [sharingOpen, setSharingOpen] = useState(false);
   const [newProjectName, setNewProjectName] = useState("");
   const [newProjectDescription, setNewProjectDescription] = useState("");
   const { toast } = useToast();
+  const { trackProjectCreate, trackProjectOpen } = useAnalytics();
 
   useEffect(() => {
     loadProjects();
@@ -74,6 +78,7 @@ export function ProjectSwitcher({ currentProject, onProjectChange }: ProjectSwit
       if (project) {
         setProjects([project, ...projects]);
         onProjectChange(project);
+        trackProjectCreate(project.id);
         setShowNewProject(false);
         setNewProjectName("");
         setNewProjectDescription("");
@@ -127,7 +132,10 @@ export function ProjectSwitcher({ currentProject, onProjectChange }: ProjectSwit
             projects.map((project) => (
               <DropdownMenuItem
                 key={project.id}
-                onClick={() => onProjectChange(project)}
+                onClick={() => {
+                  onProjectChange(project);
+                  trackProjectOpen(project.id);
+                }}
                 className={currentProject?.id === project.id ? "bg-accent" : ""}
               >
                 <FolderOpen className="w-4 h-4 mr-2" />
@@ -141,6 +149,13 @@ export function ProjectSwitcher({ currentProject, onProjectChange }: ProjectSwit
             <Plus className="w-4 h-4 mr-2" />
             New Project
           </DropdownMenuItem>
+          
+          {currentProject && (
+            <DropdownMenuItem onClick={() => setSharingOpen(true)}>
+              <Users className="w-4 h-4 mr-2" />
+              Share Project
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -193,6 +208,12 @@ export function ProjectSwitcher({ currentProject, onProjectChange }: ProjectSwit
           </div>
         </DialogContent>
       </Dialog>
+      
+      <ProjectSharingDialog
+        open={sharingOpen}
+        onOpenChange={setSharingOpen}
+        projectId={currentProject?.id || null}
+      />
     </>
   );
 }

@@ -7,16 +7,27 @@ import { toast } from '@/hooks/use-toast';
 import * as React from 'react';
 import { AnimatedCodeEditor } from './CodeTypingAnimation';
 import { useAiOperationStore } from '@/hooks/useAiOperationEvents';
+import { useAnalytics } from '@/hooks/useAnalytics';
+import { useActivityLog } from '@/hooks/useActivityLog';
 
 export const EditorArea = () => {
   const { tabs, activeTabId, setActiveTab, closeTab, updateTabContent, refreshTabs } = useIdeStore();
   const activeTab = tabs.find((t) => t.id === activeTabId);
   const operations = useAiOperationStore((state) => state.operations);
+  const { trackFileSave, trackFileOpen } = useAnalytics();
+  const { logActivity } = useActivityLog(null); // Will need project context
   
   // Check if AI is currently editing this file
   const isAiEditing = operations.some(
     (op) => op.type === 'editing' && activeTab && op.target.includes(activeTab.title)
   );
+
+  // Track file opens
+  React.useEffect(() => {
+    if (activeTab) {
+      trackFileOpen(activeTab.title);
+    }
+  }, [activeTab?.id]);
 
   const handleSave = async () => {
     if (!activeTab || !activeTab.fileId) return;
@@ -24,6 +35,13 @@ export const EditorArea = () => {
     try {
       await fileSystem.updateFile(activeTab.fileId, {
         content: activeTab.content,
+      });
+      
+      // Track save
+      trackFileSave(activeTab.title);
+      logActivity('file_update', `Saved ${activeTab.title}`, {
+        fileName: activeTab.title,
+        fileId: activeTab.fileId,
       });
       
       // Mark as not modified

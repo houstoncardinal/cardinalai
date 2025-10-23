@@ -17,11 +17,14 @@ import { AiOperationOverlay } from "@/components/ide/AiOperationOverlay";
 import { ThemeSwitcher } from "@/components/ide/ThemeSwitcher";
 import { ProjectSwitcher } from "@/components/ide/ProjectSwitcher";
 import { UserMenu } from "@/components/ide/UserMenu";
+import { ActivityPanel } from "@/components/ide/ActivityPanel";
+import { AnalyticsDashboard } from "@/components/ide/AnalyticsDashboard";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useIdeStore } from "@/store/ideStore";
 import { CloudProject } from "@/lib/cloudFileSystem";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
-type ViewType = 'explorer' | 'editor' | 'ai' | 'preview' | 'terminal' | 'git' | 'settings';
+type ViewType = 'explorer' | 'editor' | 'ai' | 'preview' | 'terminal' | 'git' | 'settings' | 'activity' | 'analytics';
 
 const IDE = () => {
   const isMobile = useIsMobile();
@@ -30,6 +33,11 @@ const IDE = () => {
   const [showSimulator, setShowSimulator] = useState(false);
   const [currentProject, setCurrentProject] = useState<CloudProject | null>(null);
   const { livePreviewOpen, theme } = useIdeStore();
+  const { trackPageView } = useAnalytics();
+  
+  useEffect(() => {
+    trackPageView('ide', currentProject?.id);
+  }, [trackPageView, currentProject?.id]);
 
   // Apply theme on mount and when it changes
   useEffect(() => {
@@ -53,6 +61,10 @@ const IDE = () => {
         return <EnhancedFileExplorer />;
       case 'git':
         return <GitPanel />;
+      case 'activity':
+        return <ActivityPanel projectId={currentProject?.id || null} />;
+      case 'analytics':
+        return <AnalyticsDashboard />;
       case 'settings':
         setShowSettings(true);
         return <EnhancedFileExplorer />;
