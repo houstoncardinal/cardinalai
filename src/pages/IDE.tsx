@@ -19,12 +19,14 @@ import { ProjectSwitcher } from "@/components/ide/ProjectSwitcher";
 import { UserMenu } from "@/components/ide/UserMenu";
 import { ActivityPanel } from "@/components/ide/ActivityPanel";
 import { AnalyticsDashboard } from "@/components/ide/AnalyticsDashboard";
+import { PathwayCollectivePanel } from "@/components/ide/PathwayCollectivePanel";
+import { PredictiveSuggestionsPanel } from "@/components/ide/PredictiveSuggestionsPanel";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useIdeStore } from "@/store/ideStore";
 import { CloudProject } from "@/lib/cloudFileSystem";
 import { useAnalytics } from "@/hooks/useAnalytics";
 
-type ViewType = 'explorer' | 'editor' | 'ai' | 'preview' | 'terminal' | 'git' | 'settings' | 'activity' | 'analytics';
+type ViewType = 'explorer' | 'editor' | 'ai' | 'preview' | 'terminal' | 'git' | 'settings' | 'activity' | 'analytics' | 'agent' | 'predictions';
 
 const IDE = () => {
   const isMobile = useIsMobile();
@@ -65,6 +67,10 @@ const IDE = () => {
         return <ActivityPanel projectId={currentProject?.id || null} />;
       case 'analytics':
         return <AnalyticsDashboard />;
+      case 'agent':
+        return <PathwayCollectivePanel projectId={currentProject?.id || null} />;
+      case 'predictions':
+        return <PredictiveSuggestionsPanel projectId={currentProject?.id || null} />;
       case 'settings':
         setShowSettings(true);
         return <EnhancedFileExplorer />;
@@ -99,7 +105,7 @@ const IDE = () => {
 
   return (
     <div className="h-screen flex bg-background overflow-hidden">
-      <ActivityBar />
+      <ActivityBar onViewChange={setActiveView} />
       
       {/* Top bar with Project Switcher and User Menu */}
       <div className="absolute top-3 left-16 right-3 z-50 flex items-center justify-between px-4">

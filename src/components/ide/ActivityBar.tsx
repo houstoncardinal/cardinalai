@@ -1,4 +1,4 @@
-import { Files, GitBranch, Terminal, Bot, Palette, Command, Monitor, Code2, Settings, Wand2, Upload, Search as SearchIcon, Eye, Activity, BarChart3 } from 'lucide-react';
+import { Files, GitBranch, Terminal, Bot, Palette, Command, Monitor, Code2, Settings, Wand2, Upload, Search as SearchIcon, Eye, Activity, BarChart3, Brain, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import * as React from 'react';
 import { useIdeStore, ThemeName } from '@/store/ideStore';
@@ -9,8 +9,10 @@ import { ProjectUploader } from '@/components/ide/ProjectUploader';
 import { SearchPanel } from '@/components/ide/SearchPanel';
 import { soundManager } from '@/utils/sounds';
 
-export const ActivityBar = () => {
-  const { 
+type ViewType = 'explorer' | 'editor' | 'ai' | 'preview' | 'terminal' | 'git' | 'settings' | 'activity' | 'analytics' | 'agent' | 'predictions';
+
+export const ActivityBar = ({ onViewChange }: { onViewChange?: (view: ViewType) => void }) => {
+  const {
     fileExplorerOpen, 
     gitPanelOpen, 
     terminalOpen, 
@@ -35,6 +37,8 @@ export const ActivityBar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [activityPanelOpen, setActivityPanelOpen] = useState(false);
   const [analyticsPanelOpen, setAnalyticsPanelOpen] = useState(false);
+  const [agentPanelOpen, setAgentPanelOpen] = useState(false);
+  const [predictionsPanelOpen, setPredictionsPanelOpen] = useState(false);
 
   const handleClick = (action: () => void) => {
     soundManager.click();
@@ -189,10 +193,10 @@ export const ActivityBar = () => {
             <Button
               variant="ghost"
               size="icon"
-              className={`w-10 h-10 smooth-transition ${
-                activityPanelOpen ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground'
-              }`}
-              onClick={() => handleClick(() => setActivityPanelOpen(!activityPanelOpen))}
+              className={`w-10 h-10 smooth-transition`}
+              onClick={() => {
+                handleClick(() => onViewChange?.('activity'));
+              }}
             >
               <Activity className="w-5 h-5" />
             </Button>
@@ -205,15 +209,47 @@ export const ActivityBar = () => {
             <Button
               variant="ghost"
               size="icon"
-              className={`w-10 h-10 smooth-transition ${
-                analyticsPanelOpen ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground'
-              }`}
-              onClick={() => handleClick(() => setAnalyticsPanelOpen(!analyticsPanelOpen))}
+              className={`w-10 h-10 smooth-transition`}
+              onClick={() => {
+                handleClick(() => onViewChange?.('analytics'));
+              }}
             >
               <BarChart3 className="w-5 h-5" />
             </Button>
           </TooltipTrigger>
           <TooltipContent side="right">Analytics</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`w-10 h-10 smooth-transition metal-shine`}
+              onClick={() => {
+                handleClick(() => onViewChange?.('agent'));
+              }}
+            >
+              <Brain className="w-5 h-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">AI Collective</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`w-10 h-10 smooth-transition metal-shine`}
+              onClick={() => {
+                handleClick(() => onViewChange?.('predictions'));
+              }}
+            >
+              <Sparkles className="w-5 h-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">Predictive Intelligence</TooltipContent>
         </Tooltip>
 
         <div className="flex-1" />

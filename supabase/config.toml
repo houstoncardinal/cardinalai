@@ -9,6 +9,12 @@ verify_jwt = false
 [functions.ai-stream-assist]
 verify_jwt = false
 
+[functions.ai-agent-orchestrator]
+verify_jwt = false
+
+[functions.pattern-analyzer]
+verify_jwt = true
+
 [functions.code-generator]
 verify_jwt = false
 

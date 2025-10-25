@@ -14,6 +14,90 @@ export type Database = {
   }
   public: {
     Tables: {
+      agent_conversations: {
+        Row: {
+          agent_id: string | null
+          context_snapshot: Json | null
+          conversation_history: Json | null
+          created_at: string
+          id: string
+          project_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agent_id?: string | null
+          context_snapshot?: Json | null
+          conversation_history?: Json | null
+          created_at?: string
+          id?: string
+          project_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agent_id?: string | null
+          context_snapshot?: Json | null
+          conversation_history?: Json | null
+          created_at?: string
+          id?: string
+          project_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_conversations_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_conversations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_agents: {
+        Row: {
+          capabilities: Json | null
+          created_at: string
+          id: string
+          name: string
+          personality_prompt: string
+          role: string
+          system_instructions: string
+          tone: string
+          updated_at: string
+        }
+        Insert: {
+          capabilities?: Json | null
+          created_at?: string
+          id?: string
+          name: string
+          personality_prompt: string
+          role: string
+          system_instructions: string
+          tone: string
+          updated_at?: string
+        }
+        Update: {
+          capabilities?: Json | null
+          created_at?: string
+          id?: string
+          name?: string
+          personality_prompt?: string
+          role?: string
+          system_instructions?: string
+          tone?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ai_chat_messages: {
         Row: {
           content: string
@@ -102,6 +186,139 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      knowledge_graph_edges: {
+        Row: {
+          created_at: string
+          id: string
+          metadata: Json | null
+          relationship_type: string
+          source_node_id: string | null
+          target_node_id: string | null
+          weight: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          relationship_type: string
+          source_node_id?: string | null
+          target_node_id?: string | null
+          weight?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          relationship_type?: string
+          source_node_id?: string | null
+          target_node_id?: string | null
+          weight?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_graph_edges_source_node_id_fkey"
+            columns: ["source_node_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_graph_nodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "knowledge_graph_edges_target_node_id_fkey"
+            columns: ["target_node_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_graph_nodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      knowledge_graph_nodes: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          metadata: Json | null
+          name: string
+          node_type: string
+          project_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          name: string
+          node_type: string
+          project_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          name?: string
+          node_type?: string
+          project_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_graph_nodes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      predictive_suggestions: {
+        Row: {
+          accepted_at: string | null
+          confidence_score: number | null
+          created_at: string
+          id: string
+          project_id: string | null
+          suggestion_data: Json
+          suggestion_type: string
+          user_id: string
+          was_accepted: boolean | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          project_id?: string | null
+          suggestion_data: Json
+          suggestion_type: string
+          user_id: string
+          was_accepted?: boolean | null
+        }
+        Update: {
+          accepted_at?: string | null
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          project_id?: string | null
+          suggestion_data?: Json
+          suggestion_type?: string
+          user_id?: string
+          was_accepted?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "predictive_suggestions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -434,6 +651,83 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_coding_patterns: {
+        Row: {
+          confidence_score: number | null
+          created_at: string
+          frequency: number | null
+          id: string
+          last_observed_at: string
+          pattern_data: Json
+          pattern_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          confidence_score?: number | null
+          created_at?: string
+          frequency?: number | null
+          id?: string
+          last_observed_at?: string
+          pattern_data: Json
+          pattern_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          confidence_score?: number | null
+          created_at?: string
+          frequency?: number | null
+          id?: string
+          last_observed_at?: string
+          pattern_data?: Json
+          pattern_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      workflow_sequences: {
+        Row: {
+          action_sequence: Json
+          created_at: string
+          frequency: number | null
+          id: string
+          last_executed_at: string
+          pattern_signature: string
+          project_id: string | null
+          user_id: string
+        }
+        Insert: {
+          action_sequence: Json
+          created_at?: string
+          frequency?: number | null
+          id?: string
+          last_executed_at?: string
+          pattern_signature: string
+          project_id?: string | null
+          user_id: string
+        }
+        Update: {
+          action_sequence?: Json
+          created_at?: string
+          frequency?: number | null
+          id?: string
+          last_executed_at?: string
+          pattern_signature?: string
+          project_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_sequences_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
