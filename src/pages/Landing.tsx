@@ -1,11 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Code2, Sparkles, Users, Zap, Brain, Workflow, Shield, Rocket } from "lucide-react";
+import { Sparkles, Users, Zap, Brain, Workflow, Shield, Code2 } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { MatrixRain } from "@/components/landing/MatrixRain";
 import { CircuitBackground } from "@/components/landing/CircuitBackground";
 import { PathwayAgentCard } from "@/components/landing/PathwayAgentCard";
-import { GlowingText } from "@/components/landing/GlowingText";
 import { FloatingParticles } from "@/components/landing/FloatingParticles";
 import { DataFlow } from "@/components/landing/DataFlow";
 import { Scene3D } from "@/components/landing/Scene3D";
@@ -13,6 +12,7 @@ import { ParallaxSection } from "@/components/landing/ParallaxSection";
 import { HolographicCard } from "@/components/landing/HolographicCard";
 import { MagneticButton } from "@/components/landing/MagneticButton";
 import ScrollExpandMedia from "@/components/ui/scroll-expansion-hero";
+import { HeroSection } from "@/components/ui/hero-section-2";
 import { useState, useEffect, useRef } from "react";
 
 const Landing = () => {
@@ -70,49 +70,9 @@ const Landing = () => {
             filter: 'blur(80px)',
           }}
         />
-        {/* Navigation - modern */}
-        <motion.nav 
-          className="fixed top-0 w-full z-50 glass-panel border-b border-border/50"
-          initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-            <motion.div 
-              className="flex items-center gap-3"
-              whileHover={{ scale: 1.05 }}
-            >
-              <motion.div 
-                className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center relative overflow-hidden"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.2 }}
-              >
-                <Code2 className="w-6 h-6 text-white" strokeWidth={2} />
-              </motion.div>
-              <div>
-                <h1 className="text-xl font-semibold text-foreground">
-                  PathwayAI
-                </h1>
-                <p className="text-xs text-muted-foreground">by Cardinal Consulting</p>
-              </div>
-            </motion.div>
-            <div className="flex items-center gap-4">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button variant="ghost" onClick={() => navigate("/community")}>
-                  Community
-                </Button>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                <Button 
-                  onClick={() => navigate("/auth")} 
-                  className="bg-gradient-to-r from-primary to-accent hover:from-primary-glow hover:to-accent text-white border-0 shadow-glow transition-all duration-300"
-                >
-                  Get Started
-                </Button>
-              </motion.div>
-            </div>
-          </div>
-        </motion.nav>
+
+        {/* New Hero Section */}
+        <HeroSection />
 
         {/* AI Agents Section */}
         <ParallaxSection offset={100}>
