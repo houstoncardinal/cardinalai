@@ -305,7 +305,7 @@ export const LivePreview = ({ onClose, showCloseButton = false }: LivePreviewPro
             ref={iframeRef}
             className="w-full h-full border-0"
             title="Live Preview"
-            sandbox="allow-scripts allow-same-origin"
+            sandbox="allow-scripts allow-forms allow-popups allow-modals"
           />
         </div>
       </div>
