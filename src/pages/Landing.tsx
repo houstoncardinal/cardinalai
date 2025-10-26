@@ -1,78 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Sparkles, Users, Zap, Brain, Workflow, Shield, Code2 } from "lucide-react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { MatrixRain } from "@/components/landing/MatrixRain";
-import { CircuitBackground } from "@/components/landing/CircuitBackground";
+import { motion } from "framer-motion";
 import { PathwayAgentCard } from "@/components/landing/PathwayAgentCard";
-import { FloatingParticles } from "@/components/landing/FloatingParticles";
-import { DataFlow } from "@/components/landing/DataFlow";
-import { Scene3D } from "@/components/landing/Scene3D";
 import { ParallaxSection } from "@/components/landing/ParallaxSection";
 import { HolographicCard } from "@/components/landing/HolographicCard";
 import { MagneticButton } from "@/components/landing/MagneticButton";
-import ScrollExpandMedia from "@/components/ui/scroll-expansion-hero";
 import { HeroSection } from "@/components/ui/hero-section-2";
-import { useState, useEffect, useRef } from "react";
 
 const Landing = () => {
   const navigate = useNavigate();
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const containerRef = useRef<HTMLDivElement>(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
-
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0.6]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
 
   return (
-    <div ref={containerRef}>
-      {/* 3D Background Scene */}
-      <Scene3D />
-      
-      <ScrollExpandMedia
-        mediaType="image"
-        mediaSrc="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=1920&auto=format&fit=crop"
-        bgImageSrc="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop"
-        title="PathwayAI Intelligence"
-        date="Where Code Meets Consciousness"
-        scrollToExpand="Scroll to Explore the Pathway"
-        textBlend
-      >
-        <motion.div 
-          className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 relative overflow-hidden"
-          style={{ opacity, scale }}
-        >
-        {/* Animated backgrounds */}
-        <MatrixRain />
-        <CircuitBackground />
-        <FloatingParticles />
-        <DataFlow />
-        
-        {/* Subtle mouse follower */}
-        <motion.div
-          className="fixed w-[400px] h-[400px] rounded-full pointer-events-none z-0"
-          style={{
-            background: 'radial-gradient(circle, hsl(var(--primary) / 0.08) 0%, transparent 70%)',
-            left: mousePosition.x - 200,
-            top: mousePosition.y - 200,
-            filter: 'blur(80px)',
-          }}
-        />
-
-        {/* New Hero Section */}
-        <HeroSection />
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
+      {/* New Hero Section */}
+      <HeroSection />
 
         {/* AI Agents Section */}
         <ParallaxSection offset={100}>
@@ -263,8 +205,6 @@ const Landing = () => {
           </div>
         </div>
         </motion.footer>
-        </motion.div>
-      </ScrollExpandMedia>
     </div>
   );
 };
