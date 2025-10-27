@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { Sparkles, Users, Zap, Brain, Workflow, Shield, Code2 } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
+import { Sparkles, Zap, Brain, Workflow, Network, Layers, Box, Bug, GraduationCap, Code2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { PathwayAgentCard } from "@/components/landing/PathwayAgentCard";
 import { ParallaxSection } from "@/components/landing/ParallaxSection";
@@ -16,195 +15,234 @@ const Landing = () => {
       {/* New Hero Section */}
       <HeroSection />
 
-        {/* AI Agents Section */}
-        <ParallaxSection offset={100}>
-          <section className="py-20 px-6 relative z-10">
-            <div className="container mx-auto max-w-6xl">
-              <motion.div 
-                className="text-center mb-16"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
+      {/* AI Agents Section */}
+      <ParallaxSection>
+        <section id="agents" className="py-32 px-6 relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background" />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="max-w-7xl mx-auto relative z-10"
+          >
+            <div className="text-center mb-20">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
+                className="inline-block mb-4 px-4 py-2 bg-primary/10 rounded-full border border-primary/20"
               >
-                <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-primary via-foreground to-accent bg-clip-text text-transparent">
-                  The Pathway Collective
-                </h2>
-                <p className="text-muted-foreground text-lg max-w-3xl mx-auto leading-relaxed">
-                  Four AI entities that form a neural orchestra, each with unique capabilities and consciousness
-                </p>
+                <span className="text-sm font-semibold text-primary">The Pathway Collective</span>
               </motion.div>
-              
-              <div className="grid md:grid-cols-2 gap-8">
-                {[
-                  {
-                    icon: Workflow,
-                    title: "The Architect",
-                    description: "Visionary structural designer that crafts your codebase with surgical precision. Builds frameworks and logical flows that scale effortlessly from prototype to production.",
-                    color: "from-cyan-500 via-blue-500 to-indigo-600"
-                  },
-                  {
-                    icon: Shield,
-                    title: "The Debugger",
-                    description: "Analytical guardian that watches over every line of code. Identifies inefficiencies, hunts bugs methodically, and maintains system integrity with unwavering focus.",
-                    color: "from-red-500 via-orange-500 to-amber-600"
-                  },
-                  {
-                    icon: Brain,
-                    title: "The Mentor",
-                    description: "Supportive intelligence that transforms complex concepts into crystal-clear insights. Teaches, guides, and empowers you to master any technology with confidence.",
-                    color: "from-emerald-500 via-green-500 to-teal-600"
-                  },
-                  {
-                    icon: Sparkles,
-                    title: "The Composer",
-                    description: "Artistic technician that refactors code into elegant poetry. Transforms tangled logic into beautiful, maintainable masterpieces with creative precision.",
-                    color: "from-purple-500 via-pink-500 to-rose-600"
-                  }
-                ].map((agent, index) => (
-                  <PathwayAgentCard
-                    key={index}
-                    icon={agent.icon}
-                    title={agent.title}
-                    description={agent.description}
-                    gradient={agent.color}
-                    delay={index * 0.15}
-                  />
-                ))}
-              </div>
-            </div>
-          </section>
-        </ParallaxSection>
-
-        {/* Features Grid */}
-        <ParallaxSection offset={80}>
-          <section className="py-20 px-6 bg-accent/5 relative z-10">
-            <div className="container mx-auto max-w-6xl">
-              <motion.div 
-                className="text-center mb-16"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-              >
-                <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                  Built for Excellence
-                </h2>
-                <p className="text-muted-foreground text-base">Every feature crafted with precision and purpose</p>
-              </motion.div>
-              
-              <div className="grid md:grid-cols-3 gap-8">
-                {[
-                  {
-                    icon: Zap,
-                    title: "Real-Time Streaming",
-                    description: "Watch AI generate code in real-time with instant feedback and live previews."
-                  },
-                  {
-                    icon: Brain,
-                    title: "Contextual Intelligence",
-                    description: "Learns your workflow patterns and adapts to your coding style."
-                  },
-                  {
-                    icon: Code2,
-                    title: "Advanced Editor",
-                    description: "Monaco-powered editor with IntelliSense and multi-language support."
-                  },
-                  {
-                    icon: Workflow,
-                    title: "File Management",
-                    description: "Intuitive file explorer with drag-drop and advanced search."
-                  },
-                  {
-                    icon: Users,
-                    title: "Collaboration",
-                    description: "Share ideas, get feedback, and learn from the community."
-                  },
-                  {
-                    icon: Shield,
-                    title: "Secure & Private",
-                    description: "Your code stays yours with enterprise-grade security."
-                  }
-                ].map((feature, index) => (
-                  <HolographicCard
-                    key={index}
-                    icon={feature.icon}
-                    title={feature.title}
-                    description={feature.description}
-                    delay={index * 0.1}
-                  />
-                ))}
-              </div>
-            </div>
-          </section>
-        </ParallaxSection>
-
-        {/* CTA Section */}
-        <ParallaxSection offset={60}>
-          <section className="py-20 px-6 relative z-10">
-            <div className="container mx-auto max-w-4xl">
-              <motion.div 
-                className="modern-card p-16 rounded-3xl text-center space-y-8 relative overflow-hidden"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              >
-                {/* Subtle gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
-                
-                <div className="relative z-10 max-w-2xl mx-auto">
-                  <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-primary via-foreground to-accent bg-clip-text text-transparent">
-                    Ready to Transform Your Development?
-                  </h2>
-                  <p className="text-base text-muted-foreground mb-10 leading-relaxed">
-                    Join developers worldwide who are experiencing the future of coding.
-                  </p>
-                  <MagneticButton onClick={() => navigate("/ide")}>
-                    Launch PathwayAI IDE
-                  </MagneticButton>
-                </div>
-              </motion.div>
-            </div>
-          </section>
-        </ParallaxSection>
-
-        {/* Footer */}
-        <motion.footer
-        className="border-t border-border/30 py-12 px-6 relative z-10"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className="container mx-auto max-w-6xl">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <motion.div 
-              className="text-center md:text-left"
-              whileHover={{ scale: 1.05 }}
-            >
-              <h3 className="font-semibold text-lg mb-2 text-foreground">
-                PathwayAI
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Created by Hunain Qureshi, CEO of Cardinal Consulting
+              <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
+                Four AI Agents, One Vision
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                A neural orchestra of specialized AI entities working in perfect harmony. Each agent brings unique expertise, sharing memory through an intelligent Knowledge Graph that evolves with your coding patterns.
               </p>
-            </motion.div>
-            <div className="flex gap-6">
-              <motion.div whileHover={{ scale: 1.1, y: -2 }} whileTap={{ scale: 0.95 }}>
-                <Button variant="ghost" size="sm" onClick={() => navigate("/community")}>
-                  Community
-                </Button>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.1, y: -2 }} whileTap={{ scale: 0.95 }}>
-                <Button variant="ghost" size="sm" onClick={() => navigate("/ide")}>
-                  IDE
-                </Button>
-              </motion.div>
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <PathwayAgentCard
+                icon={Box}
+                title="The Architect"
+                description="Visionary and structural. Designs frameworks, folder hierarchies, and large-scale logic with confident precision."
+                gradient="from-blue-500 via-blue-600 to-purple-600"
+                delay={0}
+              />
+              <PathwayAgentCard
+                icon={Bug}
+                title="The Debugger"
+                description="Analytical and methodical. Identifies problems with calm clarity and reasons through complex issues systematically."
+                gradient="from-purple-500 via-purple-600 to-pink-600"
+                delay={0.1}
+              />
+              <PathwayAgentCard
+                icon={GraduationCap}
+                title="The Mentor"
+                description="Supportive and insightful. Breaks down concepts, teaches best practices, and guides you toward mastery."
+                gradient="from-pink-500 via-pink-600 to-red-600"
+                delay={0.2}
+              />
+              <PathwayAgentCard
+                icon={Code2}
+                title="The Composer"
+                description="Artistic yet technical. Refactors and beautifies code with poetic efficiency, making every line elegant."
+                gradient="from-red-500 via-red-600 to-orange-600"
+                delay={0.3}
+              />
+            </div>
+          </motion.div>
+        </section>
+      </ParallaxSection>
+
+      {/* Features Grid */}
+      <ParallaxSection>
+        <section id="features" className="py-32 px-6 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-accent/5 to-background" />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="max-w-7xl mx-auto relative z-10"
+          >
+            <div className="text-center mb-20">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                viewport={{ once: true }}
+                className="inline-block mb-4 px-4 py-2 bg-accent/10 rounded-full border border-accent/20"
+              >
+                <span className="text-sm font-semibold text-accent">Premium Features</span>
+              </motion.div>
+              <h2 className="text-5xl md:text-6xl font-bold mb-6">
+                Engineered for <span className="bg-gradient-to-r from-accent via-primary-glow to-primary bg-clip-text text-transparent">Excellence</span>
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                Every feature meticulously crafted to transform coding from a task into an art form. Experience development that feels alive, intuitive, and profoundly intelligent.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <HolographicCard
+                icon={Zap}
+                title="Real-Time AI Streaming"
+                description="Experience fluid AI responses that flow naturally as you code. Lightning-fast suggestions with sub-second latency that never breaks your creative flow."
+                delay={0}
+              />
+              <HolographicCard
+                icon={Brain}
+                title="Contextual Intelligence"
+                description="Advanced pattern recognition learns your syntax rhythms, framework preferences, and architectural style. Suggestions become more precise with every keystroke."
+                delay={0.1}
+              />
+              <HolographicCard
+                icon={Network}
+                title="Seamless Collaboration"
+                description="Real-time synchronization across voice, touch, and text inputs. Work solo in deep focus or collaborate with teams in perfect harmony."
+                delay={0.2}
+              />
+              <HolographicCard
+                icon={Sparkles}
+                title="Predictive Workflow"
+                description="AI anticipates your next actions and prepares resources proactively. Files load before you click, builds start before you save."
+                delay={0.3}
+              />
+              <HolographicCard
+                icon={Workflow}
+                title="Multi-Agent System"
+                description="Four specialized AI agents collaborate through a unified Knowledge Graph, each contributing their expertise to every task you undertake."
+                delay={0.4}
+              />
+              <HolographicCard
+                icon={Layers}
+                title="Adaptive Interface"
+                description="Dynamic layouts, intelligent tool suggestions, and ambient lighting that responds to your project type, workflow mode, and coding patterns."
+                delay={0.5}
+              />
+            </div>
+          </motion.div>
+        </section>
+      </ParallaxSection>
+
+      {/* CTA Section */}
+      <ParallaxSection>
+        <section className="py-32 px-6 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(var(--primary-glow),0.15),transparent_70%)]" />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="max-w-4xl mx-auto text-center relative z-10"
+          >
+            <div className="relative p-16 rounded-3xl overflow-hidden border border-primary/20 shadow-2xl shadow-primary/10">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary-glow/10 to-accent/10 backdrop-blur-xl" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(var(--primary-glow),0.2),transparent_70%)]" />
+              
+              <div className="relative z-10">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  viewport={{ once: true }}
+                >
+                  <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
+                    Ready to Transform Your Workflow?
+                  </h2>
+                  <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
+                    Join developers who've discovered a new way to code. Where intelligence meets intuition. Where engineering becomes art.
+                  </p>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                  viewport={{ once: true }}
+                >
+                  <MagneticButton
+                    onClick={() => navigate('/ide')}
+                    className="group relative px-12 py-6 text-lg shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-shadow"
+                  >
+                    <span className="relative z-10 font-semibold">Launch PathwayAI</span>
+                  </MagneticButton>
+                  <p className="mt-6 text-sm text-muted-foreground">No credit card required • Start coding in seconds</p>
+                </motion.div>
+              </div>
+            </div>
+          </motion.div>
+        </section>
+      </ParallaxSection>
+
+      {/* Footer */}
+      <footer className="border-t border-border/50 py-12 px-6 bg-gradient-to-b from-background to-primary/5">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-8">
+            <div className="flex flex-col items-center md:items-start gap-4">
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary-glow to-accent blur-sm opacity-50" />
+                  <div className="relative bg-gradient-to-br from-primary to-accent p-2 rounded-lg">
+                    <Sparkles className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
+                  Cardinal.AI
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground max-w-xs text-center md:text-left">
+                Where code meets consciousness. A development environment that feels alive.
+              </p>
+            </div>
+            
+            <nav className="flex flex-col md:flex-row gap-6 md:gap-8">
+              <Link to="/ide" className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                Launch IDE
+              </Link>
+              <Link to="/community" className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                Community
+              </Link>
+              <a href="#features" className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                Features
+              </a>
+              <a href="#agents" className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                AI Agents
+              </a>
+            </nav>
+          </div>
+          
+          <div className="pt-8 border-t border-border/50 text-center">
+            <p className="text-sm text-muted-foreground">
+              © 2025 Cardinal.AI. Engineered for excellence.
+            </p>
           </div>
         </div>
-        </motion.footer>
+      </footer>
     </div>
   );
 };
