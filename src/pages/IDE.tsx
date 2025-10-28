@@ -105,7 +105,7 @@ const IDE = () => {
 
   return (
     <div className="h-screen flex bg-background overflow-hidden">
-      <ActivityBar onViewChange={setActiveView} />
+      <ActivityBar onViewChange={setActiveView} activeView={activeView} />
       
       {/* Top bar with Project Switcher and User Menu */}
       <div className="absolute top-3 left-16 right-3 z-50 flex items-center justify-between px-4">

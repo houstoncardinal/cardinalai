@@ -11,7 +11,7 @@ import { soundManager } from '@/utils/sounds';
 
 type ViewType = 'explorer' | 'editor' | 'ai' | 'preview' | 'terminal' | 'git' | 'settings' | 'activity' | 'analytics' | 'agent' | 'predictions';
 
-export const ActivityBar = ({ onViewChange }: { onViewChange?: (view: ViewType) => void }) => {
+export const ActivityBar = ({ onViewChange, activeView }: { onViewChange?: (view: ViewType) => void; activeView?: ViewType }) => {
   const {
     fileExplorerOpen, 
     gitPanelOpen, 
@@ -193,7 +193,9 @@ export const ActivityBar = ({ onViewChange }: { onViewChange?: (view: ViewType) 
             <Button
               variant="ghost"
               size="icon"
-              className={`w-10 h-10 smooth-transition`}
+              className={`w-10 h-10 smooth-transition ${
+                activeView === 'activity' ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground'
+              }`}
               onClick={() => {
                 handleClick(() => onViewChange?.('activity'));
               }}
@@ -209,7 +211,9 @@ export const ActivityBar = ({ onViewChange }: { onViewChange?: (view: ViewType) 
             <Button
               variant="ghost"
               size="icon"
-              className={`w-10 h-10 smooth-transition`}
+              className={`w-10 h-10 smooth-transition ${
+                activeView === 'analytics' ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground'
+              }`}
               onClick={() => {
                 handleClick(() => onViewChange?.('analytics'));
               }}
@@ -225,7 +229,9 @@ export const ActivityBar = ({ onViewChange }: { onViewChange?: (view: ViewType) 
             <Button
               variant="ghost"
               size="icon"
-              className={`w-10 h-10 smooth-transition metal-shine`}
+              className={`w-10 h-10 smooth-transition metal-shine ${
+                activeView === 'agent' ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground'
+              }`}
               onClick={() => {
                 handleClick(() => onViewChange?.('agent'));
               }}
@@ -241,7 +247,9 @@ export const ActivityBar = ({ onViewChange }: { onViewChange?: (view: ViewType) 
             <Button
               variant="ghost"
               size="icon"
-              className={`w-10 h-10 smooth-transition metal-shine`}
+              className={`w-10 h-10 smooth-transition metal-shine ${
+                activeView === 'predictions' ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground'
+              }`}
               onClick={() => {
                 handleClick(() => onViewChange?.('predictions'));
               }}
