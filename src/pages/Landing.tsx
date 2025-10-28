@@ -208,7 +208,31 @@ const Landing = () => {
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary-glow to-accent blur-sm opacity-50" />
                   <div className="relative bg-gradient-to-br from-primary to-accent p-2 rounded-lg">
-                    <Sparkles className="w-5 h-5 text-white" />
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 text-white">
+                      <path
+                        d="M12 2L2 7L12 12L22 7L12 2Z"
+                        fill="currentColor"
+                        fillOpacity="0.9"
+                      />
+                      <path
+                        d="M2 17L12 22L22 17"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M2 12L12 17L22 12"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                   </div>
                 </div>
                 <span className="text-xl font-bold bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
