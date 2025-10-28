@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { AnimatedGroup } from '@/components/ui/animated-group'
 import { cn } from '@/lib/utils'
 import { useScroll } from 'motion/react'
-// Placeholder for demo image
+import cardinalDemo from '@/assets/cardinalai-demo.png'
 
 const transitionVariants = {
     item: {
@@ -103,9 +103,13 @@ export function HeroSection() {
                                     className="bg-gradient-to-b to-background absolute inset-0 z-10 from-transparent from-35%"
                                 />
                                 <div className="relative mx-auto max-w-5xl overflow-hidden rounded-2xl border bg-background p-4 shadow-lg shadow-primary/20 ring-1 ring-background">
-                                    <div className="aspect-video relative rounded-2xl w-full bg-gradient-to-br from-primary/20 via-primary-glow/10 to-accent/20 flex items-center justify-center">
-                                        <p className="text-muted-foreground text-sm">Cardinal.AI IDE Preview</p>
-                                    </div>
+                                    <img
+                                        className="aspect-video relative rounded-2xl w-full object-cover"
+                                        src={cardinalDemo}
+                                        alt="Cardinal.AI IDE Interface showing AI assistant, code editor, and terminal"
+                                        width="2700"
+                                        height="1440"
+                                    />
                                 </div>
                             </div>
                         </AnimatedGroup>
